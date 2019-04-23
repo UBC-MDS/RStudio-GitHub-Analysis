@@ -1,6 +1,7 @@
 import pandas_gbq
 import networkx as nx
 import matplotlib.pyplot as plt
+import time
 
 def query_ght(queryString):
     # https://bigquery.cloud.google.com/dataset/ghtorrent-bq:ght
@@ -25,10 +26,16 @@ if __name__ == '__main__':
         from `ghtorrent-bq.ght.commits` c
         left join `ghtorrent-bq.ght.projects` p on (p.id = c.project_id)
         left join `ghtorrent-bq.ght.commit_parents` cp on (cp.commit_id = c.id)
-        where (p.id = 12873840)
+        where (p.id = 5524547)
         limit 10000
     """
+    import time
 
+    start = time.time()
     commits = query_ght(commitQuery)
+    getData = time.time()
+    print("Query Time:\t" + str(getData - start))
     branchPlot = plot_commits(commits)
+    plotTime = time.time()
+    print("Plot Time:\t" + str(plotTime - getData))
     plt.savefig("./imgs/branch_test")
