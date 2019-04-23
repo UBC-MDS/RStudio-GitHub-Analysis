@@ -29,8 +29,7 @@ if __name__ == '__main__':
         where (p.id = 5524547)
         limit 10000
     """
-    import time
-
+    
     start = time.time()
     commits = query_ght(commitQuery)
     getData = time.time()
