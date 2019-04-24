@@ -45,9 +45,10 @@ def git_graph(commitData):
     :return nxGraph: Networkx graph
     """
     source_target_commits = commitData[["cp_parent_id", "c_id"]].dropna().astype("int64")
+    print(source_target_commits)
     source_target_commits.columns = ["source", "target"]
 
-    return nx.from_pandas_edgelist(source_target_commits)
+    return nx.from_pandas_edgelist(source_target_commits, create_using=nx.OrderedDiGraph())
 
 def plot_commits(graph):
     """
