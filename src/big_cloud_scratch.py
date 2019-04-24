@@ -34,7 +34,7 @@ if __name__ == '__main__':
     commits = query_ght(commitQuery)
     getData = time.time()
     print("Query Time:\t" + str(getData - start))
-    branchPlot = plot_commits(commits)
+    plot_commits(commits)
     plotTime = time.time()
     print("Plot Time:\t" + str(plotTime - getData))
     plt.savefig("./imgs/branch_test")
