@@ -104,6 +104,9 @@ if __name__ == '__main__':
     print("Save Embeddings Time:\t" + str(saveEmbeddingsTime - buildModelTime) + "\tseconds")
 
     for graph in range(len(graphs)):
+        figure = plt.gcf() # get current figure
+        figure.set_size_inches(12, 8)
+
         plot_commits(graphs[graph])
         plt.savefig("./imgs/branch_test" + str(graph))
         plt.clf()
