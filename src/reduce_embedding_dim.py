@@ -27,10 +27,13 @@ def output_image_of_tsne(embeddings_tsne_transform, filename):
     filename: filepath to output image to.
     """
     fig, ax = plt.subplots()
-    ax.scatter(embeddings_tsne_transform.x,transformed_array.y)
+    ax.scatter(embeddings_tsne_transform.x, embeddings_tsne_transform.y)
     ax.set_title('Embedding Clusters (t-SNE Transformed)')
     plt.savefig(filename)
 
-if __name__=='__main__':
+def reduce():
     transformed_array = run_tsne('./results/embeddings.csv')
     output_image_of_tsne(transformed_array, './results/embeddings_tsne')
+
+if __name__=='__main__':
+    reduce()

@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import graph2vec as g2v
 import time
 import numpy.distutils.system_info as sysinfo
+import reduce_embedding_dim as red
 
 from joblib import Parallel, delayed
 from gensim.models.doc2vec import Doc2Vec, TaggedDocument
@@ -59,7 +60,7 @@ def plot_commits(graph):
     nx.draw_kamada_kawai(graph, alpha=0.5, node_color='blue', node_size = 2)
 
 n_workers    = 4
-n_iterations = 1
+n_iterations = 10
 n_dimensions = 128
 
 if __name__ == '__main__':
@@ -97,11 +98,16 @@ if __name__ == '__main__':
 
     saveEmbeddingsTime = time.time()
 
+    red.reduce()
+
+    reduceTime = time.time()
+
     print("Query Time:\t\t" + str(getDataTime - startTime) + "\tseconds")
     print("NxGraphs Time:\t\t" + str(generateGraphsTime - getDataTime) + "\tseconds")
     print("FeatExtract Time:\t" + str(featExtractTime - generateGraphsTime) + "\tseconds")
     print("Model Build Time:\t" + str(buildModelTime - featExtractTime) + "\tseconds")
     print("Save Embeddings Time:\t" + str(saveEmbeddingsTime - buildModelTime) + "\tseconds")
+    print("Dim Reduce Time:\t" + str(reduceTime - saveEmbeddingsTime) + "\tseconds")
 
     for graph in range(len(graphs)):
         figure = plt.gcf() # get current figure
