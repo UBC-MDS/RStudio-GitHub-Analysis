@@ -103,7 +103,8 @@ if __name__ == '__main__':
     print("Model Build Time:\t" + str(buildModelTime - featExtractTime) + "\tseconds")
     print("Save Embeddings Time:\t" + str(saveEmbeddingsTime - buildModelTime) + "\tseconds")
 
-    # for graph in graphs:
-    #     plot_commits(graph)
-    #     plt.savefig("./imgs/branch_test")
-    #     plt.show()
+    for graph in range(len(graphs)):
+        plot_commits(graphs[graph])
+        plt.savefig("./imgs/branch_test" + str(graph))
+        plt.clf()
+        #plt.show()
