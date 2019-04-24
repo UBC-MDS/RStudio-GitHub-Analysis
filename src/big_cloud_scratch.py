@@ -10,12 +10,21 @@ from gensim.models.doc2vec import Doc2Vec, TaggedDocument
 from tqdm import tqdm
 
 def query_ght(queryString):
-    # https://bigquery.cloud.google.com/dataset/ghtorrent-bq:ght
+    """
+    Function to query with the provided query string.
+    :param queryString: String with which to perform the query.
+    :return query_result_df: Dataframe that holds the query results.
+    """
     query_result_df = pandas_gbq.read_gbq(queryString)
 
     return query_result_df
 
 def commit_query(projectId):
+    """
+    Function to generate the query that will pull all commits for a given projectId.
+    :param projectId: Project ID that you'd like to get commits for.
+    :return queryString: Query string for the given projectId.
+    """
     return """
             select
               c.id as c_id,
@@ -29,13 +38,23 @@ def commit_query(projectId):
             limit 10000
         """
 
-def git_graph(commits):
-    source_target_commits = commits[["cp_parent_id", "c_id"]].dropna().astype("int64")
+def git_graph(commitData):
+    """
+    Function to generate the commit graph in networkx from the query results.
+    :param commitData: Data pulled from the commit_query string.
+    :return nxGraph: Networkx graph
+    """
+    source_target_commits = commitData[["cp_parent_id", "c_id"]].dropna().astype("int64")
     source_target_commits.columns = ["source", "target"]
 
     return nx.from_pandas_edgelist(source_target_commits)
 
 def plot_commits(graph):
+    """
+    Function to plot the commit graph from the networkx graph.
+    :param graph: The graph to plot.
+    :return None:
+    """
     nx.draw_kamada_kawai(graph, alpha=0.5, node_color='blue', node_size = 2)
 
 n_workers    = 4
