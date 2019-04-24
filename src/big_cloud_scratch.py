@@ -35,15 +35,15 @@ def git_graph(commits):
 
     return nx.from_pandas_edgelist(source_target_commits)
 
-def plot_commits(commits):
-    nx.draw_kamada_kawai(git_graph(commits), alpha=0.5, node_color='blue', node_size = 2)
+def plot_commits(graph):
+    nx.draw_kamada_kawai(graph, alpha=0.5, node_color='blue', node_size = 2)
 
 if __name__ == '__main__':
     n_workers = 4
     n_iterations = 1
 
     query_p1 = commit_query(22003900)
-    query_p2 = commit_query(5524547)
+    query_p2 = commit_query(33470153)
     data_p1 = query_ght(query_p1)
     #print(data_p1)
     data_p2 = query_ght(query_p2)
@@ -63,6 +63,10 @@ if __name__ == '__main__':
 
     print(model)
     g2v.save_embedding("./results/embeddings.csv", model, len(graphs), 128)
+
+    for graph in graphs:
+        plot_commits(graph)
+        plt.show()
 
     #print(document_collections)
     # start = time.time()
