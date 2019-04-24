@@ -62,15 +62,23 @@ n_iterations = 1
 n_dimensions = 128
 
 if __name__ == '__main__':
+    startTime = time.time()
+
     query_p1 = commit_query(22003900)
     query_p2 = commit_query(33470153)
 
     data_p1 = query_ght(query_p1)
     data_p2 = query_ght(query_p2)
 
+    getDataTime = time.time()
+
     graphs = [git_graph(data_p1), git_graph(data_p2)]
 
+    generateGraphsTime = time.time()
+
     document_collections = Parallel(n_jobs = n_workers)(delayed(g2v.feature_extractor)(graphs[g], n_iterations, str(g)) for g in tqdm(range(len(graphs))))
+
+    featExtractTime = time.time()
 
     model = Doc2Vec(document_collections,
                     size = n_dimensions,
@@ -82,18 +90,19 @@ if __name__ == '__main__':
                     iter = n_iterations,
                     alpha = 0.025)
 
+    buildModelTime = time.time()
+
     g2v.save_embedding("./results/embeddings.csv", model, len(graphs), n_dimensions)
 
-    for graph in graphs:
-        plot_commits(graph)
-        plt.show()
+    saveEmbeddingsTime = time.time()
 
-    # start = time.time()
-    # commits = query_ght(commitQuery)
-    # getData = time.time()
-    # print("Query Time:\t" + str(getData - start))
-    # branchPlot = plot_commits(commits)
-    # plotTime = time.time()
-    # print("Plot Time:\t" + str(plotTime - getData))
-    # plt.savefig("./imgs/branch_test")
-    # plt.show()
+    print("Query Time:\t\t" + str(getDataTime - startTime) + "\tseconds")
+    print("NxGraphs Time:\t\t" + str(generateGraphsTime - getDataTime) + "\tseconds")
+    print("FeatExtract Time:\t" + str(featExtractTime - generateGraphsTime) + "\tseconds")
+    print("Model Build Time:\t" + str(buildModelTime - featExtractTime) + "\tseconds")
+    print("Save Embeddings Time:\t" + str(saveEmbeddingsTime - buildModelTime) + "\tseconds")
+
+    # for graph in graphs:
+    #     plot_commits(graph)
+    #     plt.savefig("./imgs/branch_test")
+    #     plt.show()

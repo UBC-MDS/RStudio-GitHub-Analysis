@@ -3,6 +3,7 @@ import logging
 import pandas as pd
 import networkx as nx
 import numpy.distutils.system_info as sysinfo
+from gensim.models.doc2vec import TaggedDocument
 
 logging.basicConfig(format="%(asctime)s : %(levelname)s : %(message)s", level=logging.INFO)
 
