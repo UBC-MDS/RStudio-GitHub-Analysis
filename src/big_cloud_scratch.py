@@ -49,7 +49,7 @@ if __name__ == '__main__':
     data_p2 = query_ght(query_p2)
     graphs = [git_graph(data_p1), git_graph(data_p2)]
 
-    document_collections = Parallel(n_jobs = n_workers)(delayed(g2v.feature_extractor)(g, n_iterations) for g in tqdm(graphs))
+    document_collections = Parallel(n_jobs = n_workers)(delayed(g2v.feature_extractor)(graphs[g], n_iterations, str(g)) for g in tqdm(range(len(graphs))))
 
     model = Doc2Vec(document_collections,
                     size = 128,
@@ -62,7 +62,7 @@ if __name__ == '__main__':
                     alpha = 0.025)
 
     print(model)
-    #g2v.save_embedding("./out/ok.json", model, graphs, 128)
+    g2v.save_embedding("./results/embeddings.csv", model, len(graphs), 128)
 
     #print(document_collections)
     # start = time.time()

@@ -74,14 +74,15 @@ def dataset_reader(graph):
     features = {int(k):v for k,v, in features.items()}
     return graph, features, name
 
-def feature_extractor(graph, rounds):
+def feature_extractor(graph, rounds, name):
     """
     Function to extract WL features from a graph.
     :param path: The path to the graph json.
     :param rounds: Number of WL iterations.
     :return doc: Document collection object.
     """
-    name = "test"
+    #name = "1"
+    print(name)
     features = nx.degree(graph)
     features = {int(k):v for k,v, in features}
 
@@ -90,7 +91,7 @@ def feature_extractor(graph, rounds):
     return doc
 
 
-def save_embedding(output_path, model, files, dimensions):
+def save_embedding(output_path, model, n_graphs, dimensions):
     """
     Function to save the embedding.
     :param output_path: Path to the embedding csv.
@@ -99,9 +100,8 @@ def save_embedding(output_path, model, files, dimensions):
     :param dimensions: The embedding dimension parameter.
     """
     out = []
-    for f in files:
-        identifier = f.split("/")[-1].strip(".json")
-        out.append([int(identifier)] + list(model.docvecs["g_"+identifier]))
+    for identifier in range(n_graphs):
+        out.append([identifier] + list(model.docvecs["g_"+str(identifier)]))
 
     out = pd.DataFrame(out,columns = ["type"] +["x_" +str(dimension) for dimension in range(dimensions)])
     out = out.sort_values(["type"])
