@@ -1,0 +1,288 @@
+---
+title: "What the Git is going on here? <br>"
+subtitle: "<br>RStudio Capstone Project Proposal"
+#author: "Juno Chen, Ian Flores Siaca, Rayce Rossum, Richie Zitomer"
+date: "2019/04/24"
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    css: xaringan-themer.css
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+class: inverse, center, middle
+
+# Introduction
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+library(xaringanthemer)
+duo(primary_color = "#D8CEC5", secondary_color = "#49475B")
+```
+
+---
+# Introduction
+
+- Git is a Version Control System to track changes to different files
+- People use Git to collaborate from SE to DS
+- However when using Git we might encounter some problems
+
+--
+
+<img src='https://knightlab.northwestern.edu/wp-content/uploads/2014/12/1.png' height='350'>
+
+---
+# Introduction
+
+<img src='https://knightlab.northwestern.edu/wp-content/uploads/2014/12/2.png' height='350'>
+
+---
+# Introduction
+
+- RStudio is interested in developing a new tool for Git users
+- For this we want to understand how people use Git
+    - What works for workflows
+    - What is hindering workflows
+    - **What are those workflows?**
+    
+- We only have data to answer one of these questions
+    - Access to commit history
+
+---
+# Introduction - Getting the data
+
+- GitHub API
+    - Sampling & Rate Limiting
+- GitHub Torrent
+    - Mines the GitHub API for all latest pushs
+    - Tracks all of the repos and makes it available in a MySQL database
+    - This means 4TB of overall data
+--
+
+![](https://cdn-images-1.medium.com/max/1200/1*A8liBoeAwAZg7rDu394jYg.png)
+
+---
+
+# Introduction - Getting the data
+
+- Multiple tables containing information about projects, commits, users, issues, etc.
+- Pipeline process:
+    - Sample 1 million projects in the DB
+    - Get the commits for all the projects
+    - Get the parents of the commits for all the projects
+    - Save to Buckets for export and storage
+- Reproducibility in scope
+    - SQL Versioning
+    - Data Versioning
+    
+---
+
+# Introduction - Data Structure
+
+- How do we represent a history of commits?
+
+--
+
+#### Graphs
+- Git is not any type of graph, it is a Directed Acyclic Graph (DAG)
+    - Nodes/Vertices --> Commits
+    - Edges --> Connection from one commit to the other
+    
+<img src='https://upload.wikimedia.org/wikipedia/commons/c/c6/Topological_Ordering.svg' height='300'>
+
+---
+
+# Introduction - EDA: Simple Repo
+
+![](imgs/branch_test1.png)
+
+---
+# Introduction - EDA: Complex Repo
+
+
+![](imgs/branch_test.png)
+
+---
+# Introduction - Questions
+
+- With the scope of designing a new tool to fix issues with Git and with the data that we have available we try to answer two questions:
+
+--
+
+### What are common sub-patterns in the way people use Git?
+
+--
+
+### What are workflow patterns across Git repositories?
+
+---
+
+class: inverse, center, middle
+# Analysis
+## What are common sub-patterns in the way people use Git?
+
+---
+
+## Inspiration - genetic data
+
+- comparing to git workflow representation
+
+  - similarity: sequence, i.e. directed
+  
+  - difference: fixed length, fixed variation (can apply one-hot encoding)
+
+  ![](imgs/dna_matrix.png)
+  
+  ![](imgs/dna_encoding.png)
+
+---
+
+## Inspiration - genetic data
+
+- current trend of genetic data study
+
+  - DeepVariant
+  
+    - converting DNA sequences to images and feeding them through a convolutional neural network
+    
+    ![](imgs/dna_image.png)
+
+[Source: https://blog.floydhub.com/exploring-dna-with-deep-learning/]
+
+---
+
+## Inspiration - social network analysis (SNA)
+
+- comparing to git workflow representation
+
+  - similarity: directed
+  
+  - difference: goal is to predict linkage existence
+
+- can learn from
+
+  - the first step of SNA: learning structural features of connected graph
+  
+  - using sequence generating algorithms: node2vec
+
+[Source: http://terpconnect.umd.edu/~kpzhang/paper/INFOCOMM2018.pdf]  
+---
+
+## Approach - `Node2vec`
+
+.pull-left[- Samples network neighborhoods of each node using the biased random walks
+- Based on `Weisfeiler-Lehman Graph Kernels`
+  - iterate nodes and edges, relabel and group, represent the features in a vector]
+
+ .pull-right[![](imgs/wl_kernel.png)]
+  
+---
+
+## Approach - `sub2vec`
+
+- learn a feature representation of each subgraph, maximize properties in the latent feature space
+
+- preserve two properties
+
+  - `Neighborhood`: neighborhood information of all the nodes, sets of all paths(annotated by node IDs)
+  
+  - `Structural`: the subgraph structure (clique, degree, size of subgraph)
+
+--
+
+- advantage: better accuracy, incorporate the properties of entire subgraphs
+
+- disadvantage:  assume unweighted undirected graphs, but can be extended
+
+![](imgs/sub2vec.png)
+
+[Source: https://link.springer.com/chapter/10.1007/978-3-319-93037-4_14]
+
+---
+
+## Approach - Motifs
+
+-  What is a Motif?
+
+  - A subgraph which occurs in a network at a much higher frequency than random chance
+
+  .pull-left[<img src="imgs/graph_1.png" width="250" /> <img src="imgs/graph_2.png" width="250" />]  
+  .pull-right[<img src="imgs/degree_distribution.png" width="500" />]
+  
+
+---
+class: inverse, center, middle
+# Analysis
+## What are workflow patterns across Git repositories?
+
+---
+
+## Graph2Vec Background 
+
+> "[Node2Vec and Sub2Vec] only model local similarity within a confined neighborhood and fails to learn global structural similarities that help to classify similar graphs together"
+
+--
+
+> "a neural embedding framework named graph2vec to learn data-driven distributed representations of arbitrary sized graphs."
+
+--
+
+> "graph2vec's embeddings are learnt in an unsupervised manner and are task agnostic."
+
+---
+## Graph2Vec Background
+
+![](imgs/g2v_flow2.png)
+
+[Source: https://arxiv.org/pdf/1707.05005.pdf]
+---
+
+## Clustering Embeddings from Graph2Vec Model
+
+![](imgs/g2v_clusters.png)
+
+[Source: https://www.datascience.com/blog/k-means-clustering]
+
+---
+## Graph2Vec Limitations
+
+> Graph2Vec currently works with undirected graphs, therefore we will have to make modifications to support directed graphs.
+
+--
+
+> Graph2Vec only helps us address the first question (unless we can find a way to extract the learned subgraphs from the neural network).
+
+
+---
+
+# Projected Timeline
+
+| Milestone  | Date  |   
+|---|---|
+| Proposal Presentation  | 4/26  |   
+| Proposal Report (to mentor)  | 4/30  |
+| Proposal Report (to partner)  | 5/3  |
+| End-to-end analysis | 5/10 |
+| Complete workflow patterns across Git repositories | 5/24 |
+| Choose best method for subgraph analysis | 5/31 |
+| Choose and demonstrate output from subgraph analysis | 6/7 |
+| Complete subgraph analysis | 6/14 |
+| Final Presentation | 6/17-18 |
+| Final Report (to mentor) | 6/21 |
+| Final Report (to partner) and Data Product | 6/26 |
+
+---
+class: inverse, middle
+
+# Acknowledgments
+
+- RStudio
+    - Greg Wilson
+    
+- UBC-MDS Teaching Team
+    - Tiffany Timbers
+    
+- UBC-MDS Students

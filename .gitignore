@@ -3,3 +3,4 @@
 *Rhistory*
 *.json
 *.pyc
+.Rproj.user
