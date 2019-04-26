@@ -65,7 +65,7 @@ class: inverse, center, middle
 
 - Use networkx to turn tabular data into graphs
   - Suggested by partner
-- How We're Defining nodes and edges
+- How we're defining nodes and edges
 - Advantages
   - Ability to do directed graphs
   - Good for comparing projects and for visualizing subgraphs
@@ -79,14 +79,15 @@ class: inverse, center, middle
 ---
 
 # EDA: Simple Repo
-f
+
+![](../imgs/branch_test1.png)
 
 ---
 
 # EDA: More Complicated Repo
 
 
-![](./imgs/branch_test.png)
+![](../imgs/branch_test.png)
 
 ---
 class: inverse, center, middle
@@ -101,6 +102,18 @@ class: inverse, center, middle
 ---
 class: inverse, center, middle
 
+---
+# Analysis Introduction
+
+- Ultimately trying to “find patterns in the way people actually use git”
+
+- Ideal data to analyze
+
+- Project-to-project comparison
+
+- Finding common subgraphs
+
+---
 # Project-level analysis
 
 ---
@@ -117,9 +130,33 @@ class: inverse, center, middle
 ---
 
 - Approach - sub2vec - Juno
-- Approach - motif - Richie
 - Approach - genetic data - Juno
 - Approach - social network - Juno
+
+---
+# Approach - Motifs
+
+-  What’s a Motif?
+
+  - A subgraph which occurs in a network at a much higher frequency than random chance
+
+- Challenges with finding motifs
+
+  - Relies on solving NP-complete problem of subgraph isomorphism
+
+    - Potential Solution: MCMC sampling
+
+  - Haven’t found many resources for identifying motifs
+
+---
+Approach - Motifs
+
+
+![](../imgs/degree_distribution.png)
+
+![](../imgs/graph_1.png)
+
+![](../imgs/graph_2.png)
 
 ---
 class: inverse, center, middle
