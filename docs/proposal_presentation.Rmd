@@ -284,7 +284,7 @@ class: inverse, center, middle
 | Proposal Report (to mentor)  | 4/30  |
 | Proposal Report (to partner)  | 5/3  |
 | End-to-end analysis | 5/10 |
-| Complete project-level analysis | 5/24 |
+| Complete workflow patterns across Git repositories | 5/24 |
 | Choose best method for subgraph analysis | 5/31 |
 | Choose and demonstrate output from subgraph analysis | 6/7 |
 | Complete subgraph analysis | 6/14 |
