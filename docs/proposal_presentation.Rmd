@@ -168,17 +168,6 @@ class: inverse, center, middle
 # Analysis
 
 ---
-# Analysis Introduction
-
-- Ultimately trying to “find patterns in the way people actually use git”
-
-- Ideal data to analyze
-
-- Project-to-project comparison
-
-- Finding common subgraphs
-
----
 class: inverse, center, middle
 
 # Project-level analysis
@@ -292,27 +281,33 @@ class: inverse, center, middle
   - computational inefficient
 
 ---
-# Approach - Motifs
+## Approach - Motifs
 
 -  What’s a Motif?
 
   - A subgraph which occurs in a network at a much higher frequency than random chance
 
+- Advantages
+
+    - Directly answers subgraph problem
+
 - Challenges with finding motifs
 
   - Relies on solving NP-complete problem of subgraph isomorphism
-
-    - Potential Solution: MCMC sampling
+        - Potential Solution: MCMC sampling
 
   - Haven’t found many resources for identifying motifs
 
 ---
-Approach - Motifs
 
+## Approach - Motifs
 
 ![](imgs/degree_distribution.png)
+---
 
-![](imgs/graph_1.png)
+## Approach - Motifs
+
+![](imgs/graph_1.png) 
 
 ![](imgs/graph_2.png)
 
