@@ -182,6 +182,7 @@ class: inverse, center, middle
   ![](imgs/wl_kernel.png)
   
 [Source: http://www.jmlr.org/papers/volume12/shervashidze11a/shervashidze11a.pdf]
+
 ---
 
 ## Approach - `sub2vec`
@@ -192,13 +193,15 @@ class: inverse, center, middle
 
   - `Neighborhood`: neighborhood information of all the nodes, sets of all paths(annotated by node IDs)
   
-  - `Structural`: the overall structure (clique, degree, size of subgraph)
+  - `Structural`: the subgraph structure (clique, degree, size of subgraph)
 
 --
 
-- advantage: better accuracy, network embedding methods (Node2vec) preserve various node properties, but lack the properties of entire subgraphs
+- advantage: better accuracy, incorporate the properties of entire subgraphs
 
 - disadvantage:  assume unweighted undirected graphs, but can be extended
+
+![](imgs/sub2vec.png)
 
 [Source: https://link.springer.com/chapter/10.1007/978-3-319-93037-4_14]
 
