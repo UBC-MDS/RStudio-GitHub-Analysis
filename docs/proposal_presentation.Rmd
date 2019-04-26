@@ -121,81 +121,14 @@ Source: [Wikimedia](https://upload.wikimedia.org/wikipedia/commons/c/c6/Topologi
 ### What are common sub-patterns in the way people use Git?
 
 ---
-class: inverse, center, middle
 
+class: inverse, center, middle
 # Analysis
-
----
-class: inverse, center, middle
-
-# What are workflow patterns across Git repositories?
+## What are common sub-patterns in the way people use Git?
 
 ---
 
-## Graph2Vec Background 
-
-> "a neural embedding framework named graph2vec to learn data-driven distributed representations of arbitrary sized graphs."
-
---
-
-> "graph2vec's embeddings are learnt in an unsupervised manner and are task agnostic."
-
--- 
-
-![](../imgs/g2v_flow.png)
-
----
-
-## Graph2Vec Implementation and Limitations
-
-> Graph2Vec currently works with undirected graphs, therefore we will have to make modifications to support directed graphs.
-
---
-
-> Graph2Vec only helps us address the first question (unless we can find a way to extract the learned subgraphs from the neural network).
-
----
-## Clustering Embeddings from Graph2Vec Model
-
-![](results/embeddings_tsne.png)
-
---
-
-![](../results/g2v_clusters.png)
-
----
-
-class: inverse, center, middle
-
-# Subgraph analysis
-
----
-
-## Approach - `sub2vec`
-
-- Based on `Weisfeiler-Lehman Graph Kernels`
-  - iterate nodes and edges, relabel and group, represent the features in a vector
-
-  ![](imgs/wl_kernel.png)
----
-
-## Approach - `sub2vec`
-
-- goal is to learn a feature representation of each subgraph, which allow the properties being maximized in the latent feature space
-
-- preserve two properties
-
-  - `Neighborhood`: neighborhood information of all the nodes, sets of all paths(annotated by node IDs)
-  
-  - `Structural`: the overall structure (clique, degree, size of subgraph)
-  
-- advantage: better accuracy, network embedding methods (Node2vec) preserve various node properties, but lack the properties of entire subgraphs
-
-- disadvantage:  assume unweighted undirected graphs, but can be extended
-
----
-
-## Approach - genetic data
+## Inspiration - genetic data
 
 - comparing to git workflow representation
 
@@ -209,7 +142,7 @@ class: inverse, center, middle
 
 ---
 
-## Approach - genetic data
+## Inspiration - genetic data
 
 - current trend of genetic data study
 
@@ -217,13 +150,13 @@ class: inverse, center, middle
   
     - converting DNA sequences to images and feeding them through a convolutional neural network
     
-    - identify small mutations, mostly changes of a single letter
-    
     ![](imgs/dna_image.png)
+
+[Source: https://blog.floydhub.com/exploring-dna-with-deep-learning/]
 
 ---
 
-## Approach - social network analysis (SNA)
+## Inspiration - social network analysis (SNA)
 
 - comparing to git workflow representation
 
@@ -233,13 +166,44 @@ class: inverse, center, middle
 
 - can learn from
 
-  - the first step of SNA would be learning structural features of connected graph
+  - the first step of SNA: learning structural features of connected graph
   
-  - using sequence generating algorithms: node2vec samples network neighborhoods of each node using the biased random walks
+  - using sequence generating algorithms: node2vec
+
+[Source: http://terpconnect.umd.edu/~kpzhang/paper/INFOCOMM2018.pdf]  
+---
+
+## Approach - `Node2vec`
+
+- Samples network neighborhoods of each node using the biased random walks
+- Based on `Weisfeiler-Lehman Graph Kernels`
+  - iterate nodes and edges, relabel and group, represent the features in a vector
+
+  ![](imgs/wl_kernel.png)
   
-  - computational inefficient
+[Source: http://www.jmlr.org/papers/volume12/shervashidze11a/shervashidze11a.pdf]
+---
+
+## Approach - `sub2vec`
+
+- learn a feature representation of each subgraph, maximize properties in the latent feature space
+
+- preserve two properties
+
+  - `Neighborhood`: neighborhood information of all the nodes, sets of all paths(annotated by node IDs)
+  
+  - `Structural`: the overall structure (clique, degree, size of subgraph)
+
+--
+
+- advantage: better accuracy, network embedding methods (Node2vec) preserve various node properties, but lack the properties of entire subgraphs
+
+- disadvantage:  assume unweighted undirected graphs, but can be extended
+
+[Source: https://link.springer.com/chapter/10.1007/978-3-319-93037-4_14]
 
 ---
+
 ## Approach - Motifs
 
 -  What is a Motif?
@@ -251,6 +215,49 @@ class: inverse, center, middle
   
 
 ---
+class: inverse, center, middle
+# Analysis
+## What are workflow patterns across Git repositories?
+
+---
+
+## Graph2Vec Background 
+
+> "[Node2Vec and Sub2Vec] only model local similarity within a confined neighborhood and fails to learn global structural similarities that help to classify similar graphs together"
+
+--
+
+> "a neural embedding framework named graph2vec to learn data-driven distributed representations of arbitrary sized graphs."
+
+--
+
+> "graph2vec's embeddings are learnt in an unsupervised manner and are task agnostic."
+
+---
+## Graph2Vec Background
+
+![](imgs/g2v_flow2.png)
+
+[Source: https://arxiv.org/pdf/1707.05005.pdf]
+---
+
+## Clustering Embeddings from Graph2Vec Model
+
+![](imgs/g2v_clusters.png)
+
+[Source: https://www.datascience.com/blog/k-means-clustering]
+
+---
+## Graph2Vec Limitations
+
+> Graph2Vec currently works with undirected graphs, therefore we will have to make modifications to support directed graphs.
+
+--
+
+> Graph2Vec only helps us address the first question (unless we can find a way to extract the learned subgraphs from the neural network).
+
+
+---
 
 # Projected Timeline
 
@@ -260,7 +267,7 @@ class: inverse, center, middle
 | Proposal Report (to mentor)  | 4/30  |
 | Proposal Report (to partner)  | 5/3  |
 | End-to-end analysis | 5/10 |
-| Complete project-level analysis | 5/24 |
+| Complete workflow patterns across Git repositories | 5/24 |
 | Choose best method for subgraph analysis | 5/31 |
 | Choose and demonstrate output from subgraph analysis | 6/7 |
 | Complete subgraph analysis | 6/14 |
