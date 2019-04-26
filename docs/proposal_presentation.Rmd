@@ -84,7 +84,7 @@ Source: [Wikimedia](https://upload.wikimedia.org/wikipedia/commons/c/c6/Topologi
 
 --
 
-### What are similar projects based on their commit history structure?
+### What are workflow patterns across Git repositories?
 
 --
 
@@ -129,23 +129,6 @@ class: inverse, center, middle
 
 ---
 
-# EDA Approach
-
-- Use networkx to turn tabular data into graphs
-  - Suggested by partner
-- How we're defining nodes and edges
-- Advantages
-  - Ability to do directed graphs
-  - Good for comparing projects and for visualizing subgraphs
-  - Force-directed visualization algo 
-  - Useful beyond EDA
-- Limitations
-  - Challenging to visualize the whole dataset
-  - Limited customization options
-  - Doesn’t have all graph operations (e.g. motifs)
-
----
-
 # EDA: Simple Repo
 
 ![](imgs/branch_test1.png)
@@ -170,15 +153,11 @@ class: inverse, center, middle
 ---
 class: inverse, center, middle
 
-# Project-level analysis
+# What are workflow patterns across Git repositories?
 
 ---
 
 ## Graph2Vec Background 
-
-![](imgs/g2v_paper.png)
-
---
 
 > "a neural embedding framework named graph2vec to learn data-driven distributed representations of arbitrary sized graphs."
 
@@ -186,13 +165,14 @@ class: inverse, center, middle
 
 > "graph2vec's embeddings are learnt in an unsupervised manner and are task agnostic."
 
+-- 
+
+![](../imgs/g2v_flow.png)
+
 ---
 
 ## Graph2Vec Implementation and Limitations
 
-![](imgs/g2v_repo.png)
-
---
 > Graph2Vec currently works with undirected graphs, therefore we will have to make modifications to support directed graphs.
 
 --
@@ -200,9 +180,13 @@ class: inverse, center, middle
 > Graph2Vec only helps us address the first question (unless we can find a way to extract the learned subgraphs from the neural network).
 
 ---
-## t-SNE on Graph2Vec Model
+## Clustering Embeddings from Graph2Vec Model
 
 ![](results/embeddings_tsne.png)
+
+--
+
+![](../results/g2v_clusters.png)
 
 ---
 
@@ -287,51 +271,27 @@ class: inverse, center, middle
 
   - A subgraph which occurs in a network at a much higher frequency than random chance
 
-- Advantages
-
-    - Directly answers subgraph problem
-
-- Challenges with finding motifs
-
-  - Relies on solving NP-complete problem of subgraph isomorphism
-        - Potential Solution: MCMC sampling
-
-  - Haven’t found many resources for identifying motifs
-
----
-
-## Approach - Motifs
-
-![](imgs/degree_distribution.png)
----
-
-## Approach - Motifs
-
-![](imgs/graph_1.png) 
-
-![](imgs/graph_2.png)
+  .pull-left[<img src="imgs/graph_1.png" width="250" /> <img src="imgs/graph_2.png" width="250" />]  
+  .pull-right[<img src="imgs/degree_distribution.png" width="500" />]
+  
 
 ---
 
 # Projected Timeline
 
-- Proposal Presentation - 4/26
-- Proposal Report (to mentor) - 4/30
-- Proposal Report (to partner) - 5/3
-- End-to-end analysis - 5/10
-    - Be able to input a query (or data from a query) that pulls many GitHub projects and output an EDA graph of the network and common subgraphs or project similarity measurements
-- Complete project-level analysis - 5/24
-    - Given data on several GitHub projects, understand and show how similar they are to each other based only on their graphs. Use this similarity score to compare project-level features
-- Choose best method for subgraph analysis - 5/31
-    - Agree on the best way to find most common subgraph patterns
-- Choose and demonstrate output from subgraph analysis - 6/7
-    - Be able to rank different subgraphs by how ‘frequent’ they are in networks. Have an example of the visual we would use to show this.
-- Complete subgraph analysis - 6/14
-    - Given data on several GitHub projects, find most common patterns.
-- Final Presentation - 6/17-18
-- Final Report (to mentor) - 6/21
-- Final Report (to partner) and Data Product - 6/26
-
+| Milestone  | Date  |   
+|---|---|
+| Proposal Presentation  | 4/26  |   
+| Proposal Report (to mentor)  | 4/30  |
+| Proposal Report (to partner)  | 5/3  |
+| End-to-end analysis | 5/10 |
+| Complete project-level analysis | 5/24 |
+| Choose best method for subgraph analysis | 5/31 |
+| Choose and demonstrate output from subgraph analysis | 6/7 |
+| Complete subgraph analysis | 6/14 |
+| Final Presentation | 6/17-18 |
+| Final Report (to mentor) | 6/21 |
+| Final Report (to partner) and Data Product | 6/26 |
 
 ---
 class: inverse, middle
