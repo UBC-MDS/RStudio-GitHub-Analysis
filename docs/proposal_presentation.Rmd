@@ -1,0 +1,106 @@
+---
+title: "What the Git is going on here? <br>"
+subtitle: "<br>RStudio Capstone Project Proposal"
+#author: "Juno Chen, Ian Flores Siaca, Rayce Rossum, Richie Zitomer"
+date: "2019/04/24"
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    css: xaringan-themer.css
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+library(xaringanthemer)
+duo(primary_color = "#D8CEC5", secondary_color = "#49475B")
+```
+
+background-image: url(https://git-scm.com/images/logos/downloads/Git-Logo-2Color.png)
+
+???
+
+Image credit: [Git-SCM](https://git-scm.com/images/logos/downloads/Git-Logo-2Color.png)
+
+---
+class: center, middle
+
+# What the git is going on here?
+
+---
+class: inverse, center, middle
+
+# Introduction
+
+---
+
+- What is the problem with Git?
+- Our questions
+- Context
+- Inverse Pyramid
+
+---
+class: inverse, center, middle
+
+# Getting the data
+
+---
+
+- SQL Queries
+- Google Cloud Services and BigQuery
+- GitHub API and its limitations
+- GHTorrent and its benefits and limitations for our project
+
+---
+class: inverse, center, middle
+
+# Exploratory Data Analysis
+
+---
+
+# EDA Approach
+
+---
+
+# EDA Pretty Plots
+
+---
+class: inverse, center, middle
+
+# Integration
+
+---
+class: inverse, center, middle
+
+# Analysis
+
+---
+class: inverse, center, middle
+
+# Project-level analysis
+
+---
+
+- Graph2vec Model Background 
+- Graph2Vec Model Implementation 
+- t-SNE on Graph2Vec Model
+
+---
+class: inverse, center, middle
+
+# Subgraph analysis
+
+---
+
+- Approach - sub2vec - Juno
+- Approach - motif - Richie
+- Approach - genetic data - Juno
+- Approach - social network - Juno
+
+---
+class: inverse, center, middle
+
+# Projected Timeline
