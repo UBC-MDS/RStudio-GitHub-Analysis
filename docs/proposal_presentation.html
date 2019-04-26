@@ -25,81 +25,36 @@ class: inverse, center, middle
 ---
 # Introduction
 
-- What is the problem with Git?
+- Git is a Version Control System to track changes to different files
+- People use Git to collaborate from SE to DS
+- However when using Git we might encounter some problems
 
 --
 
-- ![](https://knightlab.northwestern.edu/wp-content/uploads/2014/12/1.png)
+&lt;img src='https://knightlab.northwestern.edu/wp-content/uploads/2014/12/1.png' height='350'&gt;
 
 ---
 # Introduction
 
-![](https://knightlab.northwestern.edu/wp-content/uploads/2014/12/2.png)
+&lt;img src='https://knightlab.northwestern.edu/wp-content/uploads/2014/12/2.png' height='350'&gt;
 
 ---
 # Introduction
 
-- We want to understand how people use Git
+- RStudio is interested in developing a new tool for Git users
+- For this we want to understand how people use Git
     - What works for workflows
     - What is hindering workflows
-    - What are those workflows?
+    - **What are those workflows?**
     
---
-
-- There are limitations to how we can approach this
-    - We don't have access to local commands
-    - We only have commits
-        - How do we identify branching and merging?
-            - Assumptions!
+- We only have data to answer one of these questions
+    - Access to commit history
 
 ---
-
-# Introduction
-
-- How do we represent a history of commits?
-    - Independent events?
-    - Sequences?
---
-
-### Graphs
-
-&lt;p style="text-align:center"&gt; &lt;img src='https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Graph_betweenness.svg/1200px-Graph_betweenness.svg.png' height='300'&gt;&lt;/p&gt;
-
----
-# Introduction
-
-- Git is not any type of graph, it is a Directed Acyclic Graph (DAG)
-    - Nodes/Vertices --&gt; Commits
-    - Edges --&gt; Connection from one commit to the other
-    
-&lt;img src='https://upload.wikimedia.org/wikipedia/commons/c/c6/Topological_Ordering.svg'&gt;
-
-Source: [Wikimedia](https://upload.wikimedia.org/wikipedia/commons/c/c6/Topological_Ordering.svg)
-
----
-# Introduction
-
-- We aim to answer two questions:
-
---
-
-### What are similar projects based on their commit history structure?
-
---
-
-### What are common sub-patterns in the way people use Git?
-    
----
-class: inverse, center, middle
-
-# Getting the data
-
----
-# Getting the data
+# Introduction - Getting the data
 
 - GitHub API
-    - Sampling
-    - Rate Limiting
+    - Sampling &amp; Rate Limiting
 - GitHub Torrent
     - Mines the GitHub API for all latest pushs
     - Tracks all of the repos and makes it available in a MySQL database
@@ -109,7 +64,8 @@ class: inverse, center, middle
 ![](https://cdn-images-1.medium.com/max/1200/1*A8liBoeAwAZg7rDu394jYg.png)
 
 ---
-# Getting the data
+
+# Introduction - Getting the data
 
 - Multiple tables containing information about projects, commits, users, issues, etc.
 - Pipeline process:
@@ -122,27 +78,46 @@ class: inverse, center, middle
     - Data Versioning
     
 ---
-class: inverse, center, middle
 
-# Exploratory Data Analysis
+# Introduction - Data Structure
+
+- How do we represent a history of commits?
+
+--
+
+#### Graphs
+- Git is not any type of graph, it is a Directed Acyclic Graph (DAG)
+    - Nodes/Vertices --&gt; Commits
+    - Edges --&gt; Connection from one commit to the other
+    
+&lt;img src='https://upload.wikimedia.org/wikipedia/commons/c/c6/Topological_Ordering.svg' height='300'&gt;
+
+Source: [Wikimedia](https://upload.wikimedia.org/wikipedia/commons/c/c6/Topological_Ordering.svg)
 
 ---
 
-# EDA: Simple Repo
+# Introduction - EDA: Simple Repo
 
 ![](imgs/branch_test1.png)
 
 ---
-
-# EDA: More Complicated Repo
+# Introduction - EDA: Complex Repo
 
 
 ![](imgs/branch_test.png)
 
 ---
-class: inverse, center, middle
+# Introduction - Questions
 
-# Integration
+- With the scope of designing a new tool to fix issues with Git and with the data that we have available we try to answer two questions:
+
+--
+
+### What are workflow patterns across Git repositories?
+
+--
+
+### What are common sub-patterns in the way people use Git?
 
 ---
 class: inverse, center, middle
@@ -152,15 +127,11 @@ class: inverse, center, middle
 ---
 class: inverse, center, middle
 
-# Project-level analysis
+# What are workflow patterns across Git repositories?
 
 ---
 
 ## Graph2Vec Background 
-
-![](imgs/g2v_paper.png)
-
---
 
 &gt; "a neural embedding framework named graph2vec to learn data-driven distributed representations of arbitrary sized graphs."
 
@@ -168,13 +139,14 @@ class: inverse, center, middle
 
 &gt; "graph2vec's embeddings are learnt in an unsupervised manner and are task agnostic."
 
+-- 
+
+![](../imgs/g2v_flow.png)
+
 ---
 
 ## Graph2Vec Implementation and Limitations
 
-![](imgs/g2v_repo.png)
-
---
 &gt; Graph2Vec currently works with undirected graphs, therefore we will have to make modifications to support directed graphs.
 
 --
@@ -182,9 +154,13 @@ class: inverse, center, middle
 &gt; Graph2Vec only helps us address the first question (unless we can find a way to extract the learned subgraphs from the neural network).
 
 ---
-## t-SNE on Graph2Vec Model
+## Clustering Embeddings from Graph2Vec Model
 
 ![](results/embeddings_tsne.png)
+
+--
+
+![](../results/g2v_clusters.png)
 
 ---
 
