@@ -92,8 +92,6 @@ class: inverse, center, middle
     
 &lt;img src='https://upload.wikimedia.org/wikipedia/commons/c/c6/Topological_Ordering.svg' height='300'&gt;
 
-Source: [Wikimedia](https://upload.wikimedia.org/wikipedia/commons/c/c6/Topological_Ordering.svg)
-
 ---
 
 # Introduction - EDA: Simple Repo
@@ -113,11 +111,11 @@ Source: [Wikimedia](https://upload.wikimedia.org/wikipedia/commons/c/c6/Topologi
 
 --
 
-### What are workflow patterns across Git repositories?
+### What are common sub-patterns in the way people use Git?
 
 --
 
-### What are common sub-patterns in the way people use Git?
+### What are workflow patterns across Git repositories?
 
 ---
 
@@ -174,13 +172,12 @@ class: inverse, center, middle
 
 ## Approach - `Node2vec`
 
-- Samples network neighborhoods of each node using the biased random walks
+.pull-left[- Samples network neighborhoods of each node using the biased random walks
 - Based on `Weisfeiler-Lehman Graph Kernels`
-  - iterate nodes and edges, relabel and group, represent the features in a vector
+  - iterate nodes and edges, relabel and group, represent the features in a vector]
 
-  ![](imgs/wl_kernel.png)
+ .pull-right[![](imgs/wl_kernel.png)]
   
-[Source: http://www.jmlr.org/papers/volume12/shervashidze11a/shervashidze11a.pdf]
 ---
 
 ## Approach - `sub2vec`
@@ -191,13 +188,15 @@ class: inverse, center, middle
 
   - `Neighborhood`: neighborhood information of all the nodes, sets of all paths(annotated by node IDs)
   
-  - `Structural`: the overall structure (clique, degree, size of subgraph)
+  - `Structural`: the subgraph structure (clique, degree, size of subgraph)
 
 --
 
-- advantage: better accuracy, network embedding methods (Node2vec) preserve various node properties, but lack the properties of entire subgraphs
+- advantage: better accuracy, incorporate the properties of entire subgraphs
 
 - disadvantage:  assume unweighted undirected graphs, but can be extended
+
+![](imgs/sub2vec.png)
 
 [Source: https://link.springer.com/chapter/10.1007/978-3-319-93037-4_14]
 
