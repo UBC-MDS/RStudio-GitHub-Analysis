@@ -98,6 +98,7 @@ if __name__ == '__main__':
 
     saveEmbeddingsTime = time.time()
 
+    # this doesn't necessarily need to read from the csvs... hmm
     red.reduce()
 
     reduceTime = time.time()
