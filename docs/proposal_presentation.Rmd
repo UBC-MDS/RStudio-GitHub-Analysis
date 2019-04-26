@@ -118,11 +118,38 @@ class: inverse, center, middle
 
 ---
 
-- Graph2vec Model Background 
-- Graph2Vec Model Implementation 
-- t-SNE on Graph2Vec Model
+## Graph2Vec Background 
+
+![](../imgs/g2v_paper.png)
+
+--
+
+> "a neural embedding framework named graph2vec to learn data-driven distributed representations of arbitrary sized graphs."
+
+--
+
+> "graph2vec's embeddings are learnt in an unsupervised manner and are task agnostic."
 
 ---
+
+## Graph2Vec Implementation and Limitations
+
+![](../imgs/g2v_repo.png)
+
+--
+> Graph2Vec currently works with undirected graphs, therefore we will have to make modifications to support directed graphs.
+
+--
+
+> Graph2Vec only helps us address the first question (unless we can find a way to extract the learned subgraphs from the neural network).
+
+---
+## t-SNE on Graph2Vec Model
+
+![](../results/embeddings_tsne.png)
+
+---
+
 class: inverse, center, middle
 
 # Subgraph analysis

@@ -117,11 +117,38 @@ class: inverse, center, middle
 
 ---
 
-- Graph2vec Model Background 
-- Graph2Vec Model Implementation 
-- t-SNE on Graph2Vec Model
+## Graph2Vec Background 
+
+![](../imgs/g2v_paper.png)
+
+--
+
+&gt; "a neural embedding framework named graph2vec to learn data-driven distributed representations of arbitrary sized graphs."
+
+--
+
+&gt; "graph2vec's embeddings are learnt in an unsupervised manner and are task agnostic."
 
 ---
+
+## Graph2Vec Implementation and Limitations
+
+![](../imgs/g2v_repo.png)
+
+--
+&gt; Graph2Vec currently works with undirected graphs, therefore we will have to make modifications to support directed graphs.
+
+--
+
+&gt; Graph2Vec only helps us address the first question (unless we can find a way to extract the learned subgraphs from the neural network).
+
+---
+## t-SNE on Graph2Vec Model
+
+![](../results/embeddings_tsne.png)
+
+---
+
 class: inverse, center, middle
 
 # Subgraph analysis
@@ -151,12 +178,11 @@ class: inverse, center, middle
 Approach - Motifs
 
 
-
 ![](../imgs/degree_distribution.png)
 
 ![](../imgs/graph_1.png)
 
-![](imgs/graph_2.png)
+![](../imgs/graph_2.png)
 
 ---
 class: inverse, center, middle
@@ -202,7 +228,7 @@ if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
 (function () {
   var script = document.createElement('script');
   script.type = 'text/javascript';
-  script.src  = 'https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
   if (location.protocol !== 'file:' && /^https?:/.test(script.src))
     script.src  = script.src.replace(/^https?:/, '');
   document.getElementsByTagName('head')[0].appendChild(script);
