@@ -223,9 +223,73 @@ class: inverse, center, middle
 
 ---
 
-- Approach - sub2vec - Juno
-- Approach - genetic data - Juno
-- Approach - social network - Juno
+## Approach - `sub2vec`
+
+- Based on `Weisfeiler-Lehman Graph Kernels`
+  - iterate nodes and edges, relabel and group, represent the features in a vector
+
+  ![](imgs/wl_kernel.png)
+---
+
+## Approach - `sub2vec`
+
+- goal is to learn a feature representation of each subgraph, which allow the properties being maximized in the latent feature space
+
+- preserve two properties
+
+  - `Neighborhood`: neighborhood information of all the nodes, sets of all paths(annotated by node IDs)
+  
+  - `Structural`: the overall structure (clique, degree, size of subgraph)
+  
+- advantage: better accuracy, network embedding methods (Node2vec) preserve various node properties, but lack the properties of entire subgraphs
+
+- disadvantage:  assume unweighted undirected graphs, but can be extended
+
+---
+
+## Approach - genetic data
+
+- comparing to git workflow representation
+
+  - similarity: sequence, i.e. directed
+  
+  - difference: fixed length, fixed variation (can apply one-hot encoding)
+
+  ![](imgs/dna_matrix.png)
+  
+  ![](imgs/dna_encoding.png)
+
+---
+
+## Approach - genetic data
+
+- current trend of genetic data study
+
+  - DeepVariant
+  
+    - converting DNA sequences to images and feeding them through a convolutional neural network
+    
+    - identify small mutations, mostly changes of a single letter
+    
+    ![](imgs/dna_image.png)
+
+---
+
+## Approach - social network analysis (SNA)
+
+- comparing to git workflow representation
+
+  - similarity: directed
+  
+  - difference: goal is to predict linkage existence
+
+- can learn from
+
+  - the first step of SNA would be learning structural features of connected graph
+  
+  - using sequence generating algorithms: node2vec samples network neighborhoods of each node using the biased random walks
+  
+  - computational inefficient
 
 ---
 # Approach - Motifs
