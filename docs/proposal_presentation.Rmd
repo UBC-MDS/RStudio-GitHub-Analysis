@@ -146,37 +146,14 @@ class: inverse, center, middle
 # Integration
 
 ---
+
 class: inverse, center, middle
 # Analysis
 ## What are common sub-patterns in the way people use Git?
 
 ---
 
-## Approach - `sub2vec`
-
-- Based on `Weisfeiler-Lehman Graph Kernels`
-  - iterate nodes and edges, relabel and group, represent the features in a vector
-
-  ![](imgs/wl_kernel.png)
----
-
-## Approach - `sub2vec`
-
-- goal is to learn a feature representation of each subgraph, which allow the properties being maximized in the latent feature space
-
-- preserve two properties
-
-  - `Neighborhood`: neighborhood information of all the nodes, sets of all paths(annotated by node IDs)
-  
-  - `Structural`: the overall structure (clique, degree, size of subgraph)
-  
-- advantage: better accuracy, network embedding methods (Node2vec) preserve various node properties, but lack the properties of entire subgraphs
-
-- disadvantage:  assume unweighted undirected graphs, but can be extended
-
----
-
-## Approach - genetic data
+## Inspiration - genetic data
 
 - comparing to git workflow representation
 
@@ -190,7 +167,7 @@ class: inverse, center, middle
 
 ---
 
-## Approach - genetic data
+## Inspiration - genetic data
 
 - current trend of genetic data study
 
@@ -198,13 +175,13 @@ class: inverse, center, middle
   
     - converting DNA sequences to images and feeding them through a convolutional neural network
     
-    - identify small mutations, mostly changes of a single letter
-    
     ![](imgs/dna_image.png)
+
+[Source: https://blog.floydhub.com/exploring-dna-with-deep-learning/]
 
 ---
 
-## Approach - social network analysis (SNA)
+## Inspiration - social network analysis (SNA)
 
 - comparing to git workflow representation
 
@@ -214,11 +191,53 @@ class: inverse, center, middle
 
 - can learn from
 
-  - the first step of SNA would be learning structural features of connected graph
+  - the first step of SNA: learning structural features of connected graph
   
-  - using sequence generating algorithms: node2vec samples network neighborhoods of each node using the biased random walks
+  - using sequence generating algorithms: node2vec
+
+[Source: http://terpconnect.umd.edu/~kpzhang/paper/INFOCOMM2018.pdf]  
+---
+
+## Approach - `Node2vec`
+
+- Samples network neighborhoods of each node using the biased random walks
+- Based on `Weisfeiler-Lehman Graph Kernels`
+  - iterate nodes and edges, relabel and group, represent the features in a vector
+
+  ![](imgs/wl_kernel.png)
   
-  - computational inefficient
+[Source: http://www.jmlr.org/papers/volume12/shervashidze11a/shervashidze11a.pdf]
+---
+
+## Approach - `sub2vec`
+
+- learn a feature representation of each subgraph, maximize properties in the latent feature space
+
+- preserve two properties
+
+  - `Neighborhood`: neighborhood information of all the nodes, sets of all paths(annotated by node IDs)
+  
+  - `Structural`: the overall structure (clique, degree, size of subgraph)
+
+--
+
+- advantage: better accuracy, network embedding methods (Node2vec) preserve various node properties, but lack the properties of entire subgraphs
+
+- disadvantage:  assume unweighted undirected graphs, but can be extended
+
+[Source: https://link.springer.com/chapter/10.1007/978-3-319-93037-4_14]
+
+---
+
+## Approach - Motifs
+
+-  What is a Motif?
+
+  - A subgraph which occurs in a network at a much higher frequency than random chance
+
+  .pull-left[<img src="imgs/graph_1.png" width="250" /> <img src="imgs/graph_2.png" width="250" />]  
+  .pull-right[<img src="imgs/degree_distribution.png" width="500" />]
+  
 
 ---
 class: inverse, center, middle
@@ -252,6 +271,7 @@ class: inverse, center, middle
 ![](imgs/g2v_clusters.png)
 
 [Source: https://www.datascience.com/blog/k-means-clustering]
+
 ---
 ## Graph2Vec Limitations
 
@@ -261,18 +281,6 @@ class: inverse, center, middle
 
 > Graph2Vec only helps us address the first question (unless we can find a way to extract the learned subgraphs from the neural network).
 
-
----
-
-## Approach - Motifs
-
--  What is a Motif?
-
-  - A subgraph which occurs in a network at a much higher frequency than random chance
-
-  .pull-left[<img src="imgs/graph_1.png" width="250" /> <img src="imgs/graph_2.png" width="250" />]  
-  .pull-right[<img src="imgs/degree_distribution.png" width="500" />]
-  
 
 ---
 
