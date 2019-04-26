@@ -63,9 +63,30 @@ class: inverse, center, middle
 
 # EDA Approach
 
+- Use networkx to turn tabular data into graphs
+  - Suggested by partner
+- How We're Defining nodes and edges
+- Advantages
+  - Ability to do directed graphs
+  - Good for comparing projects and for visualizing subgraphs
+  - Force-directed visualization algo 
+  - Useful beyond EDA
+- Limitations
+  - Challenging to visualize the whole dataset
+  - Limited customization options
+  - Doesn’t have all graph operations (e.g. motifs)
+
 ---
 
-# EDA Pretty Plots
+# EDA: Simple Repo
+f
+
+---
+
+# EDA: More Complicated Repo
+
+
+![](./imgs/branch_test.png)
 
 ---
 class: inverse, center, middle
