@@ -13,47 +13,115 @@ output:
       countIncrementalSlides: false
 ---
 
+class: inverse, center, middle
+
+# Introduction
+
 ```{r setup, include=FALSE}
 options(htmltools.dir.version = FALSE)
 library(xaringanthemer)
 duo(primary_color = "#D8CEC5", secondary_color = "#49475B")
 ```
 
-background-image: url(https://git-scm.com/images/logos/downloads/Git-Logo-2Color.png)
+---
+# Introduction
 
-???
+- What is the problem with Git?
 
-Image credit: [Git-SCM](https://git-scm.com/images/logos/downloads/Git-Logo-2Color.png)
+--
+
+- ![](https://knightlab.northwestern.edu/wp-content/uploads/2014/12/1.png)
 
 ---
-class: center, middle
+# Introduction
 
-# What the git is going on here?
+![](https://knightlab.northwestern.edu/wp-content/uploads/2014/12/2.png)
 
 ---
-class: inverse, center, middle
+# Introduction
+
+- We want to understand how people use Git
+    - What works for workflows
+    - What is hindering workflows
+    - What are those workflows?
+    
+--
+
+- There are limitations to how we can approach this
+    - We don't have access to local commands
+    - We only have commits
+        - How do we identify branching and merging?
+            - Assumptions!
+
+---
 
 # Introduction
 
+- How do we represent a history of commits?
+    - Independent events?
+    - Sequences?
+--
+
+### Graphs
+
+<p style="text-align:center"> <img src='https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Graph_betweenness.svg/1200px-Graph_betweenness.svg.png' height='300'></p>
+
 ---
+# Introduction
 
-- What is the problem with Git?
-- Our questions
-- Context
-- Inverse Pyramid
+- Git is not any type of graph, it is a Directed Acyclic Graph (DAG)
+    - Nodes/Vertices --> Commits
+    - Edges --> Connection from one commit to the other
+    
+<img src='https://upload.wikimedia.org/wikipedia/commons/c/c6/Topological_Ordering.svg'>
 
+Source: [Wikimedia](https://upload.wikimedia.org/wikipedia/commons/c/c6/Topological_Ordering.svg)
+
+---
+# Introduction
+
+- We aim to answer two questions:
+
+--
+
+### What are similar projects based on their commit history structure?
+
+--
+
+### What are common sub-patterns in the way people use Git?
+    
 ---
 class: inverse, center, middle
 
 # Getting the data
 
 ---
+# Getting the data
 
-- SQL Queries
-- Google Cloud Services and BigQuery
-- GitHub API and its limitations
-- GHTorrent and its benefits and limitations for our project
+- GitHub API
+    - Sampling
+    - Rate Limiting
+- GitHub Torrent
+    - Mines the GitHub API for all latest pushs
+    - Tracks all of the repos and makes it available in a MySQL database
+    - This means 4TB of overall data
+--
 
+![](https://cdn-images-1.medium.com/max/1200/1*A8liBoeAwAZg7rDu394jYg.png)
+
+---
+# Getting the data
+
+- Multiple tables containing information about projects, commits, users, issues, etc.
+- Pipeline process:
+    - Sample 1 million projects in the DB
+    - Get the commits for all the projects
+    - Get the parents of the commits for all the projects
+    - Save to Buckets for export and storage
+- Reproducibility in scope
+    - SQL Versioning
+    - Data Versioning
+    
 ---
 class: inverse, center, middle
 
@@ -80,14 +148,14 @@ class: inverse, center, middle
 
 # EDA: Simple Repo
 
-![](../imgs/branch_test1.png)
+![](imgs/branch_test1.png)
 
 ---
 
 # EDA: More Complicated Repo
 
 
-![](../imgs/branch_test.png)
+![](imgs/branch_test.png)
 
 ---
 class: inverse, center, middle
@@ -98,9 +166,6 @@ class: inverse, center, middle
 class: inverse, center, middle
 
 # Analysis
-
----
-class: inverse, center, middle
 
 ---
 # Analysis Introduction
@@ -114,13 +179,15 @@ class: inverse, center, middle
 - Finding common subgraphs
 
 ---
+class: inverse, center, middle
+
 # Project-level analysis
 
 ---
 
 ## Graph2Vec Background 
 
-![](../imgs/g2v_paper.png)
+![](imgs/g2v_paper.png)
 
 --
 
@@ -134,7 +201,7 @@ class: inverse, center, middle
 
 ## Graph2Vec Implementation and Limitations
 
-![](../imgs/g2v_repo.png)
+![](imgs/g2v_repo.png)
 
 --
 > Graph2Vec currently works with undirected graphs, therefore we will have to make modifications to support directed graphs.
@@ -146,7 +213,7 @@ class: inverse, center, middle
 ---
 ## t-SNE on Graph2Vec Model
 
-![](../results/embeddings_tsne.png)
+![](results/embeddings_tsne.png)
 
 ---
 
@@ -179,13 +246,26 @@ class: inverse, center, middle
 Approach - Motifs
 
 
-![](../imgs/degree_distribution.png)
+![](imgs/degree_distribution.png)
 
-![](../imgs/graph_1.png)
+![](imgs/graph_1.png)
 
-![](../imgs/graph_2.png)
+![](imgs/graph_2.png)
 
 ---
 class: inverse, center, middle
 
 # Projected Timeline
+
+---
+class: inverse, middle
+
+# Acknowledgments
+
+- RStudio
+    - Greg Wilson
+    
+- UBC-MDS Teaching Team
+    - Tiffany Timbers
+    
+- UBC-MDS Students
