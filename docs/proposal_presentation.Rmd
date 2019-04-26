@@ -147,52 +147,8 @@ class: inverse, center, middle
 
 ---
 class: inverse, center, middle
-
 # Analysis
-
----
-class: inverse, center, middle
-
-# What are workflow patterns across Git repositories?
-
----
-
-## Graph2Vec Background 
-
-> "a neural embedding framework named graph2vec to learn data-driven distributed representations of arbitrary sized graphs."
-
---
-
-> "graph2vec's embeddings are learnt in an unsupervised manner and are task agnostic."
-
--- 
-
-![](../imgs/g2v_flow.png)
-
----
-
-## Graph2Vec Implementation and Limitations
-
-> Graph2Vec currently works with undirected graphs, therefore we will have to make modifications to support directed graphs.
-
---
-
-> Graph2Vec only helps us address the first question (unless we can find a way to extract the learned subgraphs from the neural network).
-
----
-## Clustering Embeddings from Graph2Vec Model
-
-![](results/embeddings_tsne.png)
-
---
-
-![](../results/g2v_clusters.png)
-
----
-
-class: inverse, center, middle
-
-# Subgraph analysis
+## What are common sub-patterns in the way people use Git?
 
 ---
 
@@ -265,6 +221,49 @@ class: inverse, center, middle
   - computational inefficient
 
 ---
+class: inverse, center, middle
+# Analysis
+## What are workflow patterns across Git repositories?
+
+---
+
+## Graph2Vec Background 
+
+> "[Node2Vec and Sub2Vec] only model local similarity within a confined neighborhood and fails to learn global structural similarities that help to classify similar graphs together"
+
+--
+
+> "a neural embedding framework named graph2vec to learn data-driven distributed representations of arbitrary sized graphs."
+
+--
+
+> "graph2vec's embeddings are learnt in an unsupervised manner and are task agnostic."
+
+---
+## Graph2Vec Background
+
+![](imgs/g2v_flow2.png)
+
+[Source: https://arxiv.org/pdf/1707.05005.pdf]
+---
+
+## Clustering Embeddings from Graph2Vec Model
+
+![](imgs/g2v_clusters.png)
+
+[Source: https://www.datascience.com/blog/k-means-clustering]
+---
+## Graph2Vec Limitations
+
+> Graph2Vec currently works with undirected graphs, therefore we will have to make modifications to support directed graphs.
+
+--
+
+> Graph2Vec only helps us address the first question (unless we can find a way to extract the learned subgraphs from the neural network).
+
+
+---
+
 ## Approach - Motifs
 
 -  What is a Motif?

@@ -83,7 +83,7 @@ Source: [Wikimedia](https://upload.wikimedia.org/wikipedia/commons/c/c6/Topologi
 
 --
 
-### What are similar projects based on their commit history structure?
+### What are workflow patterns across Git repositories?
 
 --
 
@@ -146,51 +146,8 @@ class: inverse, center, middle
 
 ---
 class: inverse, center, middle
-
 # Analysis
-
----
-class: inverse, center, middle
-
-# Project-level analysis
-
----
-
-## Graph2Vec Background 
-
-![](imgs/g2v_paper.png)
-
---
-
-&gt; "a neural embedding framework named graph2vec to learn data-driven distributed representations of arbitrary sized graphs."
-
---
-
-&gt; "graph2vec's embeddings are learnt in an unsupervised manner and are task agnostic."
-
----
-
-## Graph2Vec Implementation and Limitations
-
-![](imgs/g2v_repo.png)
-
---
-&gt; Graph2Vec currently works with undirected graphs, therefore we will have to make modifications to support directed graphs.
-
---
-
-&gt; Graph2Vec only helps us address the first question (unless we can find a way to extract the learned subgraphs from the neural network).
-
----
-## t-SNE on Graph2Vec Model
-
-![](results/embeddings_tsne.png)
-
----
-
-class: inverse, center, middle
-
-# Subgraph analysis
+## What are common sub-patterns in the way people use Git?
 
 ---
 
@@ -263,6 +220,49 @@ class: inverse, center, middle
   - computational inefficient
 
 ---
+class: inverse, center, middle
+# Analysis
+## What are workflow patterns across Git repositories?
+
+---
+
+## Graph2Vec Background 
+
+&gt; "[Node2Vec and Sub2Vec] only model local similarity within a confined neighborhood and fails to learn global structural similarities that help to classify similar graphs together"
+
+--
+
+&gt; "a neural embedding framework named graph2vec to learn data-driven distributed representations of arbitrary sized graphs."
+
+--
+
+&gt; "graph2vec's embeddings are learnt in an unsupervised manner and are task agnostic."
+
+---
+## Graph2Vec Background
+
+![](imgs/g2v_flow2.png)
+
+[Source: https://arxiv.org/pdf/1707.05005.pdf]
+---
+
+## Clustering Embeddings from Graph2Vec Model
+
+![](imgs/g2v_clusters.png)
+
+[Source: https://www.datascience.com/blog/k-means-clustering]
+---
+## Graph2Vec Limitations
+
+&gt; Graph2Vec currently works with undirected graphs, therefore we will have to make modifications to support directed graphs.
+
+--
+
+&gt; Graph2Vec only helps us address the first question (unless we can find a way to extract the learned subgraphs from the neural network).
+
+
+---
+
 ## Approach - Motifs
 
 -  What is a Motif?
@@ -343,7 +343,7 @@ if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
 (function () {
   var script = document.createElement('script');
   script.type = 'text/javascript';
-  script.src  = 'https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
   if (location.protocol !== 'file:' && /^https?:/.test(script.src))
     script.src  = script.src.replace(/^https?:/, '');
   document.getElementsByTagName('head')[0].appendChild(script);
