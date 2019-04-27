@@ -42,7 +42,7 @@ duo(primary_color = "#D8CEC5", secondary_color = "#49475B")
 ---
 # Introduction
 
-- RStudio is interested in developing a new tool for Git users
+- Greg Wilson (RStudio) is interested in developing an easy-to-use alternative to Git
 - For this we want to understand how people use Git
     - What works for workflows
     - What is hindering workflows
@@ -128,11 +128,11 @@ class: inverse, center, middle
 
 ## Inspiration - genetic data
 
-- comparing to git workflow representation
+- Comparing to git workflow representation
 
-  - similarity: sequence, i.e. directed
+  - Similarity: sequence, i.e. directed
   
-  - difference: fixed length, fixed variation (can apply one-hot encoding)
+  - Difference: fixed length, fixed variation (can apply one-hot encoding)
 
   ![](imgs/dna_matrix.png)
   
@@ -142,11 +142,11 @@ class: inverse, center, middle
 
 ## Inspiration - genetic data
 
-- current trend of genetic data study
+- Current trend of genetic data study
 
   - DeepVariant
   
-    - converting DNA sequences to images and feeding them through a convolutional neural network
+    - Converting DNA sequences to images and feeding them through a convolutional neural network
     
     ![](imgs/dna_image.png)
 
@@ -156,17 +156,17 @@ class: inverse, center, middle
 
 ## Inspiration - social network analysis (SNA)
 
-- comparing to git workflow representation
+- Comparing to git workflow representation
 
-  - similarity: directed
+  - Similarity: directed
   
-  - difference: goal is to predict linkage existence
+  - Difference: goal is to predict linkage existence
 
-- can learn from
+- Can learn from
 
-  - the first step of SNA: learning structural features of connected graph
+  - The first step of SNA: learning structural features of connected graph
   
-  - using sequence generating algorithms: node2vec
+  - Using sequence generating algorithms: node2vec
 
 [Source: http://terpconnect.umd.edu/~kpzhang/paper/INFOCOMM2018.pdf]  
 ---
@@ -174,8 +174,8 @@ class: inverse, center, middle
 ## Approach - `Node2vec`
 
 .pull-left[- Samples network neighborhoods of each node using the biased random walks
-- Based on `Weisfeiler-Lehman Graph Kernels`
-  - iterate nodes and edges, relabel and group, represent the features in a vector]
+- Based on Weisfeiler-Lehman Graph Kernels
+  - Iterate nodes and edges, relabel and group, represent the features in a vector
 
  .pull-right[![](imgs/wl_kernel.png)]
   
@@ -183,9 +183,9 @@ class: inverse, center, middle
 
 ## Approach - `sub2vec`
 
-- learn a feature representation of each subgraph, maximize properties in the latent feature space
+- Learn a feature representation of each subgraph, maximize properties in the latent feature space
 
-- preserve two properties
+- Preserve two properties
 
   - `Neighborhood`: neighborhood information of all the nodes, sets of all paths(annotated by node IDs)
   
@@ -193,9 +193,9 @@ class: inverse, center, middle
 
 --
 
-- advantage: better accuracy, incorporate the properties of entire subgraphs
+- Advantage: better accuracy, incorporate the properties of entire subgraphs
 
-- disadvantage:  assume unweighted undirected graphs, but can be extended
+- Disadvantage:  assume unweighted undirected graphs, but can be extended
 
 ![](imgs/sub2vec.png)
 
@@ -241,6 +241,8 @@ class: inverse, center, middle
 ---
 
 ## Clustering Embeddings from Graph2Vec Model
+
+<!-- FIXME: add labels to axes! -->
 
 ![](imgs/g2v_clusters.png)
 
