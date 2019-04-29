@@ -31,7 +31,7 @@ def output_image_of_tsne(embeddings_tsne_transform, filename):
     ax.set_title('Embedding Clusters (t-SNE Transformed)')
     plt.savefig(filename)
 
-def reduce():
+def reduce_dim():
     transformed_array = run_tsne('./results/embeddings.csv')
     output_image_of_tsne(transformed_array, './results/embeddings_tsne')
 

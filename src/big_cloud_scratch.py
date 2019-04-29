@@ -36,7 +36,6 @@ def commit_query(projectId):
             left join `ghtorrent-bq.ght.projects` p on (p.id = c.project_id)
             left join `ghtorrent-bq.ght.commit_parents` cp on (cp.commit_id = c.id)
             where (p.id = """ + str(projectId) + """)
-            limit 10000
         """
 
 def git_graph(commitData):
@@ -46,7 +45,7 @@ def git_graph(commitData):
     :return nxGraph: Networkx graph
     """
     source_target_commits = commitData[["cp_parent_id", "c_id"]].dropna().astype("int64")
-    print(source_target_commits)
+    print(source_target_commits.head())
     source_target_commits.columns = ["source", "target"]
 
     return nx.from_pandas_edgelist(source_target_commits, create_using=nx.OrderedDiGraph())
@@ -58,6 +57,8 @@ def plot_commits(graph):
     :return None:
     """
     nx.draw_kamada_kawai(graph, alpha=0.5, node_color='blue', node_size = 2)
+    figure = plt.gcf() # get current figure
+    figure.set_size_inches(12, 8)
 
 n_workers    = 4
 n_iterations = 10
@@ -98,22 +99,20 @@ if __name__ == '__main__':
 
     saveEmbeddingsTime = time.time()
 
-    # this doesn't necessarily need to read from the csvs... hmm
-    red.reduce()
+    # this doesn't necessarily need to read from the csvs, we already have them in memory... hmm
+    red.reduce_dim()
 
     reduceTime = time.time()
 
-    print("Query Time:\t\t" + str(getDataTime - startTime) + "\tseconds")
-    print("NxGraphs Time:\t\t" + str(generateGraphsTime - getDataTime) + "\tseconds")
-    print("FeatExtract Time:\t" + str(featExtractTime - generateGraphsTime) + "\tseconds")
-    print("Model Build Time:\t" + str(buildModelTime - featExtractTime) + "\tseconds")
-    print("Save Embeddings Time:\t" + str(saveEmbeddingsTime - buildModelTime) + "\tseconds")
-    print("Dim Reduce Time:\t" + str(reduceTime - saveEmbeddingsTime) + "\tseconds")
+    print("Query Time:\t\t" +           str(getDataTime - startTime) +              "\tseconds")
+    print("NxGraphs Time:\t\t" +        str(generateGraphsTime - getDataTime) +     "\tseconds")
+    print("FeatExtract Time:\t" +       str(featExtractTime - generateGraphsTime) + "\tseconds")
+    print("Model Build Time:\t" +       str(buildModelTime - featExtractTime) +     "\tseconds")
+    print("Save Embeddings Time:\t" +   str(saveEmbeddingsTime - buildModelTime) +  "\tseconds")
+    print("Dim Reduce Time:\t" +        str(reduceTime - saveEmbeddingsTime) +      "\tseconds")
 
+    plt.clf()
     for graph in range(len(graphs)):
-        figure = plt.gcf() # get current figure
-        figure.set_size_inches(12, 8)
-
         plot_commits(graphs[graph])
         plt.savefig("./imgs/branch_test" + str(graph))
         plt.clf()

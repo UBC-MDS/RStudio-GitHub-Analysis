@@ -4,3 +4,4 @@
 *.json
 *.pyc
 .Rproj.user
+set_env.sh
