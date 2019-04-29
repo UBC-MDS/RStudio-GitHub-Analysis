@@ -3,3 +3,6 @@
 *Rhistory*
 *.json
 .Rproj.user
+.jekyll-metadata
+.sass-cache
+_site

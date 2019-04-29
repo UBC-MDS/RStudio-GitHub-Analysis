@@ -1,0 +1,18 @@
+title:             UBC MDS FIXME
+email:             FIXME@example.com
+description:       FIXME
+author:            FIXME
+baseurl:           "/UBC-MDS"
+url:               "http://UBC-MDS.github.io/FIXME"
+
+# Social Profiles
+twitter_username:  FIXME
+github_username:   FIXME
+
+# Build settings
+markdown:          kramdown
+paginate:          5
+paginate_path:     "/posts/page:num/"
+plugins:
+  - jekyll-feed
+  - jekyll-paginate
