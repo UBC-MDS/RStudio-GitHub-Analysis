@@ -2,4 +2,6 @@
 *DS_Store*
 *Rhistory*
 *.json
+*.pyc
 .Rproj.user
+set_env.sh
