@@ -1,5 +1,7 @@
 """
-From Trevor Campbell:
+Sample usage (from project root dir): python src/motif_finder.py
+
+Functions for implementing the following algo, suggested by Trevor Campbell:
 To identify the K-node motifs in a graph, you could always use NetworkX and do something simple like:
 
 Iterate:
@@ -11,8 +13,12 @@ keep adding neighbors of the motif until you reach K nodes
 """
 import random
 
+import matplotlib.pyplot as plt
 import pandas as pd
 import networkx as nx
+
+from matplotlib.backends.backend_pdf import PdfPages
+
 
 from big_cloud_scratch import commit_query, query_ght, git_graph
 
@@ -92,7 +98,28 @@ def get_motif_samples(G, k, num_samples):
     return motifs
 
 
+def visualize_motif_samples(motifs, output_file):
+    """
+    Given a sample of motifs, output a file with their graphs and how often they occurred.
+
+    :param motifs: a dictionary where the keys are motifs (nx subgraph) of length k and the keys are how many times similar
+    (isomorphic) motifs occur in the graph.
+    :param output_file: string thats apath of a pdf file to output the graphs to
+    :return: a pdf file with name output_file with the graphs and how often they occured
+    """
+    motif_count = sum(motifs.values())
+    motifs_sorted = sorted(motifs.items(), key=lambda kv: kv[1], reverse=True)
+    with PdfPages(output_file) as pdf:
+        for motif in motifs_sorted:
+            fig = plt.figure()
+            nx.draw_kamada_kawai(motif[0],node_size=100)
+            fig.suptitle('{} Occurences ({}%)'.format(motif[1],round(100*motif[1]/motif_count,3)))
+            pdf.savefig(fig)
+            plt.close()
+
+
 if __name__ == '__main__':
     query_p1 = commit_query(22003900)
     data_p1 = query_ght(query_p1)
-    print(get_motif_samples(git_graph(data_p1), k=10, num_samples=1000))
+    motifs = get_motif_samples(git_graph(data_p1), k=10, num_samples=10000)
+    visualize_motif_samples(motifs, 'imgs/commonly_occurring_motifs_proj_22003900.pdf')
