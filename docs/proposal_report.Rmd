@@ -28,7 +28,7 @@ Another approach is to frame this problem as finding common motifs in a network.
 
 
 ## What are common workflow patterns across Git repositories?
-For analyzing and comparing features at a project level, we propose Graph2Vec[6]: A neural embedding framework to learn data-driven distributed representations of arbitrary sized graphs. We propose Graph2Vec over other subgraph analysis algorithms (Node2Vec [3] and Sub2Vec[4]) due to their lack of ability to model global structure similarities, instead focusing on local similarities within confined neighbourhoods. Using Graph2Vec, we can learn the differences within Git projects in an unsupervised manner and use the generated embeddings to cluster similar graphs together with widely-used clustering algorithms. 
+For analyzing and comparing features at a project level, we propose Graph2Vec[6]: A neural embedding framework to learn data-driven distributed representations of arbitrary sized graphs. We propose Graph2Vec over other subgraph analysis algorithms (Node2Vec[3] and Sub2Vec[4]) due to their lack of ability to model global structure similarities, instead focusing on local similarities within confined neighbourhoods. Using Graph2Vec, we can learn the differences within Git projects in an unsupervised manner and use the generated embeddings to cluster similar graphs together with widely-used clustering algorithms. 
 
 
 It may be possible to use Graph2Vec to also identify common sub-patterns. As Graph2Vec learns features across graphs that make them unique, we may be able to extract these features from the model to identify the important sub-patterns.
