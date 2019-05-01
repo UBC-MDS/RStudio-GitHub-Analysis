@@ -7,6 +7,7 @@ import numpy.distutils.system_info as sysinfo
 import reduce_embedding_dim as red
 import feather
 import data_layer as dl
+import pandas as pd
 
 from joblib import Parallel, delayed
 from gensim.models.doc2vec import Doc2Vec, TaggedDocument
@@ -80,8 +81,10 @@ if __name__ == '__main__':
     getDataTime = time.time()
 
     projectGraphs = []
+    project_ids = []
     for project in projectData.values():
         projectGraphs.append(git_graph(project))
+        project_ids.append(project.project_id.values[0])
 
     generateGraphsTime = time.time()
 
@@ -101,7 +104,7 @@ if __name__ == '__main__':
 
     buildModelTime = time.time()
 
-    g2v.save_embedding("./results/embeddings.csv", model, len(projectGraphs), n_dimensions)
+    g2v.save_embedding("./results/embeddings.csv", model, len(projectGraphs), n_dimensions,ids=project_ids)
 
     saveEmbeddingsTime = time.time()
 
