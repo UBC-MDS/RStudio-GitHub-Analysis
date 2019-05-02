@@ -13,12 +13,13 @@ from sklearn.manifold import TSNE
 def run_tsne(filename):
     """filename: path to embeddings where first row is the name of the graphs.
     Returns a DataFrame identical to the original but in 2 dimensions."""
-    embeddings = pd.read_csv(filename, index_col=0)
-
+    embeddings = pd.read_csv(filename,index_col=0)
     # Make and fit tsne model
     tsne_model = TSNE(n_components=2)
     transformed_array = tsne_model.fit_transform(embeddings.values)
-    return pd.DataFrame(transformed_array, columns=['x', 'y'])
+    df = pd.DataFrame(transformed_array, columns=['x', 'y'])
+    df.index = embeddings.index
+    return df
 
 
 def output_image_of_tsne(embeddings_tsne_transform, filename):
@@ -33,6 +34,7 @@ def output_image_of_tsne(embeddings_tsne_transform, filename):
 
 def reduce_dim():
     transformed_array = run_tsne('./results/embeddings.csv')
+    transformed_array.to_csv('./results/embeddings_reduced_dim.csv')
     output_image_of_tsne(transformed_array, './results/embeddings_tsne')
 
 if __name__=='__main__':
