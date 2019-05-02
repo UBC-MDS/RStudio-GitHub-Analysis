@@ -13,7 +13,7 @@ This project includes the ability to cluster similar GitHub projects and pick ou
 
 Motivation behind this project: http://third-bit.com/2017/09/30/git-graphs-and-engineering.html
 
-# Project Proposal
+## Project Proposal
 
 [Proposal Report](https://github.com/UBC-MDS/RStudio-GitHub-Analysis/blob/master/docs/proposal_report.pdf)
 
