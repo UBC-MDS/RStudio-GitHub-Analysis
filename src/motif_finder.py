@@ -11,16 +11,23 @@ pick a neighbor, add to the motif
 keep adding neighbors of the motif until you reach K nodes
 (if you want to keep track of frequencies:) compare to previously found motifs; increment the counter of this one by 1
 """
+import sys
+from os import makedirs
 import random
+
 
 import matplotlib.pyplot as plt
 import pandas as pd
 import networkx as nx
-
 from matplotlib.backends.backend_pdf import PdfPages
-
+from sklearn.cluster import KMeans
 
 from big_cloud_scratch import commit_query, query_ght, git_graph
+from data_layer import getCommitsByProjectIds
+
+
+
+sys.setrecursionlimit(5000)
 
 
 def sample_initial_node(G):
@@ -118,8 +125,62 @@ def visualize_motif_samples(motifs, output_file):
             plt.close()
 
 
+def get_most_common_motifs_from_clusters(embedding_input_file='./results/embeddings.csv', k_for_clustering=10, random_state=None,
+                                        k_for_motifs=7, number_of_samples=1000,output_folder_suffix='results'):
+    """
+    A way to take in a file with embeddings (or any other kind of features) and output their most common motifs.
+
+    :param embedding_input_file: file where every row is a project and every col a feature
+    :param k_for_clustering: how many groups to cluster
+    :param random_state: random state for clustering algo
+    :param k_for_motifs: the desired length of the sampled motifs.
+    :param number_of_samples: how many motifs to sample from the graph.
+    :param output_folder_suffix: suffix to put on end of output folder.
+    :return: None.
+    """
+    embeddings_red = pd.read_csv(embedding_input_file, index_col=0)
+
+    # Run k-means algo
+    if random_state is None:
+        kmeans = KMeans(n_clusters=k_for_clustering).fit(embeddings_red.values)
+    else:
+        kmeans = KMeans(n_clusters=k_for_clustering, random_state=random_state).fit(embeddings_red.values)
+
+    # Make dict where key is cluster # and value are projects in that clusters
+    clusters = {}
+    for n, label in enumerate(kmeans.labels_):
+        if label in clusters:
+            clusters[label].append(embeddings_red.index[n])
+        else:
+            clusters[label] = [embeddings_red.index[n]]
+
+    try:
+        makedirs('results/clustering_{}'.format(output_folder_suffix)) # make output folder
+    except FileExistsError:
+        print('About to overwrite existing output folder and files...')
+
+    # For each cluster, get most common subgraph
+    for cluster in clusters:
+        projects_cluster = getCommitsByProjectIds(clusters[cluster])
+        G = git_graph(projects_cluster)
+        try:
+            motifs = get_motif_samples(G, k_for_motifs, number_of_samples)
+        except RecursionError:
+            print('too many short paths for Cluster {}, no file outputted.'.format(cluster))
+            continue
+        except ValueError:
+            print('Cluster {} has no connections'.format(cluster))
+            continue
+        visualize_motif_samples(motifs, './results/clustering_{}/cluster_{}.pdf'.format(output_folder_suffix,cluster))
+# TODO: output tsne graph with k-means labels
+
 if __name__ == '__main__':
-    query_p1 = commit_query(22003900)
-    data_p1 = query_ght(query_p1)
-    motifs = get_motif_samples(git_graph(data_p1), k=10, num_samples=10000)
-    visualize_motif_samples(motifs, 'imgs/commonly_occurring_motifs_proj_22003900.pdf')
+    # query_p1 = commit_query(15059440)
+    # data_p1 = query_ght(query_p1)
+    # motifs = get_motif_samples(git_graph(data_p1), k=10, num_samples=10000)
+    #visualize_motif_samples(motifs, 'imgs/commonly_occurring_motifs_proj_15059440_10.pdf')
+    get_most_common_motifs_from_clusters()
+
+
+
+# TODO: this is generating 1 more k than specified.
