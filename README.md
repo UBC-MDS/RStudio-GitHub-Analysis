@@ -15,9 +15,9 @@ Motivation behind this project: http://third-bit.com/2017/09/30/git-graphs-and-e
 
 # Project Proposal
 
-[Proposal Report] (https://github.com/UBC-MDS/RStudio-GitHub-Analysis/blob/master/docs/proposal_report.pdf)
+[Proposal Report](https://github.com/UBC-MDS/RStudio-GitHub-Analysis/blob/master/docs/proposal_report.pdf)
 
-[Proposal Presentation] (https://github.com/UBC-MDS/RStudio-GitHub-Analysis/blob/master/docs/proposal_presentation.html)
+[Proposal Presentation](https://github.com/UBC-MDS/RStudio-GitHub-Analysis/blob/master/docs/proposal_presentation.html)
 
 ## Usage
 PLACEHOLDER 
