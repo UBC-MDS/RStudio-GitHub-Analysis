@@ -1,7 +1,7 @@
 import feather
 import numpy as np
 
-commitDataPath = "/home/rayce/Assignments/Capstone/RStudio-Data-Repository/clean_data/commits.feather"
+commitDataPath = "/Users/richiezitomer/Documents/RStudio-Data-Repository/clean_data/commits.feather"
 commits_df = feather.read_dataframe(commitDataPath)
 
 def getCommitsByProjectName(projectName):
@@ -32,6 +32,9 @@ def getRandomProjects(n, seed):
         projects[id] = getCommitsByProjectId(id)
 
     return projects
+
+def getCommitsByProjectIds(projectIds):
+    return commits_df[commits_df.project_id.isin(projectIds)]
 
 if __name__ == '__main__':
     print(getRandomProjects(5, 1))
