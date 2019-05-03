@@ -20,6 +20,8 @@ import pandas as pd
 import networkx as nx
 from matplotlib.backends.backend_pdf import PdfPages
 from sklearn.cluster import KMeans
+from matplotlib.offsetbox import DrawingArea, OffsetImage, AnnotationBbox
+import numpy as np
 
 from big_cloud_scratch import commit_query, query_ght, git_graph
 from data_layer import getCommitsByProjectIds
@@ -66,10 +68,11 @@ def get_sample_motif(G, k):
     root = sample_initial_node(G)
     edges = nx.bfs_edges(G, root) #https://networkx.github.io/documentation/networkx-2.2/reference/algorithms/generated/networkx.algorithms.traversal.breadth_first_search.bfs_edges.html#networkx.algorithms.traversal.breadth_first_search.bfs_edges
     nodes = [root] + [v for u, v in edges]
-    if len(nodes) < k: # resample if this motif isnt large enough
-        return get_sample_motif(G, k)
-    else:
+    if len(nodes) >= k:
         return G.subgraph(nodes[:k])
+    else: # resample if this motif isnt large enough
+        return get_sample_motif(G, k)
+
 
     # current_node = sample_initial_node(G)
     # motif_nodes = [current_node]
@@ -132,6 +135,57 @@ def visualize_motif_samples(motifs, output_file):
             plt.close()
 
 
+def visualize_motif_samples_bar_graph(motifs, plot_title='Motif Frequency in Dataset'):
+    """
+    Given a sample of motifs, output a file with a bar chart of how often they occurred.
+
+    :param motifs: a dictionary where the keys are motifs (nx subgraph) of length k and the keys are how many times similar
+    (isomorphic) motifs occur in the graph.
+    :param output_file: string thats a path of a pdf file to output the graphs to
+    :param plot_title: string thats the tile of your plot.
+    :return: a pdf file with name output_file with the graphs and how often they occured
+
+    """
+    motifs_sorted = sorted(motifs.items(), key=lambda kv: kv[1], reverse=True)
+
+
+    occurences = []
+    for n, motif in enumerate(motifs_sorted):
+        if n>8: #TODO: make this a parameter
+            break
+        fig = plt.figure(figsize=(3, 3))  # figsize=(10,10)
+        nx.draw_kamada_kawai(motif[0], node_size=400, arrowsize=30,
+                             width=5)
+        plt.savefig('graph_{}.png'.format(n))
+        plt.close()
+        occurences.append(motif[1])
+
+    fig, ax = plt.subplots(figsize=(10, 10))
+
+    y_pos = np.arange(len(occurences))
+    ax.bar(y_pos, occurences, align='center')
+
+    # Annotate the bar graph with networkx graph images
+    for i in range(len(occurences)):
+        arr_img = plt.imread("graph_{}.png".format(i), format='png', )
+
+        imagebox = OffsetImage(arr_img, zoom=0.2)
+        imagebox.image.axes = ax
+
+        ab = AnnotationBbox(imagebox, (i, 0),
+                            xybox=(0, -7),
+                            xycoords=("data", "axes fraction"),
+                            boxcoords="offset points",
+                            box_alignment=(.5, 1),
+                            bboxprops={"edgecolor": "none", "facecolor": "none"})
+
+        ax.add_artist(ab)
+
+    ax.set_title(plot_title)
+#    plt.savefig(output_file, pad_inches=2)
+#    plt.close()
+
+
 def get_embedding_clusters(embedding_input_file='./results/embeddings.csv', k_for_clustering=10, random_state=None):
     """
     Given a file with embeddings (or other features) cluster similar rows together using kmeans.
@@ -159,7 +213,7 @@ def get_embedding_clusters(embedding_input_file='./results/embeddings.csv', k_fo
     return clusters
 
 
-def get_most_common_motifs_from_clusters(clusters, k_for_motifs=6, number_of_samples=1000,output_folder_suffix='results'):
+def get_most_common_motifs_from_clusters(clusters, k_for_motifs=10, number_of_samples=1000,output_file='./results/clustering_output.pdf'):#output_folder_suffix='results'):
     """
     A way to take in a group of GitHub project clusters and output their most common motifs.
 
@@ -169,26 +223,28 @@ def get_most_common_motifs_from_clusters(clusters, k_for_motifs=6, number_of_sam
     :param output_folder_suffix: suffix to put on end of output folder.
     :return: None.
     """
-    try:
-        makedirs('results/clustering_{}'.format(output_folder_suffix)) # make output folder
-    except FileExistsError:
-        print('About to overwrite existing output folder and files...')
-        #TODO: Have user have to type 'y' or something continue, then also delete all files in folder so theres not like one cluster left over from before.
+    # try:
+    #     makedirs('results/clustering_{}'.format(output_folder_suffix)) # make output folder
+    # except FileExistsError:
+    #     print('About to overwrite existing output folder and files...')
+    #     #TODO: Have user have to type 'y' or something continue, then also delete all files in folder so theres not like one cluster left over from before.
 
     # For each cluster, get most common subgraph
-    for cluster in clusters:
-        projects_cluster = getCommitsByProjectIds(clusters[cluster])
-        G = git_graph(projects_cluster)
-        try:
-            motifs = get_motif_samples(G, k_for_motifs, number_of_samples)
-        except RecursionError:
-            print('too many short paths for Cluster {}, no file outputted.'.format(cluster))
-            continue
-        except ValueError:
-            print('Cluster {} has no connections'.format(cluster))
-            continue
-        #TODO: output subgraphs themselves.
-        visualize_motif_samples(motifs, './results/clustering_{}/cluster_{}.pdf'.format(output_folder_suffix,cluster))
+    with PdfPages(output_file) as pdf:
+        for cluster in clusters:
+            projects_cluster = getCommitsByProjectIds(clusters[cluster])
+            G = git_graph(projects_cluster)
+            try:
+                motifs = get_motif_samples(G, k_for_motifs, number_of_samples)
+            except RecursionError:
+                print('too many short paths for Cluster {}, no file outputted.'.format(cluster))
+                continue
+            except ValueError:
+                print('Cluster {} has no connections'.format(cluster))
+                continue
+            #TODO: output subgraphs themselves.
+            pdf.savefig(visualize_motif_samples_bar_graph(motifs,'Cluster ' + str(cluster)),pad_inches=100)
+            #visualize_motif_samples(motifs, './results/clustering_{}/cluster_{}.pdf'.format(output_folder_suffix,cluster))
 
 
 if __name__ == '__main__':
@@ -197,10 +253,10 @@ if __name__ == '__main__':
     # motifs = get_motif_samples(git_graph(data_p1), k=10, num_samples=1000)
     # visualize_motif_samples(motifs, 'imgs/commonly_occurring_motifs_proj_15059440_10.pdf')
     clusters = get_embedding_clusters(random_state=1)
-    print(clusters)
-    get_most_common_motifs_from_clusters(clusters)
-
-
+    get_most_common_motifs_from_clusters(clusters, k_for_motifs=5)
+#    get_most_common_motifs_from_clusters(clusters, k_for_motifs=i, output_folder_suffix='motif_size_is_' + str(i))
+    # for i in range(2,102,10):
+    #   get_most_common_motifs_from_clusters(clusters, k_for_motifs=i, output_folder_suffix='motif_size_is_' + str(i))
 
 # TODO: this is generating 1 more k than specified, idk why.
 # TODO: output tsne graph with k-means labels.
