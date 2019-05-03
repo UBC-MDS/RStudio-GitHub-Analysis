@@ -15,7 +15,6 @@ import sys
 from os import makedirs
 import random
 
-
 import matplotlib.pyplot as plt
 import pandas as pd
 import networkx as nx
@@ -24,7 +23,6 @@ from sklearn.cluster import KMeans
 
 from big_cloud_scratch import commit_query, query_ght, git_graph
 from data_layer import getCommitsByProjectIds
-
 
 
 sys.setrecursionlimit(5000)
@@ -65,14 +63,23 @@ def get_sample_motif(G, k):
     :param k: the desired length of the sampled motif.
     :return: a motif (nx subgraph) of length k.
     """
-    current_node = sample_initial_node(G)
-    motif_nodes = [current_node]
-    for i in range(k-1):
-        current_node = get_random_child(G, current_node)
-        if current_node is None: # resample if this motif isnt large enough
-            return get_sample_motif(G, k)
-        motif_nodes.append(current_node)
-    return G.subgraph(motif_nodes)
+    root = sample_initial_node(G)
+    edges = nx.bfs_edges(G, root) #https://networkx.github.io/documentation/networkx-2.2/reference/algorithms/generated/networkx.algorithms.traversal.breadth_first_search.bfs_edges.html#networkx.algorithms.traversal.breadth_first_search.bfs_edges
+    nodes = [root] + [v for u, v in edges]
+    if len(nodes) < k: # resample if this motif isnt large enough
+        return get_sample_motif(G, k)
+    else:
+        return G.subgraph(nodes[:k])
+
+    # current_node = sample_initial_node(G)
+    # motif_nodes = [current_node]
+    # for i in range(k-1):
+    #     current_node = get_random_child(G, current_node)
+    #
+    #     if current_node is None: # resample if this motif isnt large enough
+    #         return get_sample_motif(G, k)
+    #     motif_nodes.append(current_node)
+    # return G.subgraph(motif_nodes)
 
 
 def get_motif_samples(G, k, num_samples):
@@ -83,7 +90,7 @@ def get_motif_samples(G, k, num_samples):
     :param G: the nx graph to sample from.
     :param k: the desired length of the sampled motif.
     :param num_samples: how many motifs to sample from the graph.
-    :return: a dictionary where the keys are motifs (nx subgraph) of length k and the keys are how many times similar
+    :return: a dictionary where the keys are motifs (nx subgraph) of length k and the values are how many times similar
     (isomorphic) motifs occur in the graph.
     """
     graphs = []
@@ -119,45 +126,54 @@ def visualize_motif_samples(motifs, output_file):
     with PdfPages(output_file) as pdf:
         for motif in motifs_sorted:
             fig = plt.figure()
-            nx.draw_kamada_kawai(motif[0],node_size=100)
+            nx.draw_kamada_kawai(motif[0],node_size=25, arrowsize=5)
             fig.suptitle('{} Occurences ({}%)'.format(motif[1],round(100*motif[1]/motif_count,3)))
             pdf.savefig(fig)
             plt.close()
 
 
-def get_most_common_motifs_from_clusters(embedding_input_file='./results/embeddings.csv', k_for_clustering=10, random_state=None,
-                                        k_for_motifs=7, number_of_samples=1000,output_folder_suffix='results'):
+def get_embedding_clusters(embedding_input_file='./results/embeddings.csv', k_for_clustering=10, random_state=None):
     """
-    A way to take in a file with embeddings (or any other kind of features) and output their most common motifs.
+    Given a file with embeddings (or other features) cluster similar rows together using kmeans.
 
     :param embedding_input_file: file where every row is a project and every col a feature
     :param k_for_clustering: how many groups to cluster
     :param random_state: random state for clustering algo
-    :param k_for_motifs: the desired length of the sampled motifs.
-    :param number_of_samples: how many motifs to sample from the graph.
-    :param output_folder_suffix: suffix to put on end of output folder.
-    :return: None.
+    :return: a dictionary where the keys are the cluster labels and the values are lists of GitHub projectIds that fall in that cluster.
     """
-    embeddings_red = pd.read_csv(embedding_input_file, index_col=0)
+    embeddings = pd.read_csv(embedding_input_file, index_col=0)
 
     # Run k-means algo
     if random_state is None:
-        kmeans = KMeans(n_clusters=k_for_clustering).fit(embeddings_red.values)
+        kmeans = KMeans(n_clusters=k_for_clustering).fit(embeddings.values)
     else:
-        kmeans = KMeans(n_clusters=k_for_clustering, random_state=random_state).fit(embeddings_red.values)
+        kmeans = KMeans(n_clusters=k_for_clustering, random_state=random_state).fit(embeddings.values)
 
     # Make dict where key is cluster # and value are projects in that clusters
     clusters = {}
     for n, label in enumerate(kmeans.labels_):
         if label in clusters:
-            clusters[label].append(embeddings_red.index[n])
+            clusters[label].append(embeddings.index[n])
         else:
-            clusters[label] = [embeddings_red.index[n]]
+            clusters[label] = [embeddings.index[n]]
+    return clusters
 
+
+def get_most_common_motifs_from_clusters(clusters, k_for_motifs=6, number_of_samples=1000,output_folder_suffix='results'):
+    """
+    A way to take in a group of GitHub project clusters and output their most common motifs.
+
+    :param clusters: a dictionary where the keys are the cluster labels and the values are lists of GitHub projectIds that fall in that cluster.
+    :param k_for_motifs: the desired length of the sampled motifs.
+    :param number_of_samples: how many motifs to sample from the graph.
+    :param output_folder_suffix: suffix to put on end of output folder.
+    :return: None.
+    """
     try:
         makedirs('results/clustering_{}'.format(output_folder_suffix)) # make output folder
     except FileExistsError:
         print('About to overwrite existing output folder and files...')
+        #TODO: Have user have to type 'y' or something continue, then also delete all files in folder so theres not like one cluster left over from before.
 
     # For each cluster, get most common subgraph
     for cluster in clusters:
@@ -171,16 +187,21 @@ def get_most_common_motifs_from_clusters(embedding_input_file='./results/embeddi
         except ValueError:
             print('Cluster {} has no connections'.format(cluster))
             continue
+        #TODO: output subgraphs themselves.
         visualize_motif_samples(motifs, './results/clustering_{}/cluster_{}.pdf'.format(output_folder_suffix,cluster))
-# TODO: output tsne graph with k-means labels
+
 
 if __name__ == '__main__':
-    # query_p1 = commit_query(15059440)
+    # query_p1 = commit_query(33470153)
     # data_p1 = query_ght(query_p1)
-    # motifs = get_motif_samples(git_graph(data_p1), k=10, num_samples=10000)
-    #visualize_motif_samples(motifs, 'imgs/commonly_occurring_motifs_proj_15059440_10.pdf')
-    get_most_common_motifs_from_clusters()
+    # motifs = get_motif_samples(git_graph(data_p1), k=10, num_samples=1000)
+    # visualize_motif_samples(motifs, 'imgs/commonly_occurring_motifs_proj_15059440_10.pdf')
+    clusters = get_embedding_clusters(random_state=1)
+    print(clusters)
+    get_most_common_motifs_from_clusters(clusters)
 
 
 
-# TODO: this is generating 1 more k than specified.
+# TODO: this is generating 1 more k than specified, idk why.
+# TODO: output tsne graph with k-means labels.
+
