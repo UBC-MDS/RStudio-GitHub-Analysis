@@ -153,14 +153,14 @@ def visualize_motif_samples_bar_graph(motifs, plot_title='Motif Frequency in Dat
     for n, motif in enumerate(motifs_sorted):
         if n>8: #TODO: make this a parameter
             break
-        fig = plt.figure(figsize=(3, 3))  # figsize=(10,10)
-        nx.draw_kamada_kawai(motif[0], node_size=400, arrowsize=30,
+        fig = plt.figure(figsize=(2, 2))  # figsize=(10,10)
+        nx.draw_kamada_kawai(motif[0], node_size=300, arrowsize=20,
                              width=5)
-        plt.savefig('graph_{}.png'.format(n))
+        plt.savefig('graph_{}.png'.format(n)) #TODO: remove outputted graphs!
         plt.close()
         occurences.append(motif[1])
 
-    fig, ax = plt.subplots(figsize=(10, 10))
+    fig, ax = plt.subplots(figsize=(9, 7))
 
     y_pos = np.arange(len(occurences))
     ax.bar(y_pos, occurences, align='center')
@@ -197,7 +197,7 @@ def get_embedding_clusters(embedding_input_file='./results/embeddings.csv', k_fo
     """
     embeddings = pd.read_csv(embedding_input_file, index_col=0)
 
-    # Run k-means algo
+    # Run k-means algo TODO: spend more time on this algo: tune hyperparams, consider algo that better handles high dim, etc.
     if random_state is None:
         kmeans = KMeans(n_clusters=k_for_clustering).fit(embeddings.values)
     else:
@@ -231,7 +231,8 @@ def get_most_common_motifs_from_clusters(clusters, k_for_motifs=10, number_of_sa
 
     # For each cluster, get most common subgraph
     with PdfPages(output_file) as pdf:
-        for cluster in clusters:
+        for cluster in clusters:  # TODO: order by cluster name
+            # TODO: refactor, make everything below a func to viz any project or group of projects
             projects_cluster = getCommitsByProjectIds(clusters[cluster])
             G = git_graph(projects_cluster)
             try:
@@ -243,7 +244,7 @@ def get_most_common_motifs_from_clusters(clusters, k_for_motifs=10, number_of_sa
                 print('Cluster {} has no connections'.format(cluster))
                 continue
             #TODO: output subgraphs themselves.
-            pdf.savefig(visualize_motif_samples_bar_graph(motifs,'Cluster ' + str(cluster)),pad_inches=100)
+            pdf.savefig(visualize_motif_samples_bar_graph(motifs,'Cluster ' + str(cluster)),pad_inches=2)
             #visualize_motif_samples(motifs, './results/clustering_{}/cluster_{}.pdf'.format(output_folder_suffix,cluster))
 
 
