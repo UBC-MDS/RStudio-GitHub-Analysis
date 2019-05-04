@@ -12,7 +12,7 @@ keep adding neighbors of the motif until you reach K nodes
 (if you want to keep track of frequencies:) compare to previously found motifs; increment the counter of this one by 1
 """
 import sys
-from os import makedirs
+from os import makedirs, remove
 import random
 
 import matplotlib.pyplot as plt
@@ -135,7 +135,7 @@ def visualize_motif_samples(motifs, output_file):
             plt.close()
 
 
-def visualize_motif_samples_bar_graph(motifs, plot_title='Motif Frequency in Dataset'):
+def visualize_motif_samples_bar_graph(motifs, plot_title='Motif Frequency in Dataset',number_of_samples=1000):
     """
     Given a sample of motifs, output a file with a bar chart of how often they occurred.
 
@@ -148,12 +148,20 @@ def visualize_motif_samples_bar_graph(motifs, plot_title='Motif Frequency in Dat
     """
     motifs_sorted = sorted(motifs.items(), key=lambda kv: kv[1], reverse=True)
 
-
     occurences = []
     for n, motif in enumerate(motifs_sorted):
+
+        fig = plt.figure(figsize=(2, 2))  # figsize=(10,10)
+
+        # check for single chain motif
+        if sum([motif[0].out_degree(node) in [0,1] for node in motif[0]])==len(motif[0].nodes):
+            single_chain_occurences = motif[1]
+            single_chain_index = n
+            continue
+
         if n>8: #TODO: make this a parameter
             break
-        fig = plt.figure(figsize=(2, 2))  # figsize=(10,10)
+
         nx.draw_kamada_kawai(motif[0], node_size=300, arrowsize=20,
                              width=5)
         plt.savefig('graph_{}.png'.format(n)) #TODO: remove outputted graphs!
@@ -161,18 +169,29 @@ def visualize_motif_samples_bar_graph(motifs, plot_title='Motif Frequency in Dat
         occurences.append(motif[1])
 
     fig, ax = plt.subplots(figsize=(9, 7))
-
     y_pos = np.arange(len(occurences))
-    ax.bar(y_pos, occurences, align='center')
+    ax.bar(y_pos, [100*occurence/number_of_samples for occurence in occurences], align='center')
 
     # Annotate the bar graph with networkx graph images
-    for i in range(len(occurences)):
+    for i in range(len(occurences)+1):
+        if i == single_chain_index:
+            continue
         arr_img = plt.imread("graph_{}.png".format(i), format='png', )
+        remove("graph_{}.png".format(i)) # delete file
+
 
         imagebox = OffsetImage(arr_img, zoom=0.2)
         imagebox.image.axes = ax
 
-        ab = AnnotationBbox(imagebox, (i, 0),
+        if i > single_chain_index:
+            ab = AnnotationBbox(imagebox, (i-1, 0),
+                            xybox=(0, -7),
+                            xycoords=("data", "axes fraction"),
+                            boxcoords="offset points",
+                            box_alignment=(.5, 1),
+                            bboxprops={"edgecolor": "none", "facecolor": "none"})
+        else:
+            ab = AnnotationBbox(imagebox, (i, 0),
                             xybox=(0, -7),
                             xycoords=("data", "axes fraction"),
                             boxcoords="offset points",
@@ -181,7 +200,8 @@ def visualize_motif_samples_bar_graph(motifs, plot_title='Motif Frequency in Dat
 
         ax.add_artist(ab)
 
-    ax.set_title(plot_title)
+    fig.suptitle(plot_title)
+    ax.set_title('{}% of Occurences are a Single Chain'.format(round(100*single_chain_occurences/number_of_samples,3)))
 #    plt.savefig(output_file, pad_inches=2)
 #    plt.close()
 
@@ -244,7 +264,7 @@ def get_most_common_motifs_from_clusters(clusters, k_for_motifs=10, number_of_sa
                 print('Cluster {} has no connections'.format(cluster))
                 continue
             #TODO: output subgraphs themselves.
-            pdf.savefig(visualize_motif_samples_bar_graph(motifs,'Cluster ' + str(cluster)),pad_inches=2)
+            pdf.savefig(visualize_motif_samples_bar_graph(motifs,'Cluster ' + str(cluster),number_of_samples),pad_inches=2)
             #visualize_motif_samples(motifs, './results/clustering_{}/cluster_{}.pdf'.format(output_folder_suffix,cluster))
 
 
