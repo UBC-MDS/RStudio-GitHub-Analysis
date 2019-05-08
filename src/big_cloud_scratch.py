@@ -5,6 +5,9 @@ import graph2vec as g2v
 import time
 import numpy.distutils.system_info as sysinfo
 import reduce_embedding_dim as red
+import feather
+import data_layer as dl
+import pandas as pd
 
 from joblib import Parallel, delayed
 from gensim.models.doc2vec import Doc2Vec, TaggedDocument
@@ -44,8 +47,8 @@ def git_graph(commitData):
     :param commitData: Data pulled from the commit_query string.
     :return nxGraph: Networkx graph
     """
-    source_target_commits = commitData[["cp_parent_id", "c_id"]].dropna().astype("int64")
-    print(source_target_commits.head())
+    source_target_commits = commitData[["parent_id", "commit_id"]].dropna().astype("int64")
+    #print(source_target_commits.head())
     source_target_commits.columns = ["source", "target"]
 
     return nx.from_pandas_edgelist(source_target_commits, create_using=nx.OrderedDiGraph())
@@ -67,19 +70,25 @@ n_dimensions = 128
 if __name__ == '__main__':
     startTime = time.time()
 
-    query_p1 = commit_query(22003900)
-    query_p2 = commit_query(33470153)
+    # query_p1 = commit_query(22003900)
+    # query_p2 = commit_query(33470153)
 
-    data_p1 = query_ght(query_p1)
-    data_p2 = query_ght(query_p2)
+    # data_p1 = query_ght(query_p1)
+    # data_p2 = query_ght(query_p2)
+
+    projectData = dl.getRandomProjects(10000, 1)
 
     getDataTime = time.time()
 
-    graphs = [git_graph(data_p1), git_graph(data_p2)]
+    projectGraphs = []
+    project_ids = []
+    for project in projectData.values():
+        projectGraphs.append(git_graph(project))
+        project_ids.append(project.project_id.values[0])
 
     generateGraphsTime = time.time()
 
-    document_collections = Parallel(n_jobs = n_workers)(delayed(g2v.feature_extractor)(graphs[g], n_iterations, str(g)) for g in tqdm(range(len(graphs))))
+    document_collections = Parallel(n_jobs = n_workers)(delayed(g2v.feature_extractor)(projectGraphs[g], n_iterations, str(g)) for g in tqdm(range(len(projectGraphs))))
 
     featExtractTime = time.time()
 
@@ -95,7 +104,7 @@ if __name__ == '__main__':
 
     buildModelTime = time.time()
 
-    g2v.save_embedding("./results/embeddings.csv", model, len(graphs), n_dimensions)
+    g2v.save_embedding("./results/embeddings.csv", model, len(projectGraphs), n_dimensions,ids=project_ids)
 
     saveEmbeddingsTime = time.time()
 
@@ -111,9 +120,9 @@ if __name__ == '__main__':
     print("Save Embeddings Time:\t" +   str(saveEmbeddingsTime - buildModelTime) +  "\tseconds")
     print("Dim Reduce Time:\t" +        str(reduceTime - saveEmbeddingsTime) +      "\tseconds")
 
-    plt.clf()
-    for graph in range(len(graphs)):
-        plot_commits(graphs[graph])
-        plt.savefig("./imgs/branch_test" + str(graph))
-        plt.clf()
-        #plt.show()
+    # plt.clf()
+    # for graph in range(len(projectGraphs)):
+    #     plot_commits(projectGraphs[graph])
+    #     plt.savefig("./imgs/branch_test" + str(graph))
+    #     plt.clf()
+    #     #plt.show()

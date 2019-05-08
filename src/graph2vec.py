@@ -62,7 +62,7 @@ def feature_extractor(graph, rounds, name):
     doc = TaggedDocument(words = machine.extracted_features , tags = ["g_" + name])
     return doc
 
-def save_embedding(output_path, model, n_graphs, dimensions):
+def save_embedding(output_path, model, n_graphs, dimensions, ids=None):
     """
     Function to save the embedding.
     :param output_path: Path to the embedding csv.
@@ -71,8 +71,12 @@ def save_embedding(output_path, model, n_graphs, dimensions):
     :param dimensions: The embedding dimension parameter.
     """
     out = []
-    for identifier in range(n_graphs):
-        out.append([identifier] + list(model.docvecs["g_"+str(identifier)]))
+    if ids is None:
+        for identifier in range(n_graphs):
+            out.append([identifier] + list(model.docvecs["g_"+str(identifier)]))
+    else:
+        for n,identifier in enumerate(ids):
+            out.append([identifier] + list(model.docvecs[n]))
 
     out = pd.DataFrame(out,columns = ["type"] +["x_" +str(dimension) for dimension in range(dimensions)])
     out = out.sort_values(["type"])
