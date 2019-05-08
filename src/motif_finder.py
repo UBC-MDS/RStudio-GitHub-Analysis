@@ -22,9 +22,6 @@ from data_layer import getCommitsByProjectIds
 from cluster import get_embedding_clusters
 
 
-sys.setrecursionlimit(5000)
-
-
 class MotifFinder:
     def __init__(self, G):
         """
@@ -59,7 +56,7 @@ class MotifFinder:
         else:
             return random.sample(children, 1)[0]
 
-    def get_sample_motif(self, k):
+    def get_sample_motif(self, k, recursion_limit=5000):
         """
         Given a graph, get a random motif (subgraph) of length k. Note: will start at a random nodein the graph, but will
         only return motifs that have at least k children.
@@ -67,6 +64,7 @@ class MotifFinder:
         :param k: the desired length of the sampled motif.
         :return: a motif (nx subgraph) of length k.
         """
+        sys.setrecursionlimit(recursion_limit)
         root = self.sample_initial_node()
         edges = nx.bfs_edges(self.G, root) # https://networkx.github.io/documentation/networkx-2.2/reference/algorithms/generated/networkx.algorithms.traversal.breadth_first_search.bfs_edges.html#networkx.algorithms.traversal.breadth_first_search.bfs_edges
         nodes = [root] + [v for u, v in edges]
