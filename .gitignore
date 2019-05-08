@@ -4,4 +4,7 @@
 *.json
 *.pyc
 .Rproj.user
+.jekyll-metadata
+.sass-cache
+_site
 set_env.sh
