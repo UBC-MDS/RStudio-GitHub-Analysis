@@ -105,11 +105,7 @@ if __name__ == '__main__':
 
     buildModelTime = time.time()
 
-<<<<<<< Updated upstream
-    g2v.save_embedding("./results/embeddings.csv", model, len(projectGraphs), n_dimensions,ids=project_ids)
-=======
     g2vModel.save_embedding("./results/embeddings.csv", model, len(projectGraphs), n_dimensions)
->>>>>>> Stashed changes
 
     saveEmbeddingsTime = time.time()
 
