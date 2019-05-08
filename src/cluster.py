@@ -17,10 +17,7 @@ def get_embedding_clusters(embedding_input_file='./results/embeddings.csv', k_fo
     embeddings = pd.read_csv(embedding_input_file, index_col=0)
 
     # Run k-means algo TODO: spend more time on this algo: tune hyperparams, consider algo that better handles high dim, etc.
-    if random_state is None:
-        kmeans = KMeans(n_clusters=k_for_clustering).fit(embeddings.values)
-    else:
-        kmeans = KMeans(n_clusters=k_for_clustering, random_state=random_state).fit(embeddings.values)
+    kmeans = KMeans(n_clusters=k_for_clustering, random_state=random_state).fit(embeddings.values)
 
     # Make dict where key is cluster # and value are projects in that clusters
     clusters = {}
