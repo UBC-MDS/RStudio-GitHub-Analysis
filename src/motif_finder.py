@@ -22,6 +22,11 @@ from data_layer import getCommitsByProjectIds
 from cluster import get_embedding_clusters
 
 
+def main():
+    clusters = get_embedding_clusters()
+    get_motifs_by_cluster(clusters)
+
+   
 class MotifFinder:
     def __init__(self, G):
         """
@@ -143,9 +148,8 @@ def get_motifs_by_cluster(clusters, k_for_motifs=5, number_of_samples=1000, outp
 
 
 if __name__ == '__main__':
-    clusters = get_embedding_clusters()
-    get_motifs_by_cluster(clusters)
-
+    main()
+    
 # TODO: this is generating 1 more k than specified, idk why.
 # TODO: output tsne graph with k-means labels.
 
