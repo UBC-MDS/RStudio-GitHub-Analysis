@@ -49,6 +49,16 @@ class Graph2Vec:
         doc = TaggedDocument(words = machine.extracted_features , tags = ["g_" + name])
         return doc
 
+    def get_embeddings(self, n_graphs, dimensions):
+        out = []
+        for identifier in range(n_graphs):
+            out.append([identifier] + list(self.model.docvecs["g_"+str(identifier)]))
+
+        out = pd.DataFrame(out,columns = ["type"] +["x_" +str(dimension) for dimension in range(dimensions)])
+        out = out.sort_values(["type"])
+
+        return out
+
     def save_embeddings(self, output_path, n_graphs, dimensions):
         """
         Function to save the embedding.
@@ -60,13 +70,8 @@ class Graph2Vec:
             print("Model has not been fit, run Graph2Vec.fit() before saving embeddings")
             return
 
-        out = []
-        for identifier in range(n_graphs):
-            out.append([identifier] + list(self.model.docvecs["g_"+str(identifier)]))
-
-        out = pd.DataFrame(out,columns = ["type"] +["x_" +str(dimension) for dimension in range(dimensions)])
-        out = out.sort_values(["type"])
-        out.to_csv(output_path, index = None)
+        embeddings = self.get_embeddings(n_graphs, dimensions)
+        embeddings.to_csv(output_path, index = None)
 
 class WeisfeilerLehmanMachine:
     """
