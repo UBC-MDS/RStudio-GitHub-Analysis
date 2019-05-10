@@ -11,27 +11,29 @@ from tqdm import tqdm
 logging.basicConfig(format="%(asctime)s : %(levelname)s : %(message)s", level=logging.INFO)
 
 class Graph2Vec:
-    def __init__(self, size=128, iter=10, workers=4):
+    def __init__(self, size=128, epochs=10, workers=4):
         self.size = size
-        self.iter = iter
+        self.epochs = epochs
         self.workers = workers
         self.fitted = False
 
     def extract_features(self, projectGraphs):
-        document_collections = Parallel(n_jobs = self.workers)(delayed(self.feature_extractor)(projectGraphs[g], self.iter, str(g)) for g in tqdm(range(len(projectGraphs))))
+        document_collections = Parallel(n_jobs = self.workers)(delayed(self.feature_extractor)(projectGraphs[g], self.epochs, str(g)) for g in tqdm(range(len(projectGraphs))))
 
         return document_collections
 
     def fit(self, projectGraphs):
-        model = Doc2Vec(self.extract_features(projectGraphs),
+        self.model = Doc2Vec(self.extract_features(projectGraphs),
                         size = self.size,
                         window = 0,
                         min_count = 5,
                         dm = 0,
                         sample = 0.0001,
                         workers = self.workers,
-                        iter = self.iter,
+                        epochs = self.epochs,
                         alpha = 0.025)
+
+        self.fitted = True
 
     def feature_extractor(self, graph, rounds, name):
         """
@@ -47,21 +49,20 @@ class Graph2Vec:
         doc = TaggedDocument(words = machine.extracted_features , tags = ["g_" + name])
         return doc
 
-    def save_embedding(self, output_path, model, n_graphs, dimensions):
+    def save_embeddings(self, output_path, n_graphs, dimensions):
         """
         Function to save the embedding.
         :param output_path: Path to the embedding csv.
-        :param model: The embedding model object.
         :param n_graphs: The number of graphs used to train the model.
         :param dimensions: The embedding dimension parameter.
         """
-
-        if not fitted:
+        if not self.fitted:
             print("Model has not been fit, run Graph2Vec.fit() before saving embeddings")
             return
+
         out = []
         for identifier in range(n_graphs):
-            out.append([identifier] + list(model.docvecs["g_"+str(identifier)]))
+            out.append([identifier] + list(self.model.docvecs["g_"+str(identifier)]))
 
         out = pd.DataFrame(out,columns = ["type"] +["x_" +str(dimension) for dimension in range(dimensions)])
         out = out.sort_values(["type"])

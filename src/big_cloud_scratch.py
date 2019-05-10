@@ -87,25 +87,9 @@ if __name__ == '__main__':
     g2vModel = g2v.Graph2Vec()
     g2vModel.fit(projectGraphs)
 
-    #
-    #
-    # document_collections = Parallel(n_jobs = n_workers)(delayed(g2v.feature_extractor)(self.projectGraphs[g], n_iterations, str(g)) for g in tqdm(range(len(projectGraphs))))
-    #
-    # featExtractTime = time.time()
-    #
-    # model = Doc2Vec(document_collections,
-    #                 size = n_dimensions,
-    #                 window = 0,
-    #                 min_count = 5,
-    #                 dm = 0,
-    #                 sample = 0.0001,
-    #                 workers = n_workers,
-    #                 iter = n_iterations,
-    #                 alpha = 0.025)
-
     buildModelTime = time.time()
 
-    g2vModel.save_embedding("./results/embeddings.csv", model, len(projectGraphs), n_dimensions)
+    g2vModel.save_embeddings("./results/embeddings.csv", len(projectGraphs), n_dimensions)
 
     saveEmbeddingsTime = time.time()
 
@@ -116,8 +100,8 @@ if __name__ == '__main__':
 
     print("Query Time:\t\t" +           str(getDataTime - startTime) +              "\tseconds")
     print("NxGraphs Time:\t\t" +        str(generateGraphsTime - getDataTime) +     "\tseconds")
-    print("FeatExtract Time:\t" +       str(featExtractTime - generateGraphsTime) + "\tseconds")
-    print("Model Build Time:\t" +       str(buildModelTime - featExtractTime) +     "\tseconds")
+    #print("FeatExtract Time:\t" +       str(featExtractTime - generateGraphsTime) + "\tseconds")
+    print("Model Build Time:\t" +       str(buildModelTime - getDataTime) +     "\tseconds")
     print("Save Embeddings Time:\t" +   str(saveEmbeddingsTime - buildModelTime) +  "\tseconds")
     print("Dim Reduce Time:\t" +        str(reduceTime - saveEmbeddingsTime) +      "\tseconds")
 
