@@ -9,34 +9,6 @@ import feather
 import data_layer as dl
 import pandas as pd
 
-def query_ght(queryString):
-    """
-    Function to query with the provided query string.
-    :param queryString: String with which to perform the query.
-    :return query_result_df: Dataframe that holds the query results.
-    """
-    query_result_df = pandas_gbq.read_gbq(queryString)
-
-    return query_result_df
-
-def commit_query(projectId):
-    """
-    Function to generate the query that will pull all commits for a given projectId.
-    :param projectId: Project ID that you'd like to get commits for.
-    :return queryString: Query string for the given projectId.
-    """
-    return """
-            select
-              c.id as c_id,
-              p.id as p_id,
-              cp.commit_id as cp_commit_id,
-              cp.parent_id as cp_parent_id
-            from `ghtorrent-bq.ght.commits` c
-            left join `ghtorrent-bq.ght.projects` p on (p.id = c.project_id)
-            left join `ghtorrent-bq.ght.commit_parents` cp on (cp.commit_id = c.id)
-            where (p.id = """ + str(projectId) + """)
-        """
-
 def git_graph(commitData):
     """
     Function to generate the commit graph in networkx from the query results.
@@ -49,15 +21,6 @@ def git_graph(commitData):
 
     return nx.from_pandas_edgelist(source_target_commits, create_using=nx.OrderedDiGraph())
 
-def plot_commits(graph):
-    """
-    Function to plot the commit graph from the networkx graph.
-    :param graph: The graph to plot.
-    :return None:
-    """
-    nx.draw_kamada_kawai(graph, alpha=0.5, node_color='blue', node_size = 2)
-    figure = plt.gcf() # get current figure
-    figure.set_size_inches(12, 8)
 
 n_workers    = 4
 n_iterations = 10
@@ -76,6 +39,7 @@ if __name__ == '__main__':
 
     getDataTime = time.time()
 
+    # TODO: Change to dict
     projectGraphs = []
     project_ids = []
     for project in projectData.values():
@@ -94,14 +58,14 @@ if __name__ == '__main__':
     saveEmbeddingsTime = time.time()
 
     # this doesn't necessarily need to read from the csvs, we already have them in memory... hmm
-    red.reduce_dim()
+    red.reduce_dim(embeddings=g2vModel.get_embeddings(len(projectGraphs), n_dimensions))
 
     reduceTime = time.time()
 
     print("Query Time:\t\t" +           str(getDataTime - startTime) +              "\tseconds")
     print("NxGraphs Time:\t\t" +        str(generateGraphsTime - getDataTime) +     "\tseconds")
     #print("FeatExtract Time:\t" +       str(featExtractTime - generateGraphsTime) + "\tseconds")
-    print("Model Build Time:\t" +       str(buildModelTime - getDataTime) +     "\tseconds")
+    print("Model Build Time:\t" +       str(buildModelTime - getDataTime) +         "\tseconds")
     print("Save Embeddings Time:\t" +   str(saveEmbeddingsTime - buildModelTime) +  "\tseconds")
     print("Dim Reduce Time:\t" +        str(reduceTime - saveEmbeddingsTime) +      "\tseconds")
 
@@ -111,3 +75,42 @@ if __name__ == '__main__':
     #     plt.savefig("./imgs/branch_test" + str(graph))
     #     plt.clf()
     #     #plt.show()
+
+    # def query_ght(queryString):
+    #     """
+    #     Function to query with the provided query string.
+    #     :param queryString: String with which to perform the query.
+    #     :return query_result_df: Dataframe that holds the query results.
+    #     """
+    #     query_result_df = pandas_gbq.read_gbq(queryString)
+    #
+    #     return query_result_df
+    #
+    # def commit_query(projectId):
+    #     """
+    #     Function to generate the query that will pull all commits for a given projectId.
+    #     :param projectId: Project ID that you'd like to get commits for.
+    #     :return queryString: Query string for the given projectId.
+    #     """
+    #     return """
+    #             select
+    #               c.id as c_id,
+    #               p.id as p_id,
+    #               cp.commit_id as cp_commit_id,
+    #               cp.parent_id as cp_parent_id
+    #             from `ghtorrent-bq.ght.commits` c
+    #             left join `ghtorrent-bq.ght.projects` p on (p.id = c.project_id)
+    #             left join `ghtorrent-bq.ght.commit_parents` cp on (cp.commit_id = c.id)
+    #             where (p.id = """ + str(projectId) + """)
+    #         """
+    #
+
+    # def plot_commits(graph):
+    #     """
+    #     Function to plot the commit graph from the networkx graph.
+    #     :param graph: The graph to plot.
+    #     :return None:
+    #     """
+    #     nx.draw_kamada_kawai(graph, alpha=0.5, node_color='blue', node_size = 2)
+    #     figure = plt.gcf() # get current figure
+    #     figure.set_size_inches(12, 8)

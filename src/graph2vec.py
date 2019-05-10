@@ -40,6 +40,7 @@ class Graph2Vec:
         Function to extract WL features from a graph.
         :param graph: The nx graph.
         :param rounds: Number of WL iterations.
+        :param name: ProjectId to output
         :return doc: Document collection object.
         """
         features = nx.degree(graph)
@@ -50,6 +51,15 @@ class Graph2Vec:
         return doc
 
     def get_embeddings(self, n_graphs, dimensions):
+        """
+        Function to get embeddings from the model.
+        :param n_graphs: The number of graphs used to train the model.
+        :param dimensions: The embedding dimension parameter.
+        """
+        if not self.fitted:
+            print("Model has not been fit, run Graph2Vec.fit() before getting embeddings")
+            return
+
         out = []
         for identifier in range(n_graphs):
             out.append([identifier] + list(self.model.docvecs["g_"+str(identifier)]))
@@ -98,6 +108,7 @@ class WeisfeilerLehmanMachine:
         """
         new_features = {}
         for node in self.nodes:
+            # TODO: Change neighbours to children
             nebs = self.graph.neighbors(node)
             degs = [self.features[neb] for neb in nebs]
             features = "_".join([str(self.features[node])]+list(set(sorted([str(deg) for deg in degs]))))
