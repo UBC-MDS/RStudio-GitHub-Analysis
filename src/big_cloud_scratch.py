@@ -35,39 +35,31 @@ if __name__ == '__main__':
     # data_p1 = query_ght(query_p1)
     # data_p2 = query_ght(query_p2)
 
-    projectData = dl.getRandomProjects(500, 1)
+    projectData = dl.getRandomProjects(10000, 1)
 
     getDataTime = time.time()
 
-    # TODO: Change to dict
-    projectGraphs = []
-    project_ids = []
+    project_graphs = {}
     for project in projectData.values():
-        projectGraphs.append(git_graph(project))
-        project_ids.append(project.project_id.values[0])
+        project_graphs[project.project_id.values[0]] = git_graph(project)
 
     generateGraphsTime = time.time()
 
     g2vModel = g2v.Graph2Vec()
-    g2vModel.fit(projectGraphs)
+    g2vModel.fit(list(project_graphs.values()))
 
     buildModelTime = time.time()
 
-    g2vModel.save_embeddings("./results/embeddings.csv", len(projectGraphs), n_dimensions)
-
-    saveEmbeddingsTime = time.time()
-
-    # this doesn't necessarily need to read from the csvs, we already have them in memory... hmm
-    red.reduce_dim(embeddings=g2vModel.get_embeddings(len(projectGraphs), n_dimensions))
+    red.reduce_dim(embeddings=g2vModel.get_embeddings(len(project_graphs), n_dimensions))
 
     reduceTime = time.time()
 
     print("Query Time:\t\t" +           str(getDataTime - startTime) +              "\tseconds")
     print("NxGraphs Time:\t\t" +        str(generateGraphsTime - getDataTime) +     "\tseconds")
-    #print("FeatExtract Time:\t" +       str(featExtractTime - generateGraphsTime) + "\tseconds")
-    print("Model Build Time:\t" +       str(buildModelTime - getDataTime) +         "\tseconds")
-    print("Save Embeddings Time:\t" +   str(saveEmbeddingsTime - buildModelTime) +  "\tseconds")
-    print("Dim Reduce Time:\t" +        str(reduceTime - saveEmbeddingsTime) +      "\tseconds")
+    print("Model Build Time:\t" +       str(buildModelTime - generateGraphsTime) +  "\tseconds")
+    print("Dim Reduce Time:\t" +        str(reduceTime - buildModelTime) +          "\tseconds\n")
+
+    print("Total Time:\t\t" +             str(reduceTime - startTime) +                    "\tseconds")
 
     # plt.clf()
     # for graph in range(len(projectGraphs)):
