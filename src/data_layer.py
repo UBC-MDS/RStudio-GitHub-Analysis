@@ -1,7 +1,7 @@
 import feather
 import numpy as np
 
-commitDataPath = "/Users/richiezitomer/Documents/RStudio-Data-Repository/clean_data/commits.feather"
+commitDataPath = "/home/rayce/Assignments/Capstone/RStudio-Data-Repository/clean_data/commits.feather"
 commits_df = feather.read_dataframe(commitDataPath)
 
 def getCommitsByProjectName(projectName):

@@ -1,0 +1,18 @@
+title:             What the Git is going on here?
+email:             "@gmail.com"
+description:       "What we do"
+author:            "Juno Chen, Ian Flores, Rayce Rossum, Richie Zitomer"
+baseurl:           "/RStudio-GitHub-Analysis"
+url:               "http://UBC-MDS.github.io"
+
+# Social Profiles
+twitter_username:  the_graphs_team
+github_username:   ubc-mds
+
+# Build settings
+markdown:          kramdown
+paginate:          5
+paginate_path:     "/posts/page:num/"
+plugins:
+  - jekyll-feed
+  - jekyll-paginate
