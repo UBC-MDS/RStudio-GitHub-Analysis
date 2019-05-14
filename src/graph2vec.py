@@ -11,16 +11,12 @@ from tqdm import tqdm
 logging.basicConfig(format="%(asctime)s : %(levelname)s : %(message)s", level=logging.INFO)
 
 class Graph2Vec:
-    def __init__(self, size=128, epochs=10, workers=4):
+    def __init__(self, size=128, epochs=10, workers=8, iter=10):
         self.size = size
         self.epochs = epochs
         self.workers = workers
+        self.iter = iter
         self.fitted = False
-
-    def extract_features(self, projectGraphs):
-        document_collections = Parallel(n_jobs = self.workers)(delayed(self.feature_extractor)(projectGraphs[g], self.epochs, str(g)) for g in tqdm(range(len(projectGraphs))))
-
-        return document_collections
 
     def fit(self, projectGraphs):
         self.model = Doc2Vec(self.extract_features(projectGraphs),
@@ -35,6 +31,16 @@ class Graph2Vec:
 
         self.fitted = True
 
+    def fit_transform(self, projectGraphs):
+        self.fit(projectGraphs)
+
+        return self.save_embeddings(len(projectGraphs))
+
+    def extract_features(self, projectGraphs):
+        document_collections = Parallel(n_jobs = self.workers)(delayed(self.feature_extractor)(projectGraphs[g], self.iter, str(g)) for g in tqdm(range(len(projectGraphs))))
+
+        return document_collections
+
     def feature_extractor(self, graph, rounds, name):
         """
         Function to extract WL features from a graph.
@@ -48,13 +54,13 @@ class Graph2Vec:
 
         machine = WeisfeilerLehmanMachine(graph, features, rounds)
         doc = TaggedDocument(words = machine.extracted_features , tags = ["g_" + name])
+
         return doc
 
-    def get_embeddings(self, n_graphs, dimensions):
+    def get_embeddings(self, n_graphs):
         """
         Function to get embeddings from the model.
         :param n_graphs: The number of graphs used to train the model.
-        :param dimensions: The embedding dimension parameter.
         """
         if not self.fitted:
             print("Model has not been fit, run Graph2Vec.fit() before getting embeddings")
@@ -64,12 +70,12 @@ class Graph2Vec:
         for identifier in range(n_graphs):
             out.append([identifier] + list(self.model.docvecs["g_"+str(identifier)]))
 
-        out = pd.DataFrame(out,columns = ["type"] +["x_" +str(dimension) for dimension in range(dimensions)])
+        out = pd.DataFrame(out,columns = ["type"] +["x_" +str(dimension) for dimension in range(self.size)])
         out = out.sort_values(["type"])
 
         return out
 
-    def save_embeddings(self, output_path, n_graphs, dimensions):
+    def save_embeddings(self, n_graphs, output_path='./results/embeddings.csv'):
         """
         Function to save the embedding.
         :param output_path: Path to the embedding csv.
@@ -80,8 +86,10 @@ class Graph2Vec:
             print("Model has not been fit, run Graph2Vec.fit() before saving embeddings")
             return
 
-        embeddings = self.get_embeddings(n_graphs, dimensions)
+        embeddings = self.get_embeddings(n_graphs)
         embeddings.to_csv(output_path, index = None)
+
+        return embeddings
 
 class WeisfeilerLehmanMachine:
     """

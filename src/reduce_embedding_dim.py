@@ -8,16 +8,17 @@ called 'embeddings.csv'
 
 import matplotlib.pyplot as plt
 import pandas as pd
-from sklearn.manifold import TSNE
+#from sklearn.manifold import TSNE
+from MulticoreTSNE import MulticoreTSNE as TSNE
 
 def run_tsne(embeddings=None, filename=None):
     """filename: path to embeddings where first row is the name of the graphs.
     Returns a DataFrame identical to the original but in 2 dimensions."""
-    if filename is not None:
+    if embeddings is None and filename is not None:
         embeddings = pd.read_csv(filename, index_col=0)
 
     # Make and fit tsne model
-    tsne_model = TSNE(n_components=2)
+    tsne_model = TSNE(n_components=2, n_jobs=8)
     transformed_array = tsne_model.fit_transform(embeddings.values)
     df = pd.DataFrame(transformed_array, columns=['x', 'y'])
     df.index = embeddings.index

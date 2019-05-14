@@ -8,6 +8,7 @@ import reduce_embedding_dim as red
 import feather
 import data_layer as dl
 import pandas as pd
+import multiprocessing
 
 def git_graph(commitData):
     """
@@ -21,9 +22,9 @@ def git_graph(commitData):
 
     return nx.from_pandas_edgelist(source_target_commits, create_using=nx.OrderedDiGraph())
 
+def multicore_git_graph(d, projectId, projectGraph):
+    d[projectId] = git_graph(projectGraph)
 
-n_workers    = 4
-n_iterations = 10
 n_dimensions = 128
 
 if __name__ == '__main__':
@@ -35,31 +36,45 @@ if __name__ == '__main__':
     # data_p1 = query_ght(query_p1)
     # data_p2 = query_ght(query_p2)
 
-    projectData = dl.getRandomProjects(10000, 1)
+    projectData = dl.getRandomProjects(50000, 12)
+    #projectData = dl.getProjectsDf()
 
     getDataTime = time.time()
 
+    print("Query Time:\t\t" +           str(getDataTime - startTime) +              "\tseconds")
+
+    manager = multiprocessing.Manager()
+    project_graphs = manager.dict()
+
     project_graphs = {}
-    for project in projectData.values():
-        project_graphs[project.project_id.values[0]] = git_graph(project)
+    for projectId in dl.getUniqueProjectIdsFromDf(projectData):
+        projectCommits = dl.getCommitsByProjectId(projectId)
+        project_graphs[projectId] = git_graph(projectCommits)
+        # TODO: Fix this cause it's slower than just doing it on one core.. .hmmmmmmm
+        #multicore_git_graph(project_graphs, projectId, projectCommits)
 
     generateGraphsTime = time.time()
 
-    g2vModel = g2v.Graph2Vec()
-    g2vModel.fit(list(project_graphs.values()))
+    print("NxGraphs Time:\t\t" +        str(generateGraphsTime - getDataTime) +     "\tseconds")
+
+    g2vModel = g2v.Graph2Vec(size=n_dimensions)
+    g2vEmbeddings = g2vModel.fit_transform(list(project_graphs.values()))
+
+    print(g2vEmbeddings)
 
     buildModelTime = time.time()
 
-    red.reduce_dim(embeddings=g2vModel.get_embeddings(len(project_graphs), n_dimensions))
+    print("Model Build Time:\t" +       str(buildModelTime - generateGraphsTime) +  "\tseconds")
+
+    red.reduce_dim()
 
     reduceTime = time.time()
 
     print("Query Time:\t\t" +           str(getDataTime - startTime) +              "\tseconds")
     print("NxGraphs Time:\t\t" +        str(generateGraphsTime - getDataTime) +     "\tseconds")
-    print("Model Build Time:\t" +       str(buildModelTime - generateGraphsTime) +  "\tseconds")
     print("Dim Reduce Time:\t" +        str(reduceTime - buildModelTime) +          "\tseconds\n")
-
-    print("Total Time:\t\t" +             str(reduceTime - startTime) +                    "\tseconds")
+    print("Model Build Time:\t" +       str(buildModelTime - generateGraphsTime) +  "\tseconds")
+    print("Total Time:\t\t" +           str(reduceTime - startTime) +                    "\tseconds")
 
     # plt.clf()
     # for graph in range(len(projectGraphs)):
