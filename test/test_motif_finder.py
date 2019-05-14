@@ -48,7 +48,7 @@ def test_get_random_child_output():
     """Check that MotifFinder.get_random_child outputs a child of the node its been given."""
     initial_node = mf.sample_initial_node()
     child = mf.get_random_child(initial_node)
-    assert child in G.successors(initial_node)
+    assert (child in G.successors(initial_node) or child is None)
 
 
 def test_get_sample_motif_bad_input():
@@ -93,4 +93,4 @@ def test_get_motif_samples_output_type():
 def test_get_motif_samples_output_keys():
     """Check that the output of get MotifFinder.get_sample_motif is a dictionary where the keys are a directed networkx
     graph."""
-    for
+    pass

@@ -69,7 +69,7 @@ class MotifFinder:
 
         :param k: the desired length of the sampled motif.
         :param recursion_limit: how many times to recurse (in this case, to keep sampling). NB: This sets recursion at
-        the sys level, and the function is using recursion in kinda a weird way, not sure how cool this is.
+        the sys level, and the function is using recursion in kinda a weird way, not sure how cool this is. #TODO: set recrusion limit back
         :return: a motif (nx subgraph) of length k.
         """
         sys.setrecursionlimit(recursion_limit)
@@ -120,7 +120,7 @@ def get_motifs_by_cluster(clusters, k_for_motifs=5, number_of_samples=1000, outp
     :param k_for_motifs: the desired length of the sampled motifs.
     :param number_of_samples: how many motifs to sample from the graph.
     :param output_file: string with the filename to output the results to as a pickle. If this param is set to None, no file will be outputted.
-    :return: None.
+    :return: None. TODO: add what this actually returns
     """
     motifs_by_clusters = {}
     for cluster in clusters:
