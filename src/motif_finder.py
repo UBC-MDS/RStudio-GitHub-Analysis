@@ -23,6 +23,7 @@ from cluster import get_embedding_clusters
 
 
 def main():
+    """Function that runs the cluster and gets the motif of each cluster."""
     clusters = get_embedding_clusters()
     get_motifs_by_cluster(clusters)
 
@@ -67,6 +68,8 @@ class MotifFinder:
         only return motifs that have at least k children.
 
         :param k: the desired length of the sampled motif.
+        :param recursion_limit: how many times to recurse (in this case, to keep sampling). NB: This sets recursion at
+        the sys level, and the function is using recursion in kinda a weird way, not sure how cool this is.
         :return: a motif (nx subgraph) of length k.
         """
         sys.setrecursionlimit(recursion_limit)
@@ -80,8 +83,8 @@ class MotifFinder:
 
     def get_motif_samples(self, k, num_samples):
         """
-        Given a graph, get n random motifs (subgraphs) of length k. Note: will start at a random node in the graph, but will
-        only return motifs that have at least k children.
+        Given a graph, get n random motifs (subgraphs) of length k and associate identical motifs together. #TODO: seperate into two functions?
+        Note: will start at a random node in the graph, but will only return motifs that have at least k children.
 
         :param k: the desired length of the sampled motif.
         :param num_samples: how many motifs to sample from the graph.
@@ -96,6 +99,7 @@ class MotifFinder:
         for n, graph in enumerate(graphs):
             if n == 0:
                 motifs[graph] = 1
+                continue
             already_seen = 0
             for motif in motifs.keys():
                 if nx.is_isomorphic(graph, motif):
