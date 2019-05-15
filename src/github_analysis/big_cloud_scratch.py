@@ -43,8 +43,8 @@ if __name__ == '__main__':
 
     print("Query Time:\t\t" +           str(getDataTime - startTime) +              "\tseconds")
 
-    manager = multiprocessing.Manager()
-    project_graphs = manager.dict()
+    #manager = multiprocessing.Manager()
+    #project_graphs = manager.dict()
 
     project_graphs = {}
     for projectId in dl.getUniqueProjectIdsFromDf(projectData):
