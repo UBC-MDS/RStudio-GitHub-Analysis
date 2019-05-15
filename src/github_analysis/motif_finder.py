@@ -17,9 +17,9 @@ import pickle
 
 import networkx as nx
 
-from big_cloud_scratch import git_graph
-from data_layer import getCommitsByProjectIds
-from cluster import get_embedding_clusters
+from github_analysis.big_cloud_scratch import git_graph
+from github_analysis.data_layer import getCommitsByProjectIds
+from github_analysis.cluster import get_embedding_clusters
 
 
 def main():

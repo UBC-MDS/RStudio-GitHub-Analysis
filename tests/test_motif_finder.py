@@ -15,10 +15,10 @@ import pickle
 
 import networkx as nx
 
-from big_cloud_scratch import git_graph
-from data_layer import getCommitsByProjectIds
-from cluster import get_embedding_clusters
-from motif_finder import *
+from github_analysis.big_cloud_scratch import git_graph
+from github_analysis.data_layer import getCommitsByProjectIds
+from github_analysis.cluster import get_embedding_clusters
+from github_analysis.motif_finder import *
 
 clusters = get_embedding_clusters(random_state=0)
 projects_cluster = getCommitsByProjectIds(clusters[0])
@@ -93,4 +93,4 @@ def test_get_motif_samples_output_type():
 def test_get_motif_samples_output_keys():
     """Check that the output of get MotifFinder.get_sample_motif is a dictionary where the keys are a directed networkx
     graph."""
-    for
+    pass

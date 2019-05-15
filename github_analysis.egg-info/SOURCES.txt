@@ -1,0 +1,6 @@
+README.md
+github_analysis.egg-info/PKG-INFO
+github_analysis.egg-info/SOURCES.txt
+github_analysis.egg-info/dependency_links.txt
+github_analysis.egg-info/not-zip-safe
+github_analysis.egg-info/top_level.txt
