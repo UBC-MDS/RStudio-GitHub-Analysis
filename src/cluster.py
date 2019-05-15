@@ -1,39 +1,115 @@
 import pandas as pd
-from sklearn.cluster import KMeans
-import pickle
+import numpy as np
+from sklearn.preprocessing import MinMaxScaler, StandardScaler
+from sklearn.cluster import KMeans, DBSCAN
 
+class Cluster():
+    def __init__(self, raw_data):
+        """ Initializes the Cluster class
 
-def get_embedding_clusters(embedding_input_file='./results/embeddings.csv', k_for_clustering=10, random_state=None,
-                           output_file='./results/clusters.pickle'):
-    """
-    Given a file with embeddings (or other features) cluster similar rows together using kmeans.
+        Parameters
+        ----------
+        raw_data: pd.DataFrame or np.ndarray
+            Data in a 2 dimensional ndarray or a pandas Data Frame
 
-    :param embedding_input_file: file where every row is a project and every col a feature
-    :param k_for_clustering: how many groups to cluster
-    :param random_state: random state for clustering algo
-    :param output_file: string with the filename to output the results to as a pickle. If this param is set to None no file will be outputted.
-    :return: a dictionary where the keys are the cluster labels and the values are lists of GitHub projectIds that fall in that cluster.
-    """
-    embeddings = pd.read_csv(embedding_input_file, index_col=0)
+        Returns
+        -------
+        None
+        """
+        self.raw_data = raw_data
+        self.data = None
+        self.algorithm = None
+        self.transformed_data  = None
 
-    # Run k-means algo TODO: spend more time on this algo: tune hyperparams, consider algo that better handles high dim, etc.
-    kmeans = KMeans(n_clusters=k_for_clustering, random_state=random_state).fit(embeddings.values)
+    def scale_data(self, min_max = False):
+        """ Scales the data in all columns to a same scale
 
-    # Make dict where key is cluster # and value are projects in that clusters
-    clusters = {}
-    for n, label in enumerate(kmeans.labels_):
-        if label in clusters:
-            clusters[label].append(embeddings.index[n])
+        Parameters
+        ----------
+        min_max: bool
+            If True uses the MinMaxScaler, if False uses the StandardScaler
+
+        Returns
+        -------
+        None
+        """
+        data = self.raw_data
+
+        if min_max:
+            scaled_data = MinMaxScaler().fit_transform(data)
         else:
-            clusters[label] = [embeddings.index[n]]
+            scaled_data = StandardScaler().fit_transform(data)
 
-    if output_file is not None:
-        with open(output_file, 'wb') as output:
-            pickle.dump(clusters, output)
-        print('cluster file outputted!')
+        self.data = scaled_data
 
-    return clusters
+    def set_algorithm(self, name, **kwargs):
+        """ Sets the clustering algorithm to use
 
+        Parameters
+        ----------
+        name: str
+            Name of the algorithm to use
+        **kwargs
+            Named arguments specific to the algorithm to use
 
-if __name__ == '__main__':
-    get_embedding_clusters()
+        Returns
+        -------
+        None
+        """
+        if name == 'k_means':
+            self.algorithm = KMeans(**kwargs)
+        elif name == 'dbscan':
+            self.algorithm = DBSCAN(**kwargs)
+
+    def fit_algorithm(self):
+        """ Fits the algorithm to the scaled data
+
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        None
+        """
+        self.scale_data()
+        self.algorithm.fit(self.data)
+
+    def get_labels(self):
+        """ Gets the cluster labels
+
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        ndarray
+            Array of cluster labels
+        """
+        self.labels = self.algorithm.labels_
+        return self.labels
+
+    def get_inertia(self):
+        """ Gets the inertia of the clusters
+
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        float
+            Returns the intertia if the algorithm has an inertia attribute
+        """
+        try:
+            self.inertia = self.algorithm.inertia_
+            return self.inertia
+        except:
+            print('Not Inertia in this algorithm')
+
+cluster = Cluster([[1,2,3], [2, 4, 6]])
+cluster.set_algorithm('k_means', n_clusters = 2)
+print('Up to here')
+print(cluster.fit_algorithm())
+print(cluster.get_labels())
