@@ -51,6 +51,7 @@ if __name__ == '__main__':
         projectCommits = dl.getCommitsByProjectId(projectId)
         project_graphs[projectId] = git_graph(projectCommits)
         # TODO: Fix this cause it's slower than just doing it on one core.. .hmmmmmmm
+        # You're doing this wrong self..
         #multicore_git_graph(project_graphs, projectId, projectCommits)
 
     generateGraphsTime = time.time()
@@ -70,6 +71,7 @@ if __name__ == '__main__':
 
     reduceTime = time.time()
 
+    print()
     print("Query Time:\t\t" +           str(getDataTime - startTime) +              "\tseconds")
     print("NxGraphs Time:\t\t" +        str(generateGraphsTime - getDataTime) +     "\tseconds")
     print("Dim Reduce Time:\t" +        str(reduceTime - buildModelTime) +          "\tseconds\n")

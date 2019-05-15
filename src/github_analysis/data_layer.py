@@ -13,6 +13,9 @@ def getCommitsByProjectName(projectName):
 def getCommitsByProjectId(projectId):
     return(commits_df[commits_df["project_id"] == projectId])
 
+def getCommitsByProjectIds(projectIds):
+    return commits_df[commits_df.project_id.isin(projectIds)]
+
 def getUniqueProjectIds():
     return commits_df.project_id.unique()
 
@@ -35,17 +38,9 @@ def getRandomSampleOfIds(n, seed):
 
 def getRandomProjects(n, seed):
     projectIds = getRandomSampleOfIds(n, seed)
-
-#    projects = {}
-#    for id in projectIds:
-#        projects[id] = getCommitsByProjectId(id)
-
     projects = getCommitsByProjectIds(projectIds)
-    print(projects)
+    
     return projects
-
-def getCommitsByProjectIds(projectIds):
-    return commits_df[commits_df.project_id.isin(projectIds)]
 
 if __name__ == '__main__':
     print(getRandomProjects(5, 1))
