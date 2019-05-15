@@ -1,3 +1,6 @@
+import matplotlib.pyplot as plt
+import networkx as nx
+
 def git_graph(commitData):
     """
     Function to generate the commit graph in networkx from the query results.

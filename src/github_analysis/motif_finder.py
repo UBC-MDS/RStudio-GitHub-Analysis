@@ -17,7 +17,7 @@ import pickle
 
 import networkx as nx
 
-from main import git_graph
+from nxutils import git_graph
 from data_layer import getCommitsByProjectIds
 from cluster import get_embedding_clusters
 

@@ -1,13 +1,7 @@
-import pandas_gbq
-import networkx as nx
-import matplotlib.pyplot as plt
-import graph2vec as g2v
 import time
-import numpy.distutils.system_info as sysinfo
-import feather
-import pandas as pd
 import multiprocessing
 
+import graph2vec as g2v
 import reduce_embedding_dim as red
 import data_layer as dl
 import motif_finder as mf
@@ -25,12 +19,12 @@ if __name__ == '__main__':
     # data_p1 = query_ght(query_p1)
     # data_p2 = query_ght(query_p2)
 
-    projectData = dl.getRandomProjects(5000, 12)
+    projectData = dl.getRandomProjects(10000, 1)
     #projectData = dl.getProjectsDf()
 
     getDataTime = time.time()
 
-    print("Query Time:\t\t" +           str(getDataTime - startTime) +              "\tseconds")
+    print("Query Complete:\t\t" +           str(getDataTime - startTime) +              "\tseconds")
 
     #manager = multiprocessing.Manager()
     #project_graphs = manager.dict()
@@ -44,34 +38,38 @@ if __name__ == '__main__':
         #multicore_git_graph(project_graphs, projectId, projectCommits)
 
     generateGraphsTime = time.time()
-
-    print("NxGraphs Built:\t\t" +        str(generateGraphsTime - getDataTime) +     "\tseconds")
+    print("NxGraphs Built:\t\t" +        str(generateGraphsTime - getDataTime) +    "\tseconds")
 
     g2vModel = g2v.Graph2Vec(size=n_dimensions)
     g2vEmbeddings = g2vModel.fit_transform(list(project_graphs.values()))
-
-    print(g2vEmbeddings)
-
     buildModelTime = time.time()
-
-    print("Model Built:\t" +       str(buildModelTime - generateGraphsTime) +  "\tseconds")
+    print("G2V Model Built:\t" +        str(buildModelTime - generateGraphsTime) +   "\tseconds")
 
     red.reduce_dim()
-
     reduceTime = time.time()
+    print("Dims Reduced:\t\t" +        str(reduceTime - buildModelTime) +             "\tseconds")
+
+    clusters = mf.get_embedding_clusters()
+    projectClusterTime = time.time()
+    print("Projects Clustered:\t" +   str(projectClusterTime - reduceTime) +        "\tseconds")
+
+    motifs_by_cluster = mf.get_motifs_by_cluster(clusters)
+    motifTime = time.time()
+    print("Motifs Generated:\t" +  str(motifTime - projectClusterTime) +            "\tseconds")
+
+    fg.generate_motif_visualisations_by_cluster()
+    freqGraphTime = time.time()
+    print("Frequency Graphs Built:\t" +   str(freqGraphTime- motifTime) +           "\tseconds")
 
     print()
     print("Query Time:\t\t" +           str(getDataTime - startTime) +              "\tseconds")
     print("NxGraphs Time:\t\t" +        str(generateGraphsTime - getDataTime) +     "\tseconds")
-    print("Dim Reduce Time:\t" +        str(reduceTime - buildModelTime) +          "\tseconds")
     print("Model Build Time:\t" +       str(buildModelTime - generateGraphsTime) +  "\tseconds")
-    print("Total Time:\t\t" +           str(reduceTime - startTime) +                    "\tseconds")
-
-    clusters = mf.get_embedding_clusters()
-    motifs_by_cluster = mf.get_motifs_by_cluster(clusters)
-
-    fg.generate_motif_visualisations_by_cluster()
-
+    print("Dim Reduce Time:\t" +        str(reduceTime - buildModelTime) +          "\tseconds")
+    print("Project Cluster Time:\t" +   str(projectClusterTime - reduceTime) +      "\tseconds")
+    print("Motif Generation Time:\t" +  str(motifTime - projectClusterTime) +       "\tseconds")
+    print("Frequency Graph Time:\t" +   str(freqGraphTime- motifTime) +             "\tseconds")
+    print("Total Time:\t\t" +           str(reduceTime - startTime) +               "\tseconds")
 
     # plt.clf()
     # for graph in range(len(projectGraphs)):
