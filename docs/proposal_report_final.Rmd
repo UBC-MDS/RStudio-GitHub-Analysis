@@ -36,11 +36,14 @@ To answer this question, we are ultimately going to produce a table and a bar ch
 Fig 3: Three different but similar motifs	
 
 ### What are common workflow patterns across Git repositories?
-For analyzing and comparing features at a project level, we propose Graph2Vec<sup>[5]</sup>: A neural embedding framework to learn data-driven distributed representations of arbitrary sized graphs. We propose Graph2Vec over other subgraph analysis algorithms (such as Sub2Vec<sup>[3]</sup>) due to their lack of ability to model global structure similarities, instead focusing on local similarities within confined neighbourhoods. Using Graph2Vec, we can learn the differences within Git projects in an unsupervised manner and use the generated embeddings to cluster similar graphs together with widely-used clustering algorithms. We can then pick out the most common subpatterns by cluster using the methodology explained in the section above. It may also be possible to use Graph2Vec to also identify common sub-patterns by extract the features its learned.
+For analyzing and comparing features at a project level, we propose Graph2Vec<sup>[5]</sup>: A neural embedding framework to learn data-driven distributed representations of arbitrary sized graphs. We propose Graph2Vec over other subgraph analysis algorithms (such as Sub2Vec<sup>[4]</sup>) due to their lack of ability to model global structure similarities, instead focusing on local similarities within confined neighbourhoods. Using Graph2Vec, we can learn the differences within Git projects in an unsupervised manner and use the generated embeddings to cluster similar graphs together with widely-used clustering algorithms. We can then pick out the most common subpatterns by cluster using the methodology explained in the section above. It may also be possible to use Graph2Vec to also identify common sub-patterns by extract the features its learned.
+
+![](imgs/embeddings_tsne.png){width=500px}
+
+Fig 4: Embeddings of sample data on t-SNE	
 
 ## Analysis Limitations
-Our proposed algorithms assume undirected and unweighted graphs. To apply them to our study, we may need to extend the algorithms to work with directed edges (where we can present the Git workflow) and weighted edges (where we can represent the time elapsed between commits). There are multiple limitations with the data we will use. The data available is only at the commit-level, meaning that we don’t have access to local commands such as ‘git add’, this means that we only have access to a fragment of people’s actual workflow. One other limitation is that we will only be sampling repositories from GitHub, however there are other platforms such as GitLab and BitBucket that also incorporate Git. This only allows us to gain insights from the way people use GitHub, and not VCS in general. 
-
+Our proposed algorithms assume undirected and unweighted graphs. To apply them to our study, we may need to extend the algorithms to work with directed edges (where we can present the Git workflow) and weighted edges (where we can represent the time elapsed between commits). There are multiple limitations with the data we will use. The data available is only at the commit-level, meaning that we don’t have access to local commands such as ‘git add’, this means that we only have access to a fragment of people’s actual workflow. One other limitation is that we will only be sampling repositories from GitHub, however there are other platforms such as GitLab and BitBucket that also incorporate Git. This only allows us to gain insights from the way people use GitHub, and not VCS in general.
 
 ## Expected Timeline
 
@@ -54,6 +57,7 @@ Our proposed algorithms assume undirected and unweighted graphs. To apply them t
 
 
 ## Conclusion
+
 In this project we aim to answer the two main questions *What are common subpatterns in the way people use Git?* and *What are common workflow patterns across Git repositories?*. To answer these questions, we will be using data science techniques such as graph embeddings and clustering. We will evaluate the performance of this techniques by evaluating how well they separate the different workflows and sub-patterns that people use. Techniques that are not performing at the level expected will not be able to distinguish the clusters in a correct manner. With this clusters we will be able to understand common patterns and how people use Git and GitHub to develop recommendations for a new tool that will allow for easier use of Version Control in the way people are using Git today.
 
 ## References
