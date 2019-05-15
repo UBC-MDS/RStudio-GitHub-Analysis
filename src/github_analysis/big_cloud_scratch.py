@@ -4,9 +4,9 @@ import matplotlib.pyplot as plt
 import graph2vec as g2v
 import time
 import numpy.distutils.system_info as sysinfo
-import reduce_embedding_dim as red
+import github_analysis.reduce_embedding_dim as red
 import feather
-import data_layer as dl
+import github_analysis.data_layer as dl
 import pandas as pd
 
 def query_ght(queryString):
