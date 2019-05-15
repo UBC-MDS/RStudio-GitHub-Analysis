@@ -108,13 +108,3 @@ if __name__ == '__main__':
     #             where (p.id = """ + str(projectId) + """)
     #         """
     #
-
-    # def plot_commits(graph):
-    #     """
-    #     Function to plot the commit graph from the networkx graph.
-    #     :param graph: The graph to plot.
-    #     :return None:
-    #     """
-    #     nx.draw_kamada_kawai(graph, alpha=0.5, node_color='blue', node_size = 2)
-    #     figure = plt.gcf() # get current figure
-    #     figure.set_size_inches(12, 8)
