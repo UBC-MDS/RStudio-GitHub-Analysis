@@ -1,5 +1,5 @@
 """
-Sample usage (from project root dir): python src/motif_finder.py
+Sample usage (from project root dir): python src/github_analysis/motif_finder.py 0
 
 Functions for implementing the following algo, suggested by Trevor Campbell:
 To identify the K-node motifs in a graph, you could always use NetworkX and do something simple like:
@@ -22,9 +22,9 @@ from github_analysis.data_layer import getCommitsByProjectIds
 from github_analysis.cluster import get_embedding_clusters
 
 
-def main():
+def main(random_state=None):
     """Function that runs the cluster and gets the motif of each cluster."""
-    clusters = get_embedding_clusters()
+    clusters = get_embedding_clusters(random_state=random_state)
     get_motifs_by_cluster(clusters)
 
    
@@ -37,7 +37,7 @@ class MotifFinder:
         """
         self.G = G
 
-    def sample_initial_node(self):
+    def sample_initial_node(self):  # TODO: let users pick a random state
         """
         Given a graph, randomly sample one of its nodes.
 
@@ -69,7 +69,7 @@ class MotifFinder:
 
         :param k: the desired length of the sampled motif.
         :param recursion_limit: how many times to recurse (in this case, to keep sampling). NB: This sets recursion at
-        the sys level, and the function is using recursion in kinda a weird way, not sure how cool this is. #TODO: set recrusion limit back
+        the sys level, and the function is using recursion in kinda a weird way, not sure how cool this is.
         :return: a motif (nx subgraph) of length k.
         """
         sys.setrecursionlimit(recursion_limit)
@@ -111,6 +111,27 @@ class MotifFinder:
         return motifs
 
 
+def get_motifs(github_project_ids,k_for_motifs, number_of_samples):
+    """Given a list of github prof"""
+    # Get graph for this cluster TODO: update to pull from pickle of project graphs
+    projects_cluster = getCommitsByProjectIds(github_project_ids)
+    G = git_graph(projects_cluster)
+
+    mf = MotifFinder(G)  # Instantiate MotifFinder object looking at that cluster's graph
+
+    # Trying to pull out the motifs of each cluster here. Need error handling for clusters where we can't pull out
+    # common motifs (e.g. can't build motifs of length k because there aren't many subgraphs at least k long)
+    try:
+        motifs = mf.get_motif_samples(k_for_motifs, number_of_samples)  # Get most common motifs for that cluster
+    except RecursionError:
+        print('Graph has too many short paths.')
+        return None
+    except ValueError:
+        print('Graph has no connections.')
+        return None
+    return motifs
+
+
 def get_motifs_by_cluster(clusters, k_for_motifs=5, number_of_samples=1000, output_file='./results/motifs_by_cluster.pickle'):
     """
     A way to take in a group of GitHub project clusters and output their most common motifs. For each cluster, get most common subgraphs
@@ -120,28 +141,13 @@ def get_motifs_by_cluster(clusters, k_for_motifs=5, number_of_samples=1000, outp
     :param k_for_motifs: the desired length of the sampled motifs.
     :param number_of_samples: how many motifs to sample from the graph.
     :param output_file: string with the filename to output the results to as a pickle. If this param is set to None, no file will be outputted.
-    :return: None. TODO: add what this actually returns
+    :return: None.
     """
     motifs_by_clusters = {}
     for cluster in clusters:
-
-        # Get graph for this cluster TODO: update to pull from pickle of project graphs
-        projects_cluster = getCommitsByProjectIds(clusters[cluster])
-        G = git_graph(projects_cluster)
-
-        mf = MotifFinder(G)  # Instantiate MotifFinder object looking at that cluster's graph
-
-        # Trying to pull out the motifs of each cluster here. Need error handling for clusters where we can't pull out
-        # common motifs (e.g. can't build motifs of length k because there aren't many subgraphs at least k long)
-        try:
-            motifs = mf.get_motif_samples(k_for_motifs, number_of_samples)  # Get most common motifs for that cluster
-        except RecursionError:
-            print('too many short paths for Cluster {}, it wont be included in output.'.format(cluster))
-            continue
-        except ValueError:
-            print('Cluster {} has no connections, it wont be included in output.'.format(cluster))
-            continue
-        motifs_by_clusters[cluster] = motifs
+        cluster_motif = get_motifs(clusters[cluster], k_for_motifs, number_of_samples)
+        if cluster_motif is not None:
+            motifs_by_clusters[cluster] = cluster_motif
 
     if output_file is not None:
         with open(output_file, 'wb') as output:
@@ -152,7 +158,7 @@ def get_motifs_by_cluster(clusters, k_for_motifs=5, number_of_samples=1000, outp
 
 
 if __name__ == '__main__':
-    main()
+    main(int(sys.argv[1]))
     
 # TODO: this is generating 1 more k than specified, idk why.
 # TODO: output tsne graph with k-means labels.
