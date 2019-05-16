@@ -17,9 +17,9 @@ import pickle
 
 import networkx as nx
 
-from github_analysis.big_cloud_scratch import git_graph
-from github_analysis.data_layer import getCommitsByProjectIds
-from github_analysis.cluster import get_embedding_clusters
+from nxutils import git_graph
+from data_layer import getCommitsByProjectIds
+from cluster import get_embedding_clusters
 
 
 def main(random_state=None):
@@ -27,7 +27,7 @@ def main(random_state=None):
     clusters = get_embedding_clusters(random_state=random_state)
     get_motifs_by_cluster(clusters)
 
-   
+
 class MotifFinder:
     def __init__(self, G):
         """
@@ -158,8 +158,7 @@ def get_motifs_by_cluster(clusters, k_for_motifs=5, number_of_samples=1000, outp
 
 
 if __name__ == '__main__':
-    main(int(sys.argv[1]))
-    
+    main()
 # TODO: this is generating 1 more k than specified, idk why.
 # TODO: output tsne graph with k-means labels.
 
