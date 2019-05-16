@@ -9,10 +9,6 @@ import feather
 import data_layer as dl
 import pandas as pd
 
-from joblib import Parallel, delayed
-from gensim.models.doc2vec import Doc2Vec, TaggedDocument
-from tqdm import tqdm
-
 def query_ght(queryString):
     """
     Function to query with the provided query string.
@@ -76,7 +72,7 @@ if __name__ == '__main__':
     # data_p1 = query_ght(query_p1)
     # data_p2 = query_ght(query_p2)
 
-    projectData = dl.getRandomProjects(10000, 1)
+    projectData = dl.getRandomProjects(500, 1)
 
     getDataTime = time.time()
 
@@ -88,23 +84,12 @@ if __name__ == '__main__':
 
     generateGraphsTime = time.time()
 
-    document_collections = Parallel(n_jobs = n_workers)(delayed(g2v.feature_extractor)(projectGraphs[g], n_iterations, str(g)) for g in tqdm(range(len(projectGraphs))))
-
-    featExtractTime = time.time()
-
-    model = Doc2Vec(document_collections,
-                    size = n_dimensions,
-                    window = 0,
-                    min_count = 5,
-                    dm = 0,
-                    sample = 0.0001,
-                    workers = n_workers,
-                    iter = n_iterations,
-                    alpha = 0.025)
+    g2vModel = g2v.Graph2Vec()
+    g2vModel.fit(projectGraphs)
 
     buildModelTime = time.time()
 
-    g2v.save_embedding("./results/embeddings.csv", model, len(projectGraphs), n_dimensions,ids=project_ids)
+    g2vModel.save_embeddings("./results/embeddings.csv", len(projectGraphs), n_dimensions)
 
     saveEmbeddingsTime = time.time()
 
@@ -115,8 +100,8 @@ if __name__ == '__main__':
 
     print("Query Time:\t\t" +           str(getDataTime - startTime) +              "\tseconds")
     print("NxGraphs Time:\t\t" +        str(generateGraphsTime - getDataTime) +     "\tseconds")
-    print("FeatExtract Time:\t" +       str(featExtractTime - generateGraphsTime) + "\tseconds")
-    print("Model Build Time:\t" +       str(buildModelTime - featExtractTime) +     "\tseconds")
+    #print("FeatExtract Time:\t" +       str(featExtractTime - generateGraphsTime) + "\tseconds")
+    print("Model Build Time:\t" +       str(buildModelTime - getDataTime) +     "\tseconds")
     print("Save Embeddings Time:\t" +   str(saveEmbeddingsTime - buildModelTime) +  "\tseconds")
     print("Dim Reduce Time:\t" +        str(reduceTime - saveEmbeddingsTime) +      "\tseconds")
 
