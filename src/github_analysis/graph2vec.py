@@ -1,3 +1,4 @@
+import os
 import hashlib
 import logging
 import pandas as pd
@@ -11,11 +12,12 @@ from tqdm import tqdm
 logging.basicConfig(format="%(asctime)s : %(levelname)s : %(message)s", level=logging.INFO)
 
 class Graph2Vec:
-    def __init__(self, size=128, epochs=10, workers=8, iter=10):
+    def __init__(self, size=128, epochs=10, workers=8, iter=10, seed=None):
         self.size = size
         self.epochs = epochs
         self.workers = workers
         self.iter = iter
+        self.seed = seed
         self.fitted = False
 
     def fit(self, projectGraphs):
@@ -27,7 +29,8 @@ class Graph2Vec:
                         sample = 0.0001,
                         workers = self.workers,
                         epochs = self.epochs,
-                        alpha = 0.025)
+                        alpha = 0.025,
+                        seed = self.seed)
 
         self.fitted = True
 

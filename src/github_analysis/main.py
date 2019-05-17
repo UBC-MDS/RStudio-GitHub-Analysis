@@ -1,9 +1,13 @@
+"""To have this run in a reproducible manner, run: `PYTHONHASHSEED=0 python src/github_analysis/main.py` Setting
+the env variable PYTHONHASHSEED to 0 will disable hash randomization."""
 import time
 import multiprocessing
+import collections
 
 import graph2vec as g2v
 import reduce_embedding_dim as red
 import data_layer as dl
+import cluster as c
 import motif_finder as mf
 import freq_graph as fg
 import nxutils as nxutils
@@ -29,7 +33,7 @@ if __name__ == '__main__':
     #manager = multiprocessing.Manager()
     #project_graphs = manager.dict()
 
-    project_graphs = {}
+    project_graphs = collections.OrderedDict()
     for projectId in dl.getUniqueProjectIdsFromDf(projectData):
         projectCommits = dl.getCommitsByProjectId(projectId)
         project_graphs[projectId] = nxutils.git_graph(projectCommits)
@@ -39,17 +43,16 @@ if __name__ == '__main__':
 
     generateGraphsTime = time.time()
     print("NxGraphs Built:\t\t" +        str(generateGraphsTime - getDataTime) +    "\tseconds")
-
-    g2vModel = g2v.Graph2Vec(size=n_dimensions)
+    g2vModel = g2v.Graph2Vec(size=n_dimensions, workers=1, seed=1)
     g2vEmbeddings = g2vModel.fit_transform(list(project_graphs.values()))
     buildModelTime = time.time()
     print("G2V Model Built:\t" +        str(buildModelTime - generateGraphsTime) +   "\tseconds")
 
-    red.reduce_dim()
+    red.reduce_dim(random_state=1)
     reduceTime = time.time()
     print("Dims Reduced:\t\t" +        str(reduceTime - buildModelTime) +             "\tseconds")
 
-    clusters = mf.get_embedding_clusters()
+    clusters = c.get_embedding_clusters(random_state=1)
     projectClusterTime = time.time()
     print("Projects Clustered:\t" +   str(projectClusterTime - reduceTime) +        "\tseconds")
 
