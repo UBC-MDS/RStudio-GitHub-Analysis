@@ -44,7 +44,7 @@ if __name__ == '__main__':
     generateGraphsTime = time.time()
     print("NxGraphs Built:\t\t" +        str(generateGraphsTime - getDataTime) +    "\tseconds")
     g2vModel = g2v.Graph2Vec(size=n_dimensions, workers=1, seed=1)
-    g2vEmbeddings = g2vModel.fit_transform(list(project_graphs.values()))
+    g2vEmbeddings = g2vModel.fit_transform(list(project_graphs.values()), list(project_graphs.keys()))
     buildModelTime = time.time()
     print("G2V Model Built:\t" +        str(buildModelTime - generateGraphsTime) +   "\tseconds")
 

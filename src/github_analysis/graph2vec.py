@@ -34,10 +34,10 @@ class Graph2Vec:
 
         self.fitted = True
 
-    def fit_transform(self, projectGraphs):
+    def fit_transform(self, projectGraphs, projectGraphsIndex):
         self.fit(projectGraphs)
 
-        return self.save_embeddings(len(projectGraphs))
+        return self.save_embeddings(len(projectGraphs),projectGraphsIndex=projectGraphsIndex)
 
     def extract_features(self, projectGraphs):
         document_collections = Parallel(n_jobs = self.workers)(delayed(self.feature_extractor)(projectGraphs[g], self.iter, str(g)) for g in tqdm(range(len(projectGraphs))))
@@ -71,14 +71,14 @@ class Graph2Vec:
 
         out = []
         for identifier in range(n_graphs):
-            out.append([identifier] + list(self.model.docvecs["g_"+str(identifier)]))
+            out.append(list(self.model.docvecs["g_"+str(identifier)]))
 
-        out = pd.DataFrame(out,columns = ["type"] +["x_" +str(dimension) for dimension in range(self.size)])
-        out = out.sort_values(["type"])
+        out = pd.DataFrame(out,columns = ["x_" +str(dimension) for dimension in range(self.size)])
+        #out = out.sort_values(["type"]) ASK RAYCE ABOUT THIS!
 
         return out
 
-    def save_embeddings(self, n_graphs, output_path='./results/embeddings.csv'):
+    def save_embeddings(self, n_graphs, output_path='./results/embeddings.csv',projectGraphsIndex=None):
         """
         Function to save the embedding.
         :param output_path: Path to the embedding csv.
@@ -90,7 +90,9 @@ class Graph2Vec:
             return
 
         embeddings = self.get_embeddings(n_graphs)
-        embeddings.to_csv(output_path, index = None)
+        embeddings['type'] = projectGraphsIndex
+        embeddings_ordered = embeddings[embeddings.columns.tolist()[-1:] + embeddings.columns.tolist()[:-1]]
+        embeddings_ordered.to_csv(output_path, index = False)
 
         return embeddings
 
