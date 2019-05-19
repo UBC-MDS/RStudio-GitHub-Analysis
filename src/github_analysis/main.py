@@ -14,7 +14,7 @@ import freq_graph as fg
 import nxutils
 import pandas as pd
 
-n_workers = 4
+n_workers = 8
 
 logging.basicConfig(format="%(asctime)s : %(levelname)s : %(message)s", filename="log.log", level=logging.INFO)
 
