@@ -5,15 +5,16 @@ import logging
 import numpy.distutils.system_info as sysinfo
 import collections
 
-from multiprocessing import Pool
-
 import graph2vec as g2v
 import reduce_embedding_dim as red
 import data_layer as dl
 import cluster as c
 import motif_finder as mf
 import freq_graph as fg
-import project_utils as pu
+import nxutils
+import pandas as pd
+
+n_workers = 4
 
 logging.basicConfig(format="%(asctime)s : %(levelname)s : %(message)s", filename="log.log", level=logging.INFO)
 
@@ -21,24 +22,27 @@ def main():
     logging.info("===START===")
     startTime = time.time()
 
-    projectData = dl.getRandomProjects(10000, 1)
+    project_data = dl.getRandomProjects(50000, 1)
     getDataTime = time.time()
 
     logging.info("Query Complete: " + str(getDataTime - startTime) + " seconds")
 
-    project_ids = dl.getUniqueProjectIdsFromDf(projectData)
-    with Pool(8) as pool:
-        project_graphs = pool.map(pu.git_graph_from_project_id, project_ids)
+    project_ids = dl.getUniqueProjectIdsFromDf(project_data)
+    project_groups = dl.getGroupedCommitsByProjectIds(project_ids)
+
+    project_graphs = []
+    for name, group in project_groups:
+        project_graphs.append(nxutils.git_graph(group))
 
     generateGraphsTime = time.time()
     logging.info("NxGraphs Built: " + str(generateGraphsTime - getDataTime) + " seconds")
 
-    g2vModel = g2v.Graph2Vec()
+    g2vModel = g2v.Graph2Vec(workers=n_workers)
     g2vEmbeddings = g2vModel.fit_transform(project_graphs, project_ids)
     buildModelTime = time.time()
     logging.info("G2V Model Built: " + str(buildModelTime - generateGraphsTime) + " seconds")
 
-    red.reduce_dim(random_state=1)
+    red.reduce_dim(workers=n_workers, random_state=1)
     reduceTime = time.time()
     logging.info("Dims Reduced: " + str(reduceTime - buildModelTime) + " seconds")
 

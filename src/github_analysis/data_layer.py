@@ -1,8 +1,8 @@
-import feather
+import pandas as pd
 import numpy as np
 
 commitDataPath = "/home/rayce/Assignments/Capstone/RStudio-Data-Repository/clean_data/commits.feather"
-commits_df = feather.read_dataframe(commitDataPath)
+commits_df = pd.read_feather(commitDataPath)
 
 def getProjectsDf():
     return commits_df
@@ -15,6 +15,12 @@ def getCommitsByProjectId(projectId):
 
 def getCommitsByProjectIds(projectIds):
     return commits_df[commits_df.project_id.isin(projectIds)]
+
+def getGroupedCommitsByProjectIds(projectIds):
+    projectCommits = getCommitsByProjectIds(projectIds)
+    groupedProjects = projectCommits.groupby("project_id")
+
+    return groupedProjects
 
 def getUniqueProjectIds():
     return commits_df.project_id.unique()
