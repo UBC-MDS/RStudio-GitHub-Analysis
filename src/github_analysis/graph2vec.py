@@ -1,3 +1,4 @@
+import os
 import hashlib
 import logging
 import pandas as pd
@@ -11,16 +12,18 @@ from tqdm import tqdm
 logging.basicConfig(format="%(asctime)s : %(levelname)s : %(message)s", filename="log.log", level=logging.INFO)
 
 class Graph2Vec:
-    def __init__(self, size=128, epochs=10, workers=8, iter=10):
+    def __init__(self, size=128, epochs=10, workers=8, iter=10, seed=None):
         self.size = size
         self.epochs = epochs
         self.workers = workers
         self.iter = iter
+        self.seed = seed
         self.fitted = False
 
     def fit(self, projectGraphs):
-        self.model = Doc2Vec(self.extract_features(projectGraphs),
-                        size = self.size,
+        if self.seed is None:
+            self.model = Doc2Vec(self.extract_features(projectGraphs),
+                        vector_size = self.size,
                         window = 0,
                         min_count = 5,
                         dm = 0,
@@ -28,13 +31,24 @@ class Graph2Vec:
                         workers = self.workers,
                         epochs = self.epochs,
                         alpha = 0.025)
+        else:
+            self.model = Doc2Vec(self.extract_features(projectGraphs),
+                        vector_size = self.size,
+                        window = 0,
+                        min_count = 5,
+                        dm = 0,
+                        sample = 0.0001,
+                        workers = self.workers,
+                        epochs = self.epochs,
+                        alpha = 0.025,
+                        seed = self.seed)
 
         self.fitted = True
 
-    def fit_transform(self, projectGraphs):
+    def fit_transform(self, projectGraphs, projectGraphsIndex):
         self.fit(projectGraphs)
 
-        return self.save_embeddings(len(projectGraphs))
+        return self.save_embeddings(len(projectGraphs), projectGraphsIndex=projectGraphsIndex)
 
     def extract_features(self, projectGraphs):
         document_collections = Parallel(n_jobs = self.workers)(delayed(self.feature_extractor)(projectGraphs[g], self.iter, str(g)) for g in tqdm(range(len(projectGraphs))))
@@ -68,14 +82,14 @@ class Graph2Vec:
 
         out = []
         for identifier in range(n_graphs):
-            out.append([identifier] + list(self.model.docvecs["g_"+str(identifier)]))
+            out.append(list(self.model.docvecs["g_"+str(identifier)]))
 
-        out = pd.DataFrame(out,columns = ["type"] +["x_" +str(dimension) for dimension in range(self.size)])
-        out = out.sort_values(["type"])
+        out = pd.DataFrame(out,columns = ["x_" +str(dimension) for dimension in range(self.size)])
+        #out = out.sort_values(["type"]) ASK RAYCE ABOUT THIS!
 
         return out
 
-    def save_embeddings(self, n_graphs, output_path='./results/embeddings.csv'):
+    def save_embeddings(self, n_graphs, output_path='./results/embeddings.csv',projectGraphsIndex=None):
         """
         Function to save the embedding.
         :param output_path: Path to the embedding csv.
@@ -87,7 +101,9 @@ class Graph2Vec:
             return
 
         embeddings = self.get_embeddings(n_graphs)
-        embeddings.to_csv(output_path, index = None)
+        embeddings['type'] = projectGraphsIndex
+        embeddings_ordered = embeddings[embeddings.columns.tolist()[-1:] + embeddings.columns.tolist()[:-1]]
+        embeddings_ordered.to_csv(output_path, index = False)
 
         return embeddings
 

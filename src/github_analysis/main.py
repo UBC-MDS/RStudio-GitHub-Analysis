@@ -1,18 +1,20 @@
+"""To have this run in a reproducible manner, run: `PYTHONHASHSEED=0 python src/github_analysis/main.py` Setting
+the env variable PYTHONHASHSEED to 0 will disable hash randomization."""
 import time
-import multiprocessing
 import logging
 import numpy.distutils.system_info as sysinfo
+import collections
+
+from multiprocessing import Pool
 
 import graph2vec as g2v
 import reduce_embedding_dim as red
 import data_layer as dl
+import cluster as c
 import motif_finder as mf
 import freq_graph as fg
 import project_utils as pu
 
-from multiprocessing import Pool
-
-n_dimensions = 128
 logging.basicConfig(format="%(asctime)s : %(levelname)s : %(message)s", filename="log.log", level=logging.INFO)
 
 if __name__ == '__main__':
@@ -25,22 +27,22 @@ if __name__ == '__main__':
     logging.info("Query Complete:\t\t" +           str(getDataTime - startTime) +              "\tseconds")
 
     with Pool(8) as pool:
-        projectIds = dl.getUniqueProjectIdsFromDf(projectData)
-        project_graphs = pool.map(pu.git_graph_from_project_id, projectIds)
+        project_ids = dl.getUniqueProjectIdsFromDf(projectData)
+        project_graphs = pool.map(pu.git_graph_from_project_id, project_ids)
 
     generateGraphsTime = time.time()
     logging.info("NxGraphs Built: " + str(generateGraphsTime - getDataTime) + " seconds")
 
-    g2vModel = g2v.Graph2Vec(size=n_dimensions)
-    g2vEmbeddings = g2vModel.fit_transform(project_graphs)
+    g2vModel = g2v.Graph2Vec()
+    g2vEmbeddings = g2vModel.fit_transform(project_graphs, project_ids)
     buildModelTime = time.time()
     logging.info("G2V Model Built: " + str(buildModelTime - generateGraphsTime) + "seconds")
 
-    red.reduce_dim()
+    red.reduce_dim(random_state=1)
     reduceTime = time.time()
     logging.info("Dims Reduced: " + str(reduceTime - buildModelTime) + "seconds")
 
-    clusters = mf.get_embedding_clusters()
+    clusters = c.get_embedding_clusters(random_state=1)
     projectClusterTime = time.time()
     logging.info("Projects Clustered: " + str(projectClusterTime - reduceTime) + "seconds")
 
