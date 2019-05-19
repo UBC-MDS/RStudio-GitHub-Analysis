@@ -1,65 +1,56 @@
 import time
 import multiprocessing
+import logging
+import numpy.distutils.system_info as sysinfo
 
 import graph2vec as g2v
 import reduce_embedding_dim as red
 import data_layer as dl
 import motif_finder as mf
 import freq_graph as fg
-import nxutils as nxutils
+import project_utils as pu
+
+from multiprocessing import Pool
 
 n_dimensions = 128
+logging.basicConfig(format="%(asctime)s : %(levelname)s : %(message)s", filename="log.log", level=logging.INFO)
 
 if __name__ == '__main__':
+    logging.info("===START===")
     startTime = time.time()
 
-    # query_p1 = commit_query(22003900)
-    # query_p2 = commit_query(33470153)
-
-    # data_p1 = query_ght(query_p1)
-    # data_p2 = query_ght(query_p2)
-
-    projectData = dl.getRandomProjects(10000, 1)
-    #projectData = dl.getProjectsDf()
-
+    projectData = dl.getRandomProjects(1000, 1)
     getDataTime = time.time()
 
-    print("Query Complete:\t\t" +           str(getDataTime - startTime) +              "\tseconds")
+    logging.info("Query Complete:\t\t" +           str(getDataTime - startTime) +              "\tseconds")
 
-    #manager = multiprocessing.Manager()
-    #project_graphs = manager.dict()
-
-    project_graphs = {}
-    for projectId in dl.getUniqueProjectIdsFromDf(projectData):
-        projectCommits = dl.getCommitsByProjectId(projectId)
-        project_graphs[projectId] = nxutils.git_graph(projectCommits)
-        # TODO: Fix this cause it's slower than just doing it on one core.. .hmmmmmmm
-        # You're doing this wrong self..
-        #multicore_git_graph(project_graphs, projectId, projectCommits)
+    with Pool(8) as pool:
+        projectIds = dl.getUniqueProjectIdsFromDf(projectData)
+        project_graphs = pool.map(pu.git_graph_from_project_id, projectIds)
 
     generateGraphsTime = time.time()
-    print("NxGraphs Built:\t\t" +        str(generateGraphsTime - getDataTime) +    "\tseconds")
+    logging.info("NxGraphs Built: " + str(generateGraphsTime - getDataTime) + " seconds")
 
     g2vModel = g2v.Graph2Vec(size=n_dimensions)
-    g2vEmbeddings = g2vModel.fit_transform(list(project_graphs.values()))
+    g2vEmbeddings = g2vModel.fit_transform(project_graphs)
     buildModelTime = time.time()
-    print("G2V Model Built:\t" +        str(buildModelTime - generateGraphsTime) +   "\tseconds")
+    logging.info("G2V Model Built: " + str(buildModelTime - generateGraphsTime) + "seconds")
 
     red.reduce_dim()
     reduceTime = time.time()
-    print("Dims Reduced:\t\t" +        str(reduceTime - buildModelTime) +             "\tseconds")
+    logging.info("Dims Reduced: " + str(reduceTime - buildModelTime) + "seconds")
 
     clusters = mf.get_embedding_clusters()
     projectClusterTime = time.time()
-    print("Projects Clustered:\t" +   str(projectClusterTime - reduceTime) +        "\tseconds")
+    logging.info("Projects Clustered: " + str(projectClusterTime - reduceTime) + "seconds")
 
     motifs_by_cluster = mf.get_motifs_by_cluster(clusters)
     motifTime = time.time()
-    print("Motifs Generated:\t" +  str(motifTime - projectClusterTime) +            "\tseconds")
+    logging.info("Motifs Generated: " + str(motifTime - projectClusterTime) + " seconds")
 
     fg.generate_motif_visualisations_by_cluster()
     freqGraphTime = time.time()
-    print("Frequency Graphs Built:\t" +   str(freqGraphTime- motifTime) +           "\tseconds")
+    logging.info("Frequency Graphs Built: " + str(freqGraphTime- motifTime) + " seconds")
 
     print()
     print("Query Time:\t\t" +           str(getDataTime - startTime) +              "\tseconds")

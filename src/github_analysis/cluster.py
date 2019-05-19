@@ -2,7 +2,6 @@ import pandas as pd
 from sklearn.cluster import KMeans
 import pickle
 
-
 def get_embedding_clusters(embedding_input_file='./results/embeddings.csv', k_for_clustering=10, random_state=None,
                            output_file='./results/clusters.pickle'):
     """

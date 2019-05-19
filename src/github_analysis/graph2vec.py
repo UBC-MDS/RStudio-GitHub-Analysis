@@ -8,7 +8,7 @@ from joblib import Parallel, delayed
 from gensim.models.doc2vec import Doc2Vec, TaggedDocument
 from tqdm import tqdm
 
-logging.basicConfig(format="%(asctime)s : %(levelname)s : %(message)s", level=logging.INFO)
+logging.basicConfig(format="%(asctime)s : %(levelname)s : %(message)s", filename="log.log", level=logging.INFO)
 
 class Graph2Vec:
     def __init__(self, size=128, epochs=10, workers=8, iter=10):
