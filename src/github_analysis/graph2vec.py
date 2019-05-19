@@ -51,7 +51,7 @@ class Graph2Vec:
         return self.save_embeddings(len(projectGraphs), projectGraphsIndex=projectGraphsIndex)
 
     def extract_features(self, projectGraphs):
-        document_collections = Parallel(n_jobs = self.workers)(delayed(self.feature_extractor)(projectGraphs[g], self.iter, str(g)) for g in tqdm(range(len(projectGraphs))))
+        document_collections = Parallel(n_jobs = self.workers)(delayed(self.feature_extractor)(projectGraphs[g], self.iter, str(g)) for g in range(len(projectGraphs)))
 
         return document_collections
 

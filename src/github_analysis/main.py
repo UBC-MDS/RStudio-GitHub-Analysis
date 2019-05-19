@@ -17,52 +17,55 @@ import project_utils as pu
 
 logging.basicConfig(format="%(asctime)s : %(levelname)s : %(message)s", filename="log.log", level=logging.INFO)
 
-if __name__ == '__main__':
+def main():
     logging.info("===START===")
     startTime = time.time()
 
     projectData = dl.getRandomProjects(1000, 1)
     getDataTime = time.time()
 
-    logging.info("Query Complete:\t\t" +           str(getDataTime - startTime) +              "\tseconds")
+    logging.info("Query Complete: " + str(getDataTime - startTime) + " seconds")
 
     with Pool(8) as pool:
         project_ids = dl.getUniqueProjectIdsFromDf(projectData)
         project_graphs = pool.map(pu.git_graph_from_project_id, project_ids)
 
-    generateGraphsTime = time.time()
-    logging.info("NxGraphs Built: " + str(generateGraphsTime - getDataTime) + " seconds")
+        generateGraphsTime = time.time()
+        logging.info("NxGraphs Built: " + str(generateGraphsTime - getDataTime) + " seconds")
 
-    g2vModel = g2v.Graph2Vec()
-    g2vEmbeddings = g2vModel.fit_transform(project_graphs, project_ids)
-    buildModelTime = time.time()
-    logging.info("G2V Model Built: " + str(buildModelTime - generateGraphsTime) + "seconds")
+        g2vModel = g2v.Graph2Vec()
+        g2vEmbeddings = g2vModel.fit_transform(project_graphs, project_ids)
+        buildModelTime = time.time()
+        logging.info("G2V Model Built: " + str(buildModelTime - generateGraphsTime) + " seconds")
 
-    red.reduce_dim(random_state=1)
-    reduceTime = time.time()
-    logging.info("Dims Reduced: " + str(reduceTime - buildModelTime) + "seconds")
+        red.reduce_dim(random_state=1)
+        reduceTime = time.time()
+        logging.info("Dims Reduced: " + str(reduceTime - buildModelTime) + " seconds")
 
-    clusters = c.get_embedding_clusters(random_state=1)
-    projectClusterTime = time.time()
-    logging.info("Projects Clustered: " + str(projectClusterTime - reduceTime) + "seconds")
+        clusters = c.get_embedding_clusters(random_state=1)
+        projectClusterTime = time.time()
+        logging.info("Projects Clustered: " + str(projectClusterTime - reduceTime) + " seconds")
 
-    motifs_by_cluster = mf.get_motifs_by_cluster(clusters)
-    motifTime = time.time()
-    logging.info("Motifs Generated: " + str(motifTime - projectClusterTime) + " seconds")
+        motifs_by_cluster = mf.get_motifs_by_cluster(clusters)
+        motifTime = time.time()
+        logging.info("Motifs Generated: " + str(motifTime - projectClusterTime) + " seconds")
 
-    fg.generate_motif_visualisations_by_cluster()
-    freqGraphTime = time.time()
-    logging.info("Frequency Graphs Built: " + str(freqGraphTime- motifTime) + " seconds")
+        fg.generate_motif_visualisations_by_cluster()
+        freqGraphTime = time.time()
+        logging.info("Frequency Graphs Built: " + str(freqGraphTime- motifTime) + " seconds")
 
-    print()
-    print("Query Time:\t\t" +           str(getDataTime - startTime) +              "\tseconds")
-    print("NxGraphs Time:\t\t" +        str(generateGraphsTime - getDataTime) +     "\tseconds")
-    print("Model Build Time:\t" +       str(buildModelTime - generateGraphsTime) +  "\tseconds")
-    print("Dim Reduce Time:\t" +        str(reduceTime - buildModelTime) +          "\tseconds")
-    print("Project Cluster Time:\t" +   str(projectClusterTime - reduceTime) +      "\tseconds")
-    print("Motif Generation Time:\t" +  str(motifTime - projectClusterTime) +       "\tseconds")
-    print("Frequency Graph Time:\t" +   str(freqGraphTime- motifTime) +             "\tseconds")
-    print("Total Time:\t\t" +           str(reduceTime - startTime) +               "\tseconds")
+        print()
+        print("Query Time:\t\t" +           str(getDataTime - startTime) +              "\tseconds")
+        print("NxGraphs Time:\t\t" +        str(generateGraphsTime - getDataTime) +     "\tseconds")
+        print("Model Build Time:\t" +       str(buildModelTime - generateGraphsTime) +  "\tseconds")
+        print("Dim Reduce Time:\t" +        str(reduceTime - buildModelTime) +          "\tseconds")
+        print("Project Cluster Time:\t" +   str(projectClusterTime - reduceTime) +      "\tseconds")
+        print("Motif Generation Time:\t" +  str(motifTime - projectClusterTime) +       "\tseconds")
+        print("Frequency Graph Time:\t" +   str(freqGraphTime - motifTime) +            "\tseconds")
+        print("Total Time:\t\t" +           str(freqGraphTime - startTime) +            "\tseconds")
+
+if __name__ == '__main__':
+    main()
 
     # plt.clf()
     # for graph in range(len(projectGraphs)):
