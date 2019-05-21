@@ -9,7 +9,7 @@ from joblib import Parallel, delayed
 from gensim.models.doc2vec import Doc2Vec, TaggedDocument
 from tqdm import tqdm
 
-logging.basicConfig(format="%(asctime)s : %(levelname)s : %(message)s", level=logging.INFO)
+logging.basicConfig(format="%(asctime)s : %(levelname)s : %(message)s", filename="log.log", level=logging.INFO)
 
 class Graph2Vec:
     def __init__(self, size=128, epochs=10, workers=8, iter=10, seed=None):
@@ -21,8 +21,19 @@ class Graph2Vec:
         self.fitted = False
 
     def fit(self, projectGraphs):
-        self.model = Doc2Vec(self.extract_features(projectGraphs),
-                        size = self.size,
+        if self.seed is None:
+            self.model = Doc2Vec(self.extract_features(projectGraphs),
+                        vector_size = self.size,
+                        window = 0,
+                        min_count = 5,
+                        dm = 0,
+                        sample = 0.0001,
+                        workers = self.workers,
+                        epochs = self.epochs,
+                        alpha = 0.025)
+        else:
+            self.model = Doc2Vec(self.extract_features(projectGraphs),
+                        vector_size = self.size,
                         window = 0,
                         min_count = 5,
                         dm = 0,
@@ -37,10 +48,10 @@ class Graph2Vec:
     def fit_transform(self, projectGraphs, projectGraphsIndex):
         self.fit(projectGraphs)
 
-        return self.save_embeddings(len(projectGraphs),projectGraphsIndex=projectGraphsIndex)
+        return self.save_embeddings(len(projectGraphs), projectGraphsIndex=projectGraphsIndex)
 
     def extract_features(self, projectGraphs):
-        document_collections = Parallel(n_jobs = self.workers)(delayed(self.feature_extractor)(projectGraphs[g], self.iter, str(g)) for g in tqdm(range(len(projectGraphs))))
+        document_collections = Parallel(n_jobs = self.workers)(delayed(self.feature_extractor)(projectGraphs[g], self.iter, str(g)) for g in range(len(projectGraphs)))
 
         return document_collections
 

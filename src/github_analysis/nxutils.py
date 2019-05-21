@@ -1,5 +1,9 @@
 import matplotlib.pyplot as plt
+import pandas as pd
 import networkx as nx
+import logging
+
+logging.basicConfig(format="%(asctime)s : %(levelname)s : %(message)s", filename="log.log", level=logging.INFO)
 
 def git_graph(commitData):
     """
@@ -11,9 +15,6 @@ def git_graph(commitData):
     source_target_commits.columns = ["source", "target"]
 
     return nx.from_pandas_edgelist(source_target_commits, create_using=nx.OrderedDiGraph())
-
-def multicore_git_graph(d, projectId, projectGraph):
-    d[projectId] = git_graph(projectGraph)
 
 def plot_commits(graph):
     """

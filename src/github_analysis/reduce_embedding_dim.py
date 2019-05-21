@@ -11,14 +11,14 @@ import pandas as pd
 #from sklearn.manifold import TSNE
 from MulticoreTSNE import MulticoreTSNE as TSNE
 
-def run_tsne(embeddings=None, filename=None, random_state=None):
+def run_tsne(workers=4, embeddings=None, filename=None, random_state=None):
     """filename: path to embeddings where first row is the name of the graphs.
     Returns a DataFrame identical to the original but in 2 dimensions."""
     if embeddings is None and filename is not None:
         embeddings = pd.read_csv(filename, index_col=0)
 
     # Make and fit tsne model
-    tsne_model = TSNE(n_components=2, n_jobs=8, random_state=random_state)
+    tsne_model = TSNE(n_components=2, n_jobs=workers, random_state=random_state)
     transformed_array = tsne_model.fit_transform(embeddings.values)
     df = pd.DataFrame(transformed_array, columns=['x', 'y'])
     df.index = embeddings.index
@@ -35,11 +35,11 @@ def output_image_of_tsne(embeddings_tsne_transform, filename):
     plt.savefig(filename)
 
 
-def reduce_dim(embeddings=None, save_to_csv=True, save_image=True, random_state=None):
+def reduce_dim(workers = 4, embeddings=None, save_to_csv=True, save_image=True, random_state=None):
     if embeddings is None:
-        transformed_array = run_tsne(filename='./results/embeddings.csv',random_state=random_state)
+        transformed_array = run_tsne(workers=workers, filename='./results/embeddings.csv',random_state=random_state)
     else:
-        transformed_array = run_tsne(embeddingsrandom_state,random_state=random_state)
+        transformed_array = run_tsne(workers=workers, embeddingsrandom_state,random_state=random_state)
 
     if save_to_csv == True:
         transformed_array.to_csv('./results/embeddings_reduced_dim.csv')

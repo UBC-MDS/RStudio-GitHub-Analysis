@@ -1,7 +1,8 @@
 """To have this run in a reproducible manner, run: `PYTHONHASHSEED=0 python src/github_analysis/main.py` Setting
 the env variable PYTHONHASHSEED to 0 will disable hash randomization."""
 import time
-import multiprocessing
+import logging
+import numpy.distutils.system_info as sysinfo
 import collections
 
 import graph2vec as g2v
@@ -10,59 +11,52 @@ import data_layer as dl
 import cluster as c
 import motif_finder as mf
 import freq_graph as fg
-import nxutils as nxutils
+import nxutils
+import pandas as pd
 
-n_dimensions = 128
+n_workers = 8
 
-if __name__ == '__main__':
+logging.basicConfig(format="%(asctime)s : %(levelname)s : %(message)s", filename="log.log", level=logging.INFO)
+
+def main():
+    logging.info("===START===")
     startTime = time.time()
 
-    # query_p1 = commit_query(22003900)
-    # query_p2 = commit_query(33470153)
-
-    # data_p1 = query_ght(query_p1)
-    # data_p2 = query_ght(query_p2)
-
-    projectData = dl.getRandomProjects(10000, 1)
-    #projectData = dl.getProjectsDf()
-
+    project_data = dl.getRandomProjects(50000, 1)
     getDataTime = time.time()
 
-    print("Query Complete:\t\t" +           str(getDataTime - startTime) +              "\tseconds")
+    logging.info("Query Complete: " + str(getDataTime - startTime) + " seconds")
 
-    #manager = multiprocessing.Manager()
-    #project_graphs = manager.dict()
+    project_ids = dl.getUniqueProjectIdsFromDf(project_data)
+    project_groups = dl.getGroupedCommitsByProjectIds(project_ids)
 
-    project_graphs = collections.OrderedDict()
-    for projectId in dl.getUniqueProjectIdsFromDf(projectData):
-        projectCommits = dl.getCommitsByProjectId(projectId)
-        project_graphs[projectId] = nxutils.git_graph(projectCommits)
-        # TODO: Fix this cause it's slower than just doing it on one core.. .hmmmmmmm
-        # You're doing this wrong self..
-        #multicore_git_graph(project_graphs, projectId, projectCommits)
+    project_graphs = []
+    for name, group in project_groups:
+        project_graphs.append(nxutils.git_graph(group))
 
     generateGraphsTime = time.time()
-    print("NxGraphs Built:\t\t" +        str(generateGraphsTime - getDataTime) +    "\tseconds")
-    g2vModel = g2v.Graph2Vec(size=n_dimensions, workers=1, seed=1)
-    g2vEmbeddings = g2vModel.fit_transform(list(project_graphs.values()), list(project_graphs.keys()))
-    buildModelTime = time.time()
-    print("G2V Model Built:\t" +        str(buildModelTime - generateGraphsTime) +   "\tseconds")
+    logging.info("NxGraphs Built: " + str(generateGraphsTime - getDataTime) + " seconds")
 
-    red.reduce_dim(random_state=1)
+    g2vModel = g2v.Graph2Vec(workers=n_workers)
+    g2vEmbeddings = g2vModel.fit_transform(project_graphs, project_ids)
+    buildModelTime = time.time()
+    logging.info("G2V Model Built: " + str(buildModelTime - generateGraphsTime) + " seconds")
+
+    red.reduce_dim(workers=n_workers, random_state=1)
     reduceTime = time.time()
-    print("Dims Reduced:\t\t" +        str(reduceTime - buildModelTime) +             "\tseconds")
+    logging.info("Dims Reduced: " + str(reduceTime - buildModelTime) + " seconds")
 
     clusters = c.get_embedding_clusters(random_state=1)
     projectClusterTime = time.time()
-    print("Projects Clustered:\t" +   str(projectClusterTime - reduceTime) +        "\tseconds")
+    logging.info("Projects Clustered: " + str(projectClusterTime - reduceTime) + " seconds")
 
     motifs_by_cluster = mf.get_motifs_by_cluster(clusters)
     motifTime = time.time()
-    print("Motifs Generated:\t" +  str(motifTime - projectClusterTime) +            "\tseconds")
+    logging.info("Motifs Generated: " + str(motifTime - projectClusterTime) + " seconds")
 
     fg.generate_motif_visualisations_by_cluster()
     freqGraphTime = time.time()
-    print("Frequency Graphs Built:\t" +   str(freqGraphTime- motifTime) +           "\tseconds")
+    logging.info("Frequency Graphs Built: " + str(freqGraphTime- motifTime) + " seconds")
 
     print()
     print("Query Time:\t\t" +           str(getDataTime - startTime) +              "\tseconds")
@@ -71,8 +65,11 @@ if __name__ == '__main__':
     print("Dim Reduce Time:\t" +        str(reduceTime - buildModelTime) +          "\tseconds")
     print("Project Cluster Time:\t" +   str(projectClusterTime - reduceTime) +      "\tseconds")
     print("Motif Generation Time:\t" +  str(motifTime - projectClusterTime) +       "\tseconds")
-    print("Frequency Graph Time:\t" +   str(freqGraphTime- motifTime) +             "\tseconds")
-    print("Total Time:\t\t" +           str(reduceTime - startTime) +               "\tseconds")
+    print("Frequency Graph Time:\t" +   str(freqGraphTime - motifTime) +            "\tseconds")
+    print("Total Time:\t\t" +           str(freqGraphTime - startTime) +            "\tseconds")
+
+if __name__ == '__main__':
+    main()
 
     # plt.clf()
     # for graph in range(len(projectGraphs)):
