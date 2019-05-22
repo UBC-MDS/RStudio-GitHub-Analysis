@@ -6,7 +6,7 @@ import numpy.distutils.system_info as sysinfo
 import collections
 
 import graph2vec as g2v
-import reduce_embedding_dim as red
+import dim_reduce as dr
 import data_layer as dl
 import cluster as c
 import motif_finder as mf
@@ -42,11 +42,20 @@ def main():
     buildModelTime = time.time()
     logging.info("G2V Model Built: " + str(buildModelTime - generateGraphsTime) + " seconds")
 
-    red.reduce_dim(workers=n_workers, random_state=1)
+    reducers = dr.ReduceDim(n_dimensions = 2)
+    reducers.open_embeddings('./results/embeddings.csv')
+    reducers.set_algorithm('t_sne', random_state = 1, n_jobs = n_workers)
+    reducers.fit_transform()
+    reducers.plot_tsne('./results/embeddings_tsne')
+    reducers.save_reduced_data('./results/embeddings_reduced_dim.csv')
     reduceTime = time.time()
     logging.info("Dims Reduced: " + str(reduceTime - buildModelTime) + " seconds")
 
-    clusters = c.get_embedding_clusters(random_state=1)
+    clusters = c.Cluster()
+    clusters.open_embeddings('./results/embeddings.csv')
+    clusters.set_algorithm('k_means', n_clusters = 10, random_state = 1)
+    clusters.fit_algorithm()
+    clusters.save_file('./results/clusters.pickle')
     projectClusterTime = time.time()
     logging.info("Projects Clustered: " + str(projectClusterTime - reduceTime) + " seconds")
 
