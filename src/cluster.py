@@ -1,7 +1,8 @@
 import pandas as pd
 import numpy as np
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
-from sklearn.cluster import KMeans, DBSCAN
+from sklearn.cluster import DBSCAN, MiniBatchKMeans
+
 
 class Cluster():
     def __init__(self, raw_data):
@@ -20,8 +21,9 @@ class Cluster():
         self.data = None
         self.algorithm = None
         self.transformed_data  = None
+        self.fitted = None
 
-    def scale_data(self, min_max = False):
+    def scale_data(self, min_max = True):
         """ Scales the data in all columns to a same scale
 
         Parameters
@@ -56,8 +58,9 @@ class Cluster():
         -------
         None
         """
+        name = name.lower()
         if name == 'k_means':
-            self.algorithm = KMeans(**kwargs)
+            self.algorithm = MiniBatchKMeans(**kwargs)
         elif name == 'dbscan':
             self.algorithm = DBSCAN(**kwargs)
 
@@ -74,6 +77,7 @@ class Cluster():
         """
         self.scale_data()
         self.algorithm.fit(self.data)
+        self.fitted = True
 
     def get_labels(self):
         """ Gets the cluster labels
@@ -107,9 +111,3 @@ class Cluster():
             return self.inertia
         except:
             print('Not Inertia in this algorithm')
-
-cluster = Cluster([[1,2,3], [2, 4, 6]])
-cluster.set_algorithm('k_means', n_clusters = 2)
-print('Up to here')
-print(cluster.fit_algorithm())
-print(cluster.get_labels())
