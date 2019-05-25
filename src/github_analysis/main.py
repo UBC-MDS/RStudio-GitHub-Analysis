@@ -14,7 +14,7 @@ import freq_graph as fg
 import nxutils
 import pandas as pd
 
-n_workers = 8
+n_workers = 1 # 8
 
 logging.basicConfig(format="%(asctime)s : %(levelname)s : %(message)s", filename="log.log", level=logging.INFO)
 
@@ -22,7 +22,7 @@ def main():
     logging.info("===START===")
     startTime = time.time()
 
-    project_data = dl.getRandomProjects(50000, 1)
+    project_data = dl.getRandomProjects(10000, 1)
     getDataTime = time.time()
 
     logging.info("Query Complete: " + str(getDataTime - startTime) + " seconds")
@@ -30,15 +30,18 @@ def main():
     project_ids = dl.getUniqueProjectIdsFromDf(project_data)
     project_groups = dl.getGroupedCommitsByProjectIds(project_ids)
 
+
     project_graphs = []
+    project_ids_ordered = []
     for name, group in project_groups:
         project_graphs.append(nxutils.git_graph(group))
+        project_ids_ordered.append(name)
 
     generateGraphsTime = time.time()
     logging.info("NxGraphs Built: " + str(generateGraphsTime - getDataTime) + " seconds")
 
-    g2vModel = g2v.Graph2Vec(workers=n_workers)
-    g2vEmbeddings = g2vModel.fit_transform(project_graphs, project_ids)
+    g2vModel = g2v.Graph2Vec(workers=n_workers, seed=1)
+    g2vEmbeddings = g2vModel.fit_transform(project_graphs, project_ids_ordered)
     buildModelTime = time.time()
     logging.info("G2V Model Built: " + str(buildModelTime - generateGraphsTime) + " seconds")
 
