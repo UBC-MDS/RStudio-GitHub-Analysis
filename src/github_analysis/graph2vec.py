@@ -1,3 +1,4 @@
+import os
 import hashlib
 import logging
 import pandas as pd
@@ -8,23 +9,21 @@ from joblib import Parallel, delayed
 from gensim.models.doc2vec import Doc2Vec, TaggedDocument
 from tqdm import tqdm
 
-logging.basicConfig(format="%(asctime)s : %(levelname)s : %(message)s", level=logging.INFO)
+logging.basicConfig(format="%(asctime)s : %(levelname)s : %(message)s", filename="log.log", level=logging.INFO)
 
 class Graph2Vec:
-    def __init__(self, size=128, epochs=10, workers=4):
+    def __init__(self, size=128, epochs=10, workers=8, iter=10, seed=None):
         self.size = size
         self.epochs = epochs
         self.workers = workers
+        self.iter = iter
+        self.seed = seed
         self.fitted = False
 
-    def extract_features(self, projectGraphs):
-        document_collections = Parallel(n_jobs = self.workers)(delayed(self.feature_extractor)(projectGraphs[g], self.epochs, str(g)) for g in tqdm(range(len(projectGraphs))))
-
-        return document_collections
-
     def fit(self, projectGraphs):
-        self.model = Doc2Vec(self.extract_features(projectGraphs),
-                        size = self.size,
+        if self.seed is None:
+            self.model = Doc2Vec(self.extract_features(projectGraphs),
+                        vector_size = self.size,
                         window = 0,
                         min_count = 5,
                         dm = 0,
@@ -32,14 +31,36 @@ class Graph2Vec:
                         workers = self.workers,
                         epochs = self.epochs,
                         alpha = 0.025)
+        else:
+            self.model = Doc2Vec(self.extract_features(projectGraphs),
+                        vector_size = self.size,
+                        window = 0,
+                        min_count = 5,
+                        dm = 0,
+                        sample = 0.0001,
+                        workers = self.workers,
+                        epochs = self.epochs,
+                        alpha = 0.025,
+                        seed = self.seed)
 
         self.fitted = True
+
+    def fit_transform(self, projectGraphs, projectGraphsIndex):
+        self.fit(projectGraphs)
+
+        return self.save_embeddings(len(projectGraphs), projectGraphsIndex=projectGraphsIndex)
+
+    def extract_features(self, projectGraphs):
+        document_collections = Parallel(n_jobs = self.workers)(delayed(self.feature_extractor)(projectGraphs[g], self.iter, str(g)) for g in range(len(projectGraphs)))
+
+        return document_collections
 
     def feature_extractor(self, graph, rounds, name):
         """
         Function to extract WL features from a graph.
         :param graph: The nx graph.
         :param rounds: Number of WL iterations.
+        :param name: ProjectId to output
         :return doc: Document collection object.
         """
         features = nx.degree(graph)
@@ -47,9 +68,28 @@ class Graph2Vec:
 
         machine = WeisfeilerLehmanMachine(graph, features, rounds)
         doc = TaggedDocument(words = machine.extracted_features , tags = ["g_" + name])
+
         return doc
 
-    def save_embeddings(self, output_path, n_graphs, dimensions):
+    def get_embeddings(self, n_graphs):
+        """
+        Function to get embeddings from the model.
+        :param n_graphs: The number of graphs used to train the model.
+        """
+        if not self.fitted:
+            print("Model has not been fit, run Graph2Vec.fit() before getting embeddings")
+            return
+
+        out = []
+        for identifier in range(n_graphs):
+            out.append(list(self.model.docvecs["g_"+str(identifier)]))
+
+        out = pd.DataFrame(out,columns = ["x_" +str(dimension) for dimension in range(self.size)])
+        #out = out.sort_values(["type"]) ASK RAYCE ABOUT THIS!
+
+        return out
+
+    def save_embeddings(self, n_graphs, output_path='./results/embeddings.csv',projectGraphsIndex=None):
         """
         Function to save the embedding.
         :param output_path: Path to the embedding csv.
@@ -60,13 +100,12 @@ class Graph2Vec:
             print("Model has not been fit, run Graph2Vec.fit() before saving embeddings")
             return
 
-        out = []
-        for identifier in range(n_graphs):
-            out.append([identifier] + list(self.model.docvecs["g_"+str(identifier)]))
+        embeddings = self.get_embeddings(n_graphs)
+        embeddings['type'] = projectGraphsIndex
+        embeddings_ordered = embeddings[embeddings.columns.tolist()[-1:] + embeddings.columns.tolist()[:-1]]
+        embeddings_ordered.to_csv(output_path, index = False)
 
-        out = pd.DataFrame(out,columns = ["type"] +["x_" +str(dimension) for dimension in range(dimensions)])
-        out = out.sort_values(["type"])
-        out.to_csv(output_path, index = None)
+        return embeddings
 
 class WeisfeilerLehmanMachine:
     """
@@ -93,6 +132,7 @@ class WeisfeilerLehmanMachine:
         """
         new_features = {}
         for node in self.nodes:
+            # TODO: Change neighbours to children
             nebs = self.graph.neighbors(node)
             degs = [self.features[neb] for neb in nebs]
             features = "_".join([str(self.features[node])]+list(set(sorted([str(deg) for deg in degs]))))

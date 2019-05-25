@@ -1,7 +1,9 @@
 import pandas as pd
 from sklearn.cluster import KMeans
 import pickle
+import logging
 
+logging.basicConfig(format="%(asctime)s : %(levelname)s : %(message)s", filename="log.log", level=logging.INFO)
 
 def get_embedding_clusters(embedding_input_file='./results/embeddings.csv', k_for_clustering=10, random_state=None,
                            output_file='./results/clusters.pickle'):
@@ -30,7 +32,7 @@ def get_embedding_clusters(embedding_input_file='./results/embeddings.csv', k_fo
     if output_file is not None:
         with open(output_file, 'wb') as output:
             pickle.dump(clusters, output)
-        print('cluster file outputted!')
+        logging.info('Cluster file outputted!')
 
     return clusters
 

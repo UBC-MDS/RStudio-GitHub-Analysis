@@ -1,5 +1,5 @@
 """
-Sample usage (from project root dir): python src/motif_finder.py
+Sample usage (from project root dir): python src/github_analysis/motif_finder.py 0
 
 Functions for implementing the following algo, suggested by Trevor Campbell:
 To identify the K-node motifs in a graph, you could always use NetworkX and do something simple like:
@@ -14,20 +14,22 @@ keep adding neighbors of the motif until you reach K nodes
 import sys
 import random
 import pickle
+import logging
 
 import networkx as nx
 
-from github_analysis.big_cloud_scratch import git_graph
-from github_analysis.data_layer import getCommitsByProjectIds
-from github_analysis.cluster import get_embedding_clusters
+from nxutils import git_graph
+from data_layer import getCommitsByProjectIds
+from cluster import get_embedding_clusters
 
+logging.basicConfig(format="%(asctime)s : %(levelname)s : %(message)s", filename="log.log", level=logging.INFO)
 
-def main():
+def main(random_state=None):
     """Function that runs the cluster and gets the motif of each cluster."""
-    clusters = get_embedding_clusters()
+    clusters = get_embedding_clusters(random_state=random_state)
     get_motifs_by_cluster(clusters)
 
-   
+
 class MotifFinder:
     def __init__(self, G):
         """
@@ -37,7 +39,7 @@ class MotifFinder:
         """
         self.G = G
 
-    def sample_initial_node(self):
+    def sample_initial_node(self):  # TODO: let users pick a random state
         """
         Given a graph, randomly sample one of its nodes.
 
@@ -111,6 +113,27 @@ class MotifFinder:
         return motifs
 
 
+def get_motifs(github_project_ids,k_for_motifs, number_of_samples):
+    """Given a list of github prof"""
+    # Get graph for this cluster TODO: update to pull from pickle of project graphs
+    projects_cluster = getCommitsByProjectIds(github_project_ids)
+    G = git_graph(projects_cluster)
+
+    mf = MotifFinder(G)  # Instantiate MotifFinder object looking at that cluster's graph
+
+    # Trying to pull out the motifs of each cluster here. Need error handling for clusters where we can't pull out
+    # common motifs (e.g. can't build motifs of length k because there aren't many subgraphs at least k long)
+    try:
+        motifs = mf.get_motif_samples(k_for_motifs, number_of_samples)  # Get most common motifs for that cluster
+    except RecursionError:
+        logging.info('Graph has too many short paths.')
+        return None
+    except ValueError:
+        logging.info('Graph has no connections.')
+        return None
+    return motifs
+
+
 def get_motifs_by_cluster(clusters, k_for_motifs=5, number_of_samples=1000, output_file='./results/motifs_by_cluster.pickle'):
     """
     A way to take in a group of GitHub project clusters and output their most common motifs. For each cluster, get most common subgraphs
@@ -124,36 +147,19 @@ def get_motifs_by_cluster(clusters, k_for_motifs=5, number_of_samples=1000, outp
     """
     motifs_by_clusters = {}
     for cluster in clusters:
-
-        # Get graph for this cluster TODO: update to pull from pickle of project graphs
-        projects_cluster = getCommitsByProjectIds(clusters[cluster])
-        G = git_graph(projects_cluster)
-
-        mf = MotifFinder(G)  # Instantiate MotifFinder object looking at that cluster's graph
-
-        # Trying to pull out the motifs of each cluster here. Need error handling for clusters where we can't pull out
-        # common motifs (e.g. can't build motifs of length k because there aren't many subgraphs at least k long)
-        try:
-            motifs = mf.get_motif_samples(k_for_motifs, number_of_samples)  # Get most common motifs for that cluster
-        except RecursionError:
-            print('too many short paths for Cluster {}, it wont be included in output.'.format(cluster))
-            continue
-        except ValueError:
-            print('Cluster {} has no connections, it wont be included in output.'.format(cluster))
-            continue
-        motifs_by_clusters[cluster] = motifs
+        cluster_motif = get_motifs(clusters[cluster], k_for_motifs, number_of_samples)
+        if cluster_motif is not None:
+            motifs_by_clusters[cluster] = cluster_motif
 
     if output_file is not None:
         with open(output_file, 'wb') as output:
             pickle.dump(motifs_by_clusters, output)
-        print('cluster file outputted!')
+        logging.info('Cluster file outputted!')
 
     return motifs_by_clusters
 
-
 if __name__ == '__main__':
     main()
-    
 # TODO: this is generating 1 more k than specified, idk why.
 # TODO: output tsne graph with k-means labels.
 

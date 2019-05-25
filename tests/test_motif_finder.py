@@ -27,6 +27,10 @@ mf = MotifFinder(G)
 
 
 # Unit tests
+def test_main_output_type():
+    pass
+
+
 def test_sample_initial_node_output_type():
     """Check that MotifFinder.sample_initial_node outputs an integer."""
     assert type(mf.sample_initial_node()) == int
@@ -39,9 +43,12 @@ def test_sample_initial_node_output():
 
 def test_get_random_child_output_type():
     """Check that MotifFinder.get_random_child outputs an integer."""
-    initial_node = mf.sample_initial_node()
-    print(initial_node)
-    assert type(mf.get_random_child(initial_node)) in (int,None)
+    assert type(mf.get_random_child(355738534)) == int
+
+
+def test_get_random_child_no_children():
+    """Check that MotifFinder.get_random_child outputs None if there are no children."""
+    assert mf.get_random_child(139371373) is None
 
 
 def test_get_random_child_output():
@@ -90,7 +97,8 @@ def test_get_motif_samples_output_type():
     assert type(mf.get_motif_samples(5,5)) == dict
 
 
-def test_get_motif_samples_output_keys():
-    """Check that the output of get MotifFinder.get_sample_motif is a dictionary where the keys are a directed networkx
-    graph."""
-    pass
+def test_get_motifs_by_cluster_output_type():
+    assert type(get_motifs_by_cluster(clusters)) == dict
+
+
+# def test_get_motifs

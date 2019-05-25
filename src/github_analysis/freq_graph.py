@@ -9,7 +9,7 @@ from matplotlib.offsetbox import OffsetImage, AnnotationBbox
 import networkx as nx
 
 
-def main(input_file_motif_clusters='./results/motifs_by_cluster.pickle', output_file='./results/clustering_output.pdf'):
+def generate_motif_visualisations_by_cluster(input_file_motif_clusters='./results/motifs_by_cluster.pickle', output_file='./results/clustering_output.pdf'):
     """
     :param input_file_motif_clusters: string with a filepath to a pickled dictionary where the keys are cluster names and the values
     are dictionaries where the keys are motifs (nx subgraph) of length k and the values are how many times similar
