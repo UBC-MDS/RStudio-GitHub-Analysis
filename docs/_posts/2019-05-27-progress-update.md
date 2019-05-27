@@ -3,7 +3,7 @@ This project aims to understand how people are currently using Git, with the eve
 
 ## Initial Analysis
 <u>Collecting Data</u>  
-We’ve been collecting data for our analysis from GitHub Torrent (http://ghtorrent.org/), a wonderful project that logs public activity in GitHub and makes it publicly available as a monthly database dump. One big limitation of this dataset is that it doesn’t include users’ local commands (such as adding a file to be staged, switching branches, etc.), which means we only have access to a fragment of users’ actual Git workflow. For a more detailed walkthrough of our data collection process, see our blog post here: https://ubc-mds.github.io/RStudio-GitHub-Analysis/2019/05/03/up-and-running.html.
+We’ve been collecting data for our analysis from GitHub Torrent (http://ghtorrent.org/), a wonderful project that logs public activity in GitHub and makes it publicly available as a monthly database dump. One big limitation of this dataset is that it doesn’t include users’ local commands (such as adding a file to be staged, switching branches, etc.), which means we only have access to a fragment of users’ actual Git workflow. For a more detailed walkthrough of our data collection process, see our blog post here: https://ubc-mds.github.io/RStudio-GitHub-Analysis/2019/05/15/data-query.html.
 
 <u>Initial Analysis - Understanding the GitHub Torrent Dataset</u>  
 We started by getting a high-level overview on the dataset we’re working with.
