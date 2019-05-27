@@ -31,7 +31,7 @@ def motif_merging(input_file_motif_clusters='motifs_by_cluster.pickle', k_for_cl
 
 
     m2vModel = g2v.Graph2Vec(size=n_dimensions)
-    m2vModel = m2vModel.fit_transform(list(motif_dict.keys()))
+    m2vModel = m2vModel.fit_transform(list(motif_dict.keys()), output_path='./results/motif_embeddings.csv')
     #m2vModel.save_embeddings(len(motif_dict), output_path='./results/motif_embeddings.csv')
     clusters_of_motif = mf.get_embedding_clusters(embedding_input_file='./results/motif_embeddings.csv', k_for_clustering=k_for_clustering, random_state=None,
                            output_file='./results/clusters_of_motif.pickle')
