@@ -1,6 +1,5 @@
 Project Introduction
 ================
-2019-05-10 01:01:01
 
 As part of the Capstone project of the Master of Data Science program at
 UBC, we are studying how people use Git. Git is a Version Control System
