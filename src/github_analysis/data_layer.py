@@ -42,13 +42,16 @@ class data_layer:
 
         uniqueIds = self.getUniqueProjectIds()
 
-        return np.random.choice(uniqueIds, n)
+        return np.random.choice(uniqueIds, n, replace=False)
 
     def getRandomProjects(self, n, seed):
         projectIds = self.getRandomSampleOfIds(n, seed)
         projects = self.getCommitsByProjectIds(projectIds)
 
         return projects
+
+    def getProjectNameById(self, project_id):
+        return self.commits_df[self.commits_df["project_id"] == project_id].project_name.unique()[0]
 
 if __name__ == '__main__':
     print(getRandomProjects(5, 1))
