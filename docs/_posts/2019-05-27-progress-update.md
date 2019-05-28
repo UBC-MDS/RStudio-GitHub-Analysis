@@ -22,7 +22,7 @@ Even for these 'interesting' projects with multiple commits and authors, we see 
 - 568 thousand, or 10.94%, have at least one discussion comment on a pull request (general comment or code review)
 - 208 thousand, or 4.02%, have at least one code review
 
-For every Git repo, the commits form a directed acyclic graph. A more complex graph pattern correspond with more frequent branches and merges in the repo. We are currently using a proxy for graph complexity where we take many random samples of connected nodes in a project's graph and see what percentage of the time these connected nodes form a pattern that is not just a single chain (and instead exhibits some branching and merging behavior). 
+For every Git repo, the commits form a directed acyclic graph. A more complex graph pattern corresponds with more frequent branches and merges in the repo. We are currently using a proxy for graph complexity where we take many random samples of connected nodes in a project's graph and see what percentage of the time these connected nodes form a pattern that is not just a single chain (and instead exhibits some branching and merging behavior). 
 
 Below we've taken a random sample of 10,000 GitHub projects and looked at the correlation between their number of commits, number of authors, number of pull requests, etc. and this measure of graph complexity.
 
@@ -41,7 +41,7 @@ We clustered projects based on their graph structure by using [Graph2Vec](https:
 
 ![](https://ubc-mds.github.io/RStudio-GitHub-Analysis/assets/blog_3_clusters.png)
 
-Every dot represents a GitHub project, and every unique color represents a different cluster. The closer two dots are to each other, the more similar their graph structure is. For example, projects in clusters 1, 5, and 8, all of which appear near the top half of the graph, are the projects with mostly single chains of commits (i.e. projects with little or no branching and merging).
+Every point represents a GitHub project, and every unique color represents a different cluster. The closer two points are to each other, the more similar their graph structure is. For example, projects in clusters 1, 5, and 8, all of which appear near the top half of the graph, are the projects with mostly single chains of commits (i.e. projects with little or no branching and merging).
 
 <u>Most Common Subgraphs</u>  
 Once we have these clusters, we can pick out their most commonly-occurring subgraph patterns. Below is an example of the most common subgraphs from a particular cluster (we refer to common subgraphs as `motifs`).

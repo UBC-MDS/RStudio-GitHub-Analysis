@@ -50,6 +50,6 @@ relationship between commits is a directed edge. A node with 2 children
 occurs when there is a branch, and a node with 2 parents occurs when
 there is a merge.
 
-![](img/posts/git_repo_1.png)
+![](https://ubc-mds.github.io/RStudio-GitHub-Analysis/assets/git_repo_1.png)
 
 *Figure: Example of Github repositories shown in NetworkX graph*
