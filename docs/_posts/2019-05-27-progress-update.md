@@ -26,7 +26,7 @@ For every Git repo, the commits form a directed acyclic graph. A more complex gr
 
 Below we’ve taken a random sample of 10,000 GitHub projects and looked at the correlation between their number of commits, number of authors, number of pull requests, etc. and this measure of graph complexity.
 
-![](../img/posts/blog_3_corr_2.png)
+![](https://github.com/UBC-MDS/RStudio-GitHub-Analysis/blob/master/docs/img/posts/blog_3_corr_2.png)
 
 As you can see, commits, authors, pull requests, code reviews, and issues are all positively correlated with one another, which makes intuitive sense. We do see a positive correlation between graph complexity and these other variables, but it is extremely small. This seems odd to us: wouldn’t, for example, a project with many authors be more likely to have more branches than a project with only a few authors? Perhaps we’re not analyzing the data on the proper level. There might be multiple different workflows that lead to more or less complex graph structures paired with more or less GitHub activity, but these patterns are not apparent at this level of analysis.
 
@@ -39,14 +39,14 @@ Firstly, we are clustering together similar projects based on their underlying g
 We decided to group repositories with similar Git graph structures together so that 1) we can find groups of repositories that are very simplistic and discard them from further analysis and 2) we can seperate out the different Git strategies that people employ.
 We clustered projects based on their graph structure by using [Graph2Vec](https://arxiv.org/abs/1707.05005) (a “neural embedding framework” for graphs based on Doc2Vec) to get embeddings for each project, and then clustering on those embeddings. Below is the results of an early attempt at making these clusters.
 
-![](../img/posts/blog_3_clusters.png)
+![](https://github.com/UBC-MDS/RStudio-GitHub-Analysis/blob/master/docs/img/posts/blog_3_clusters.png)
 
 Every dot represents a GitHub project, and every unique color represents a different cluster. The closer two dots are to each other, the more similar their graph structure is. For example, projects in clusters 1, 5, and 8, all of which appear near the top half of the graph, are the projects with mostly single chains of commits (i.e. projects with little or no branching and merging).
 
 <u>Most Common Subgraphs</u>  
 Once we have these clusters, we can pick out their most commonly-occuring subgraph patterns. Below is an example of the most common subgraphs from a particular cluster (we refer to common subgraphs as `motifs`).
 
-![](../img/posts/blog_3_subgraphs.png)
+![](https://github.com/UBC-MDS/RStudio-GitHub-Analysis/blob/master/docs/img/posts/blog_3_subgraphs.png)
 
 There are many ways we can use these patterns to build up an understanding of how people are using Git. For example, one metric we’ve already mentioned is the percentage of subgraphs that aren't just a single chain of commits, which is useful for understanding a project’s relative complexity.
 
