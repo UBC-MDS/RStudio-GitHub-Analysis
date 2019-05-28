@@ -45,10 +45,10 @@ class Graph2Vec:
 
         self.fitted = True
 
-    def fit_transform(self, projectGraphs, projectGraphsIndex):
+    def fit_transform(self, projectGraphs, projectGraphsIndex, output_path):
         self.fit(projectGraphs)
 
-        return self.save_embeddings(len(projectGraphs), projectGraphsIndex=projectGraphsIndex)
+        return self.save_embeddings(len(projectGraphs), projectGraphsIndex=projectGraphsIndex, output_path=output_path)
 
     def extract_features(self, projectGraphs):
         document_collections = Parallel(n_jobs = self.workers)(delayed(self.feature_extractor)(projectGraphs[g], self.iter, str(g)) for g in range(len(projectGraphs)))
@@ -89,7 +89,7 @@ class Graph2Vec:
 
         return out
 
-    def save_embeddings(self, n_graphs, output_path='./results/embeddings.csv',projectGraphsIndex=None):
+    def save_embeddings(self, n_graphs, output_path='./results/embeddings.csv', projectGraphsIndex=None):
         """
         Function to save the embedding.
         :param output_path: Path to the embedding csv.

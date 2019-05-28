@@ -19,7 +19,7 @@ import logging
 import networkx as nx
 
 from nxutils import git_graph
-from data_layer import getCommitsByProjectIds
+#from data_layer import getCommitsByProjectIds
 from cluster import get_embedding_clusters
 
 logging.basicConfig(format="%(asctime)s : %(levelname)s : %(message)s", filename="log.log", level=logging.INFO)
@@ -27,7 +27,7 @@ logging.basicConfig(format="%(asctime)s : %(levelname)s : %(message)s", filename
 def main(random_state=None):
     """Function that runs the cluster and gets the motif of each cluster."""
     clusters = get_embedding_clusters(random_state=random_state)
-    get_motifs_by_cluster(clusters)
+    get_motifs_by_cluster(clusters, data_layer)
 
 
 class MotifFinder:
@@ -113,10 +113,10 @@ class MotifFinder:
         return motifs
 
 
-def get_motifs(github_project_ids,k_for_motifs, number_of_samples):
+def get_motifs(github_project_ids, k_for_motifs, number_of_samples, data_layer):
     """Given a list of github prof"""
     # Get graph for this cluster TODO: update to pull from pickle of project graphs
-    projects_cluster = getCommitsByProjectIds(github_project_ids)
+    projects_cluster = data_layer.getCommitsByProjectIds(github_project_ids)
     G = git_graph(projects_cluster)
 
     mf = MotifFinder(G)  # Instantiate MotifFinder object looking at that cluster's graph
@@ -134,7 +134,7 @@ def get_motifs(github_project_ids,k_for_motifs, number_of_samples):
     return motifs
 
 
-def get_motifs_by_cluster(clusters, k_for_motifs=5, number_of_samples=1000, output_file='./results/motifs_by_cluster.pickle'):
+def get_motifs_by_cluster(clusters, data_layer, k_for_motifs=5, number_of_samples=1000, output_file='./results/motifs_by_cluster.pickle'):
     """
     A way to take in a group of GitHub project clusters and output their most common motifs. For each cluster, get most common subgraphs
 
@@ -147,7 +147,7 @@ def get_motifs_by_cluster(clusters, k_for_motifs=5, number_of_samples=1000, outp
     """
     motifs_by_clusters = {}
     for cluster in clusters:
-        cluster_motif = get_motifs(clusters[cluster], k_for_motifs, number_of_samples)
+        cluster_motif = get_motifs(clusters[cluster], k_for_motifs, number_of_samples, data_layer)
         if cluster_motif is not None:
             motifs_by_clusters[cluster] = cluster_motif
 
