@@ -1,9 +1,9 @@
 ## About the Project
-This project aims to understand how people are currently using Git, with the eventual goal of creating recommendations for an easier-to-use alternative. In particular, we are pulling out the most common Git subgraphs to better understand Git usage. For more about the motivation behind the project, see Greg’s post here: http://third-bit.com/2017/09/30/git-graphs-and-engineering.html and our blog post introducing the project here: https://ubc-mds.github.io/RStudio-GitHub-Analysis/2019/05/10/project-introduction.html. 
+This project aims to understand how people are currently using Git, with the eventual goal of creating recommendations for an easier-to-use alternative. In particular, we are pulling out the most common Git subgraphs to better understand Git usage. For more about the motivation behind the project, see Greg’s post [here](http://third-bit.com/2017/09/30/git-graphs-and-engineering.html) and our blog post introducing the project [here](https://ubc-mds.github.io/RStudio-GitHub-Analysis/2019/05/10/project-introduction.html). 
 
 ## Initial Analysis
 <u>Collecting Data</u>  
-We’ve been collecting data for our analysis from GitHub Torrent (http://ghtorrent.org/), a wonderful project that logs public activity in GitHub and makes it publicly available as a monthly database dump. One big limitation of this dataset is that it doesn’t include users’ local commands (such as adding a file to be staged, switching branches, etc.), which means we only have access to a fragment of users’ actual Git workflow. For a more detailed walkthrough of our data collection process, see our blog post here: https://ubc-mds.github.io/RStudio-GitHub-Analysis/2019/05/15/data-query.html.
+We’ve been collecting data for our analysis from [GitHub Torrent](http://ghtorrent.org/), a wonderful project that logs public activity in GitHub and makes it publicly available as a monthly database dump. One big limitation of this dataset is that it doesn’t include users’ local commands (such as adding a file to be staged, switching branches, etc.), which means we only have access to a fragment of users’ actual Git workflow. For a more detailed walkthrough of our data collection process, see our blog post [here](https://ubc-mds.github.io/RStudio-GitHub-Analysis/2019/05/15/data-query.html).
 
 <u>Initial Analysis - Understanding the GitHub Torrent Dataset</u>  
 We started by getting a high-level overview on the dataset we’re working with.
@@ -26,7 +26,7 @@ For every Git repo, the commits form a directed acyclic graph. A more complex gr
 
 Below we’ve taken a random sample of 10,000 GitHub projects and looked at the correlation between their number of commits, number of authors, number of pull requests, etc. and this measure of graph complexity.
 
-![](./docs/img/posts/blog_3_corr_2.png)
+![](../img/posts/blog_3_corr_2.png)
 
 As you can see, commits, authors, pull requests, code reviews, and issues are all positively correlated with one another, which makes intuitive sense. We do see a positive correlation between graph complexity and these other variables, but it is extremely small. This seems odd to us: wouldn’t, for example, a project with many authors be more likely to have more branches than a project with only a few authors? Perhaps we’re not analyzing the data on the proper level. There might be multiple different workflows that lead to more or less complex graph structures paired with more or less GitHub activity, but these patterns are not apparent at this level of analysis.
 
@@ -37,16 +37,16 @@ Firstly, we are clustering together similar projects based on their underlying g
 
 <u>Clustering Similar Projects</u>  
 We decided to group repositories with similar Git graph structures together so that 1) we can find groups of repositories that are very simplistic and discard them from further analysis and 2) we can seperate out the different Git strategies that people employ.
-We clustered projects based on their graph structure by using Graph2Vec (a “neural embedding framework” for graphs based on Doc2Vec: https://arxiv.org/abs/1707.05005) to get embeddings for each project, and then clustering on those embeddings. Below is the results of an early attempt at making these clusters.
+We clustered projects based on their graph structure by using [Graph2Vec](https://arxiv.org/abs/1707.05005) (a “neural embedding framework” for graphs based on Doc2Vec) to get embeddings for each project, and then clustering on those embeddings. Below is the results of an early attempt at making these clusters.
 
-![](./docs/img/posts/blog_3_clusters.png)
+![](../img/posts/blog_3_clusters.png)
 
 Every dot represents a GitHub project, and every unique color represents a different cluster. The closer two dots are to each other, the more similar their graph structure is. For example, projects in clusters 1, 5, and 8, all of which appear near the top half of the graph, are the projects with mostly single chains of commits (i.e. projects with little or no branching and merging).
 
 <u>Most Common Subgraphs</u>  
 Once we have these clusters, we can pick out their most commonly-occuring subgraph patterns. Below is an example of the most common subgraphs from a particular cluster (we refer to common subgraphs as `motifs`).
 
-![](./docs/img/posts/blog_3_subgraphs.png)
+![](../img/posts/blog_3_subgraphs.png)
 
 There are many ways we can use these patterns to build up an understanding of how people are using Git. For example, one metric we’ve already mentioned is the percentage of subgraphs that aren't just a single chain of commits, which is useful for understanding a project’s relative complexity.
 
@@ -57,7 +57,7 @@ We are also creating indices for each cluster that speak to the expertise (e.g. 
 <u>What We’re Working on Next</u>  
 
 - Look at the graph patterns that come from successful projects by well-known authors and see how their patterns are (or are not) different than other, less successful projects. 
-- Find repos that use workflows like Gitflow (https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow) and see whether or not they are fundamentally different from repos that don’t use a standardized workflow (sidenote: if you have any ideas on how to identify if a project is using Gitflow, or how to identify if a branch is a certain kind of branch within the Gitflow framework, we’d love to hear from you!).
+- Find repos that use workflows like [Gitflow](https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow) and see whether or not they are fundamentally different from repos that don’t use a standardized workflow (sidenote: if you have any ideas on how to identify if a project is using Gitflow, or how to identify if a branch is a certain kind of branch within the Gitflow framework, we’d love to hear from you!).
 - For each project, identify how many branches are able to be merged back into a master branch and how many branches have a conflict preventing it from being merged back. Use these numbers as a proxy for how much success people are having using Git within that project (if you have an idea on how to tell whether or not a branch is ‘mergable’ back to master, please let us know!).
 
 <u>Future Project Extensions</u>  
