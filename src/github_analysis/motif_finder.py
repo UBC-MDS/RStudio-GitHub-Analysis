@@ -11,18 +11,25 @@ pick a neighbor, add to the motif
 keep adding neighbors of the motif until you reach K nodes
 (if you want to keep track of frequencies:) compare to previously found motifs; increment the counter of this one by 1
 """
-import sys
-import random
-import pickle
 import logging
+import pickle
+import random
+import sys
 
 import networkx as nx
 
+<<<<<<< Updated upstream
 from nxutils import git_graph
 from data_layer import getCommitsByProjectIds
+=======
+#from data_layer import getCommitsByProjectIds
+>>>>>>> Stashed changes
 from cluster import get_embedding_clusters
+from nxutils import git_graph
 
-logging.basicConfig(format="%(asctime)s : %(levelname)s : %(message)s", filename="log.log", level=logging.INFO)
+logging.basicConfig(format="%(asctime)s : %(levelname)s : %(message)s",
+                    filename="log.log", level=logging.INFO)
+
 
 def main(random_state=None):
     """Function that runs the cluster and gets the motif of each cluster."""
@@ -76,11 +83,12 @@ class MotifFinder:
         """
         sys.setrecursionlimit(recursion_limit)
         root = self.sample_initial_node()
-        edges = nx.bfs_edges(self.G, root) # https://networkx.github.io/documentation/networkx-2.2/reference/algorithms/generated/networkx.algorithms.traversal.breadth_first_search.bfs_edges.html#networkx.algorithms.traversal.breadth_first_search.bfs_edges
+        # https://networkx.github.io/documentation/networkx-2.2/reference/algorithms/generated/networkx.algorithms.traversal.breadth_first_search.bfs_edges.html#networkx.algorithms.traversal.breadth_first_search.bfs_edges
+        edges = nx.bfs_edges(self.G, root)
         nodes = [root] + [v for u, v in edges]
         if len(nodes) >= k:
             return nx.DiGraph(self.G.subgraph(nodes[:k]))
-        else: # resample if this motif isnt large enough
+        else:  # resample if this motif isnt large enough
             return self.get_sample_motif(k)
 
     def get_motif_samples(self, k, num_samples):
@@ -119,12 +127,14 @@ def get_motifs(github_project_ids,k_for_motifs, number_of_samples):
     projects_cluster = getCommitsByProjectIds(github_project_ids)
     G = git_graph(projects_cluster)
 
-    mf = MotifFinder(G)  # Instantiate MotifFinder object looking at that cluster's graph
+    # Instantiate MotifFinder object looking at that cluster's graph
+    mf = MotifFinder(G)
 
     # Trying to pull out the motifs of each cluster here. Need error handling for clusters where we can't pull out
     # common motifs (e.g. can't build motifs of length k because there aren't many subgraphs at least k long)
     try:
-        motifs = mf.get_motif_samples(k_for_motifs, number_of_samples)  # Get most common motifs for that cluster
+        # Get most common motifs for that cluster
+        motifs = mf.get_motif_samples(k_for_motifs, number_of_samples)
     except RecursionError:
         logging.info('Graph has too many short paths.')
         return None
@@ -147,7 +157,12 @@ def get_motifs_by_cluster(clusters, k_for_motifs=5, number_of_samples=1000, outp
     """
     motifs_by_clusters = {}
     for cluster in clusters:
+<<<<<<< Updated upstream
         cluster_motif = get_motifs(clusters[cluster], k_for_motifs, number_of_samples)
+=======
+        cluster_motif = get_motifs(
+            clusters[cluster], k_for_motifs, number_of_samples, data_layer)
+>>>>>>> Stashed changes
         if cluster_motif is not None:
             motifs_by_clusters[cluster] = cluster_motif
 
@@ -158,11 +173,11 @@ def get_motifs_by_cluster(clusters, k_for_motifs=5, number_of_samples=1000, outp
 
     return motifs_by_clusters
 
+
 if __name__ == '__main__':
     main()
 # TODO: this is generating 1 more k than specified, idk why.
 # TODO: output tsne graph with k-means labels.
-
 
 
 # def get_most_common_motifs_by_cluster(clusters, k_for_motifs=10, number_of_samples=1000,output_file='./results/motifs_by_cluster.pickle'):#output_folder_suffix='results'):

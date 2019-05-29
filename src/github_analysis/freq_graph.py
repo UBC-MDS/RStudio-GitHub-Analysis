@@ -1,12 +1,12 @@
-from os import remove
-import pickle
 import glob
+import pickle
+from os import remove
 
-import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib.backends.backend_pdf import PdfPages
-from matplotlib.offsetbox import OffsetImage, AnnotationBbox
 import networkx as nx
+import numpy as np
+from matplotlib.backends.backend_pdf import PdfPages
+from matplotlib.offsetbox import AnnotationBbox, OffsetImage
 
 
 def generate_motif_visualisations_by_cluster(input_file_motif_clusters='./results/motifs_by_cluster.pickle', output_file='./results/clustering_output.pdf'):
@@ -25,7 +25,8 @@ def generate_motif_visualisations_by_cluster(input_file_motif_clusters='./result
 
     with PdfPages(output_file) as pdf:
         for cluster in sorted_cluster_keys:
-            cluster_visual = visualize_motif_samples_bar_graph(motif_clusters[cluster], 'Cluster ' + str(cluster))
+            cluster_visual = visualize_motif_samples_bar_graph(
+                motif_clusters[cluster], 'Cluster ' + str(cluster))
             pdf.savefig(cluster_visual, pad_inches=5)
 
 
@@ -65,7 +66,8 @@ def visualize_motif_samples_bar_graph(motifs, plot_title='Motif Frequency in Dat
     fig, ax = plt.subplots(figsize=(9.5, 7.5))
     y_pos = np.arange(len(occurrences))
     number_of_samples = sum(motifs.values())
-    ax.bar(y_pos, [100 * occurrence / number_of_samples for occurrence in occurrences], align='center')
+    ax.bar(y_pos, [100 * occurrence /
+                   number_of_samples for occurrence in occurrences], align='center')
 
     # Annotate the bar graph with the motif images
     motif_graph_file_list = glob.glob('graph_*.png')
@@ -87,7 +89,7 @@ def visualize_motif_samples_bar_graph(motifs, plot_title='Motif Frequency in Dat
 
     fig.suptitle(plot_title)
     ax.set_ylabel('Rate Motif Occurred (%)')
-    #ax.set_xlabel('Motifs')
+    # ax.set_xlabel('Motifs')
     ax.set_title(
         '{}% of Sampled Motifs are a Single Chain'.format(round(100 * single_chain_occurences / number_of_samples, 3)))
     return fig
@@ -120,19 +122,16 @@ if __name__ == '__main__':
     main()
 
  # try:
-        #     makedirs('results/clustering_{}'.format(output_folder_suffix)) # make output folder
-        # except FileExistsError:
-        #     print('About to overwrite existing output folder and files...')
-        #     #TODO: Have user have to type 'y' or something continue, then also delete all files in folder so theres not like one cluster left over from before.
-
-
+    #     makedirs('results/clustering_{}'.format(output_folder_suffix)) # make output folder
+    # except FileExistsError:
+    #     print('About to overwrite existing output folder and files...')
+    #     #TODO: Have user have to type 'y' or something continue, then also delete all files in folder so theres not like one cluster left over from before.
 
 
 #         cluster_visual = visualize_motif_samples_bar_graph(motifs, 'Cluster ' + str(cluster), number_of_samples)
 #         pdf.savefig(cluster_visual,pad_inches=2)
 #         #visualize_motif_samples(motifs, './results/clustering_{}/cluster_{}.pdf'.format(output_folder_suffix,cluster))
 #
-
 
     # # Sort keys in cluster dictionary so they are outputted
     # sorted_cluster_keys = list(clusters.keys())

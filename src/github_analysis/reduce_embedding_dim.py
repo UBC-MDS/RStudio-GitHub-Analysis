@@ -8,8 +8,8 @@ called 'embeddings.csv'
 
 import matplotlib.pyplot as plt
 import pandas as pd
-#from sklearn.manifold import TSNE
 from MulticoreTSNE import MulticoreTSNE as TSNE
+
 
 def run_tsne(workers=4, embeddings=None, filename=None, random_state=None):
     """filename: path to embeddings where first row is the name of the graphs.
@@ -18,11 +18,13 @@ def run_tsne(workers=4, embeddings=None, filename=None, random_state=None):
         embeddings = pd.read_csv(filename, index_col=0)
 
     # Make and fit tsne model
-    tsne_model = TSNE(n_components=2, n_jobs=workers, random_state=random_state)
+    tsne_model = TSNE(n_components=2, n_jobs=workers,
+                      random_state=random_state)
     transformed_array = tsne_model.fit_transform(embeddings.values)
     df = pd.DataFrame(transformed_array, columns=['x', 'y'])
     df.index = embeddings.index
     return df
+
 
 def output_image_of_tsne(embeddings_tsne_transform, filename):
     """
@@ -37,15 +39,27 @@ def output_image_of_tsne(embeddings_tsne_transform, filename):
 
 def reduce_dim(workers = 4, embeddings=None, save_to_csv=True, save_image=True, random_state=None):
     if embeddings is None:
+<<<<<<< Updated upstream
         transformed_array = run_tsne(workers=workers, filename='./results/embeddings.csv',random_state=random_state)
+=======
+        transformed_array = run_tsne(
+            workers=workers, filename=output_path + 'embeddings.csv', random_state=random_state)
+>>>>>>> Stashed changes
     else:
-        transformed_array = run_tsne(workers=workers, embeddings=embeddings, random_state=random_state)
+        transformed_array = run_tsne(
+            workers=workers, embeddings=embeddings, random_state=random_state)
 
     if save_to_csv == True:
         transformed_array.to_csv('./results/embeddings_reduced_dim.csv')
 
     if save_image == True:
+<<<<<<< Updated upstream
         output_image_of_tsne(transformed_array, './results/embeddings_tsne')
+=======
+        output_image_of_tsne(
+            transformed_array, output_path + 'embeddings_tsne')
 
-if __name__=='__main__':
+>>>>>>> Stashed changes
+
+if __name__ == '__main__':
     reduce_dim()
