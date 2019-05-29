@@ -19,18 +19,10 @@ import nxutils
 import persona as p
 import reduce_embedding_dim as red
 
-<< << << < Updated upstream
-
 n_workers = 1  # 8
 
 logging.basicConfig(format="%(asctime)s : %(levelname)s : %(message)s",
                     filename="log.log", level=logging.INFO)
-== == == =
-
-logging.basicConfig(format="%(asctime)s : %(levelname)s : %(message)s",
-                    filename="log.log", level=logging.INFO)
-
->>>>>> > Stashed changes
 
 
 def main():
