@@ -1,52 +1,54 @@
 import pandas as pd
 import numpy as np
 
-commitDataPath = "/home/rayce/Assignments/Capstone/RStudio-Data-Repository/clean_data/commits.feather"
-commits_df = pd.read_feather(commitDataPath)
-
-def getProjectsDf():
-    return commits_df
-
-def getCommitsByProjectName(projectName):
-    return(commits_df[commits_df["project_name"] == projectName])
-
-def getCommitsByProjectId(projectId):
-    return(commits_df[commits_df["project_id"] == projectId])
-
-def getCommitsByProjectIds(projectIds):
-    return commits_df[commits_df.project_id.isin(projectIds)]
-
-def getGroupedCommitsByProjectIds(projectIds):
-    projectCommits = getCommitsByProjectIds(projectIds)
-    groupedProjects = projectCommits.groupby("project_id")
-
-    return groupedProjects
-
-def getUniqueProjectIds():
-    return commits_df.project_id.unique()
-
-def getUniqueProjectNames():
-    return commits_df.project_name.unique()
-
 def getUniqueProjectIdsFromDf(df):
     return df.project_id.unique()
 
 def getUniqueProjectNamesFromDf(df):
     return df.project_name.unique()
 
-def getRandomSampleOfIds(n, seed):
-    if seed:
-        np.random.seed(seed)
+class data_layer:
+    def __init__(self, data_path):
+        self.data_path = data_path
+        self.commits_df = pd.read_feather(data_path)
 
-    uniqueIds = getUniqueProjectIds()
+    def getProjectsDf(self):
+        return self.commits_df
 
-    return np.random.choice(uniqueIds, n)
+    def getCommitsByProjectName(self, project_name):
+        return self.commits_df[self.commits_df["project_name"] == project_name]
 
-def getRandomProjects(n, seed):
-    projectIds = getRandomSampleOfIds(n, seed)
-    projects = getCommitsByProjectIds(projectIds)
+    def getCommitsByProjectId(self, project_id):
+        return self.commits_df[self.commits_df["project_id"] == project_id]
 
-    return projects
+    def getCommitsByProjectIds(self, projects_ids):
+        return self.commits_df[self.commits_df.project_id.isin(projects_ids)]
+
+    def getGroupedCommitsByProjectIds(self, projects_ids):
+        projectCommits = self.getCommitsByProjectIds(projects_ids)
+        groupedProjects = projectCommits.groupby("project_id")
+
+        return groupedProjects
+
+    def getUniqueProjectIds(self):
+        return self.commits_df.project_id.unique()
+
+    def getUniqueProjectNames(self):
+        return self.commits_df.project_name.unique()
+
+    def getRandomSampleOfIds(self, n, seed):
+        if seed:
+            np.random.seed(seed)
+
+        uniqueIds = self.getUniqueProjectIds()
+
+        return np.random.choice(uniqueIds, n)
+
+    def getRandomProjects(self, n, seed):
+        projectIds = self.getRandomSampleOfIds(n, seed)
+        projects = self.getCommitsByProjectIds(projectIds)
+
+        return projects
 
 if __name__ == '__main__':
     print(getRandomProjects(5, 1))
