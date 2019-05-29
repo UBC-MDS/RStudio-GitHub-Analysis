@@ -1,13 +1,10 @@
 """To have this run in a reproducible manner, run: `PYTHONHASHSEED=0 python src/github_analysis/main.py` Setting
 the env variable PYTHONHASHSEED to 0 will disable hash randomization."""
-<<<<<<< Updated upstream
-=======
 
 import argparse
 import collections
 import logging
 import os
->>>>>>> Stashed changes
 import time
 
 import numpy.distutils.system_info as sysinfo
@@ -16,24 +13,25 @@ import pandas as pd
 import cluster as c
 import data_layer as dl
 import freq_graph as fg
-<<<<<<< Updated upstream
-import nxutils
-import pandas as pd
-
-n_workers = 1 # 8
-
-logging.basicConfig(format="%(asctime)s : %(levelname)s : %(message)s", filename="log.log", level=logging.INFO)
-=======
 import graph2vec as g2v
 import motif_finder as mf
 import nxutils
 import persona as p
 import reduce_embedding_dim as red
 
+<< << << < Updated upstream
+
+n_workers = 1  # 8
+
+logging.basicConfig(format="%(asctime)s : %(levelname)s : %(message)s",
+                    filename="log.log", level=logging.INFO)
+== == == =
+
 logging.basicConfig(format="%(asctime)s : %(levelname)s : %(message)s",
                     filename="log.log", level=logging.INFO)
 
->>>>>>> Stashed changes
+>>>>>> > Stashed changes
+
 
 def main():
     logging.info("===START===")
@@ -48,7 +46,6 @@ def main():
     project_ids = dl.getUniqueProjectIdsFromDf(project_data)
     project_groups = dl.getGroupedCommitsByProjectIds(project_ids)
 
-
     project_graphs = []
     project_ids_ordered = []
     for name, group in project_groups:
@@ -60,12 +57,9 @@ def main():
                  str(generateGraphsTime - getDataTime) + " seconds")
 
     g2vModel = g2v.Graph2Vec(workers=n_workers, seed=1)
-<<<<<<< Updated upstream
-    g2vEmbeddings = g2vModel.fit_transform(project_graphs, project_ids_ordered)
-=======
     g2vEmbeddings = g2vModel.fit_transform(
         project_graphs, project_ids_ordered, output_path=results_path + "embeddings.csv")
->>>>>>> Stashed changes
+
     buildModelTime = time.time()
     logging.info("G2V Model Built: " +
                  str(buildModelTime - generateGraphsTime) + " seconds")
