@@ -80,7 +80,7 @@ def visualize_motif_samples_bar_graph(motifs, plot_title='Motif Frequency in Dat
                             xybox=(0, -7),
                             xycoords=("data", "axes fraction"),
                             boxcoords="offset points",
-                            box_alignment=(.5, 1),
+                            box_alignment=(.5, .4),
                             bboxprops={"edgecolor": "none", "facecolor": "none"})
 
         ax.add_artist(ab)
