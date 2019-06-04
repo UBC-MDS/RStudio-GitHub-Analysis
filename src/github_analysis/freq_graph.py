@@ -45,6 +45,9 @@ def visualize_motif_samples_bar_graph(motifs, plot_title='Motif Frequency in Dat
     # output files with individual motif images to be used in bar graph
     occurrences = []
     for n, motif in enumerate(motifs_sorted):
+        # print(motif[1])
+        # nx.draw_spectral(motif[0], node_size=500, arrowsize=40, width=6)
+        # plt.show()
 
         fig = plt.figure(figsize=(3, 3))
 
@@ -69,6 +72,8 @@ def visualize_motif_samples_bar_graph(motifs, plot_title='Motif Frequency in Dat
 
     # Annotate the bar graph with the motif images
     motif_graph_file_list = glob.glob('graph_*.png')
+    # print(motif_graph_file_list)
+    motif_graph_file_list.sort()
     for n, file_ in enumerate(motif_graph_file_list):
         arr_img = plt.imread(file_, format='png', )
         remove(file_)  # delete file
