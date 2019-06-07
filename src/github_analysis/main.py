@@ -21,11 +21,11 @@ import pandas as pd
 
 logging.basicConfig(format="%(asctime)s : %(levelname)s : %(message)s", filename="log.log", level=logging.INFO)
 
-def main(n_projects, n_workers, data_path, results_path):
+def main(n_projects, n_workers, data_path, results_path, min_commits):
     logging.info("===START===")
     startTime = time.time()
 
-    commits_dl = dl.data_layer(data_path)
+    commits_dl = dl.data_layer(data_path,min_number_commits=min_commits)
 
     project_data = commits_dl.getRandomProjects(n_projects, 1)
     getDataTime = time.time()
@@ -80,15 +80,16 @@ def main(n_projects, n_workers, data_path, results_path):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("-rp", "--results_path", help="The folder to output results of the analysis. e.g. embeddings and plots", default="./results/")
-    parser.add_argument("-nw", "--n_workers", help="The number of workers to use when running the analysis.", default=8)
+    parser.add_argument("-nw", "--n_workers", help="The number of workers to use when running the analysis.", default=8, type=int)
     parser.add_argument("-dp", "--data_path", help="The path to the commits.feather file. e.g. /home/user/RStudio-Data-Repository/clean_data/commits.feather", default="./results/")
     parser.add_argument("-np", "--n_projects", help="The number of projects to sample from the dataset.", default=1000, type=int)
+    parser.add_argument("-mc", "--min_commits", help="The minimum number of commits  for a project to be included in the sample.", default=None, type=int)
     args = parser.parse_args()
 
     if not os.path.exists(args.results_path):
         os.mkdir(args.results_path)
 
-    main(n_projects=args.n_projects, n_workers=args.n_workers, data_path=args.data_path, results_path=args.results_path)
+    main(n_projects=args.n_projects, n_workers=args.n_workers, data_path=args.data_path, results_path=args.results_path, min_commits=args.min_commits)
 
     # plt.clf()
     # for graph in range(len(projectGraphs)):

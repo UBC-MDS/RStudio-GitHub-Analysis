@@ -13,11 +13,11 @@ This project includes the ability to cluster similar GitHub projects and pick ou
 
 Motivation behind this project: http://third-bit.com/2017/09/30/git-graphs-and-engineering.html
 
-## Project Proposal
+## Useful documents
 
-[Proposal Report](https://github.com/UBC-MDS/RStudio-GitHub-Analysis/blob/master/docs/proposal_report_final.pdf)
+Proposal [Report](https://github.com/UBC-MDS/RStudio-GitHub-Analysis/blob/master/docs/proposal_report_final.pdf) and [Presentation](https://github.com/UBC-MDS/RStudio-GitHub-Analysis/blob/master/docs/proposal_presentation.html)
 
-[Proposal Presentation](https://github.com/UBC-MDS/RStudio-GitHub-Analysis/blob/master/docs/proposal_presentation.html)
+[Blog post](https://ubc-mds.github.io/RStudio-GitHub-Analysis/)
 
 ## Usage
 PLACEHOLDER 
