@@ -57,7 +57,9 @@ def main(n_projects, n_workers, data_path, results_path, min_commits):
     projectClusterTime = time.time()
     logging.info("Projects Clustered: " + str(projectClusterTime - reduceTime) + " seconds")
 
-    personas = p.get_persona_projects(clusters, commits_dl, 5, 1)
+    cluster_personas = p.Personas(clusters, commits_dl, 5, 1, output_path=results_path + "cluster_personas.csv")
+    personaGenerationTime = time.time()
+    #cluster_personas.open_personas_in_browser(0)
 
     motifs_by_cluster = mf.get_motifs_by_cluster(clusters, commits_dl, output_file=results_path + "motifs_by_cluster.pickle")
     motifTime = time.time()
