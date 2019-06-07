@@ -21,7 +21,7 @@ import pandas as pd
 
 logging.basicConfig(format="%(asctime)s : %(levelname)s : %(message)s", filename="log.log", level=logging.INFO)
 
-def main(n_projects, n_workers, data_path, results_path, min_commits):
+def main(n_projects, n_workers, data_path, results_path, min_commits, n_personas):
     logging.info("===START===")
     startTime = time.time()
 
@@ -57,13 +57,13 @@ def main(n_projects, n_workers, data_path, results_path, min_commits):
     projectClusterTime = time.time()
     logging.info("Projects Clustered: " + str(projectClusterTime - reduceTime) + " seconds")
 
-    cluster_personas = p.Personas(clusters, commits_dl, 5, 1, output_path=results_path + "cluster_personas.csv")
+    cluster_personas = p.Personas(clusters, commits_dl, n_personas, 1, output_path=results_path + "cluster_personas.csv")
     personaGenerationTime = time.time()
-    #cluster_personas.open_personas_in_browser(0)
+    logging.info("Personas Generated: " + str(personaGenerationTime - projectClusterTime) + " seconds")
 
     motifs_by_cluster = mf.get_motifs_by_cluster(clusters, commits_dl, output_file=results_path + "motifs_by_cluster.pickle")
     motifTime = time.time()
-    logging.info("Motifs Generated: " + str(motifTime - projectClusterTime) + " seconds")
+    logging.info("Motifs Generated: " + str(motifTime - personaGenerationTime) + " seconds")
 
     fg.generate_motif_visualisations_by_cluster(input_file_motif_clusters=results_path + "motifs_by_cluster.pickle", output_file=results_path + "clustering_output.pdf")
     freqGraphTime = time.time()
@@ -75,7 +75,8 @@ def main(n_projects, n_workers, data_path, results_path, min_commits):
     print("Model Build Time:\t" +       str(buildModelTime - generateGraphsTime) +  "\tseconds")
     print("Dim Reduce Time:\t" +        str(reduceTime - buildModelTime) +          "\tseconds")
     print("Project Cluster Time:\t" +   str(projectClusterTime - reduceTime) +      "\tseconds")
-    print("Motif Generation Time:\t" +  str(motifTime - projectClusterTime) +       "\tseconds")
+    print("Personas Generated: " +      str(personaGenerationTime - projectClusterTime) + " seconds")
+    print("Motif Generation Time:\t" +  str(motifTime - personaGenerationTime) +    "\tseconds")
     print("Frequency Graph Time:\t" +   str(freqGraphTime - motifTime) +            "\tseconds")
     print("Total Time:\t\t" +           str(freqGraphTime - startTime) +            "\tseconds")
 
@@ -86,12 +87,13 @@ if __name__ == '__main__':
     parser.add_argument("-dp", "--data_path", help="The path to the commits.feather file. e.g. /home/user/RStudio-Data-Repository/clean_data/commits.feather", default="./results/")
     parser.add_argument("-np", "--n_projects", help="The number of projects to sample from the dataset.", default=1000, type=int)
     parser.add_argument("-mc", "--min_commits", help="The minimum number of commits  for a project to be included in the sample.", default=None, type=int)
+    parser.add_argument("-nps", "--n_personas", help="The number of personas to extract from each cluster.", default=5, type=int)
     args = parser.parse_args()
 
     if not os.path.exists(args.results_path):
         os.mkdir(args.results_path)
 
-    main(n_projects=args.n_projects, n_workers=args.n_workers, data_path=args.data_path, results_path=args.results_path, min_commits=args.min_commits)
+    main(n_projects=args.n_projects, n_workers=args.n_workers, data_path=args.data_path, results_path=args.results_path, min_commits=args.min_commits, n_personas=args.n_personas)
 
     # plt.clf()
     # for graph in range(len(projectGraphs)):
