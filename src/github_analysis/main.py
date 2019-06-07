@@ -75,7 +75,7 @@ def main(n_projects, n_workers, data_path, results_path, min_commits, n_personas
     print("Model Build Time:\t" +       str(buildModelTime - generateGraphsTime) +  "\tseconds")
     print("Dim Reduce Time:\t" +        str(reduceTime - buildModelTime) +          "\tseconds")
     print("Project Cluster Time:\t" +   str(projectClusterTime - reduceTime) +      "\tseconds")
-    print("Personas Generated: " +      str(personaGenerationTime - projectClusterTime) + " seconds")
+    print("Personas Generated:\t" +      str(personaGenerationTime - projectClusterTime) + " seconds")
     print("Motif Generation Time:\t" +  str(motifTime - personaGenerationTime) +    "\tseconds")
     print("Frequency Graph Time:\t" +   str(freqGraphTime - motifTime) +            "\tseconds")
     print("Total Time:\t\t" +           str(freqGraphTime - startTime) +            "\tseconds")
