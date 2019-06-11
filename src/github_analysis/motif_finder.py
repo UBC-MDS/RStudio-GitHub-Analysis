@@ -136,7 +136,7 @@ def get_motifs(github_project_ids, k_for_motifs, number_of_samples, data_layer):
     return motifs
 
 
-def get_motifs_by_cluster(clusters, data_layer, k_for_motifs=5, number_of_samples=100, output_file='./results/motifs_by_cluster.pickle'):
+def get_motifs_by_cluster(clusters, data_layer, k_for_motifs=5, number_of_samples=1000, output_file='./results/motifs_by_cluster.pickle'):
     """
     A way to take in a group of GitHub project clusters and output their most common motifs. For each cluster, get most common subgraphs
 
