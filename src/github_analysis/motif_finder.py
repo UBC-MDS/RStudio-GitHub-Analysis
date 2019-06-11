@@ -15,14 +15,17 @@ import sys
 import random
 import pickle
 import logging
+import time
+from random import choice
 
 import networkx as nx
 
-from nxutils import git_graph
+from github_analysis.nxutils import git_graph
 #from data_layer import getCommitsByProjectIds
-from cluster import get_embedding_clusters
+from github_analysis.cluster import get_embedding_clusters
 
 logging.basicConfig(format="%(asctime)s : %(levelname)s : %(message)s", filename="log.log", level=logging.INFO)
+
 
 def main(random_state=None):
     """Function that runs the cluster and gets the motif of each cluster."""
@@ -38,6 +41,7 @@ class MotifFinder:
         :param G: the nx graph to get motifs from.
         """
         self.G = G
+        self.node_list = list(G.nodes)
 
     def sample_initial_node(self):  # TODO: let users pick a random state
         """
@@ -46,8 +50,7 @@ class MotifFinder:
         :param G: the nx graph to sample from.
         :return randomly-sampled nx node.
         """
-        node_list = list(self.G.nodes)
-        return random.sample(node_list, 1)[0]
+        return choice(self.node_list)
 
     def get_random_child(self, node):
         """
@@ -118,7 +121,6 @@ def get_motifs(github_project_ids, k_for_motifs, number_of_samples, data_layer):
     # Get graph for this cluster TODO: update to pull from pickle of project graphs
     projects_cluster = data_layer.getCommitsByProjectIds(github_project_ids)
     G = git_graph(projects_cluster)
-
     mf = MotifFinder(G)  # Instantiate MotifFinder object looking at that cluster's graph
 
     # Trying to pull out the motifs of each cluster here. Need error handling for clusters where we can't pull out
@@ -134,7 +136,7 @@ def get_motifs(github_project_ids, k_for_motifs, number_of_samples, data_layer):
     return motifs
 
 
-def get_motifs_by_cluster(clusters, data_layer, k_for_motifs=5, number_of_samples=1000, output_file='./results/motifs_by_cluster.pickle'):
+def get_motifs_by_cluster(clusters, data_layer, k_for_motifs=5, number_of_samples=100, output_file='./results/motifs_by_cluster.pickle'):
     """
     A way to take in a group of GitHub project clusters and output their most common motifs. For each cluster, get most common subgraphs
 
@@ -157,6 +159,7 @@ def get_motifs_by_cluster(clusters, data_layer, k_for_motifs=5, number_of_sample
         logging.info('Cluster file outputted!')
 
     return motifs_by_clusters
+
 
 if __name__ == '__main__':
     main()
