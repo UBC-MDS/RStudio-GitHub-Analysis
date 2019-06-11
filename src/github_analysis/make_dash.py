@@ -2,6 +2,7 @@ import pandas as pd
 import pickle
 import matplotlib.pyplot as plt
 import seaborn as sns
+import os
 import pandas_gbq
 import github_analysis.data_layer as dl
 import github_analysis.motif_finder as mf
@@ -14,96 +15,191 @@ def pull_queries(query_string, google_project_id='planar-elevator-238518', crede
     return pandas_gbq.read_gbq(query_string,project_id=google_project_id,credentials=credentials)
 
 
-def main(data_path='/Users/richiezitomer/Documents/RStudio-Data-Repository/clean_data/commits.feather'):
-    emb = pd.read_csv('results/embeddings.csv')
-    project_ids = emb.type.values
-    proj_ids_string = ",".join(project_ids.astype(str))
+class Heatmapper:
+    def __init__(self, num_motifs_to_sample=100, motif_lengths=[5,25,50,100], data_path='/Users/richiezitomer/Documents/RStudio-Data-Repository/clean_data/commits.feather',
+                 embedding_path='results/embeddings.csv', cluster_path="./results/clusters.pickle"):
+        self.data_path = data_path
+        self.commits_dl = dl.data_layer(data_path)
+        # self.motifs_generated = False
+        self.num_motifs_to_sample = num_motifs_to_sample
+        self.motif_lengths = motif_lengths
+        self.emb = pd.read_csv(embedding_path)
 
-    #Load data
-    pickle_in = open("./results/motifs_by_cluster.pickle","rb")
-    motifs_by_cluster = pickle.load(pickle_in)
+        project_ids = self.emb.type.values
+        self.proj_ids_string = ",".join(project_ids.astype(str))
 
-    pickle_in = open("./results/clusters.pickle","rb")
-    clusters = pickle.load(pickle_in)
+        pickle_in = open(cluster_path, "rb")
+        self.clusters = pickle.load(pickle_in)
 
-    # Load Data
-    comm_auth_by_proj = pull_queries(COMM_AUTH_BY_PROJ.format(proj_ids = proj_ids_string)).set_index('p_id') #pd.read_csv('data/author_commits_by_proj_100.csv').set_index('p_id')
-    pr_cr_by_proj = pull_queries(PR_CR_BY_PROJ.format(proj_ids = proj_ids_string)).set_index('p_id') #pd.read_csv('data/pr_cr_by_proj_100.csv').set_index('p_id')
-    issues_by_proj = pull_queries(ISSUES_BY_PROJ.format(proj_ids = proj_ids_string)).set_index('p_id') #pd.read_csv('data/issues_by_proj_100.csv').set_index('p_id')
-    owner_age_by_proj = pull_queries(OWNER_AGE_BY_PROJ.format(proj_ids = proj_ids_string)).set_index('p_id') #pd.read_csv('data/owner_age_by_proj_100.csv').set_index('p_id')
-    time_betw_commits_by_proj = pull_queries(TBC_BY_PROJ.format(proj_ids = proj_ids_string)).set_index('p_id') #pd.read_csv('data/time_between_commits_100.csv').set_index('p_id')[['mean_tbc']]
+    def generate_motifs(self, k, read_from_file=False,output_file_prefix='results/motifs_by_cluster_{}.pickle'):
+        """Generate ."""
+        # for k in self.motif_lengths:
+        output_file = output_file_prefix.format(str(k))
+        if read_from_file:
+            if os.path.isfile(output_file):
+                print('{}-Length Motif by Cluster Already Exists, so using that. Set read_from_file=False if you want to regenerate it.'.format(k))
+                pickle_in = open(output_file, "rb")
+                return pickle.load(pickle_in)
+            else:
+                motifs_by_cluster = mf.get_motifs_by_cluster(clusters, commits_dl, k_for_motifs=k,
+                                             number_of_samples=self.num_motifs_to_sample,
+                                             output_file=output_file_prefix.format(str(k)))
+        else:
+            motifs_by_cluster = mf.get_motifs_by_cluster(clusters, commits_dl, k_for_motifs=k,
+                                         number_of_samples=self.num_motifs_to_sample,
+                                         output_file=output_file_prefix.format(str(k)))
+        print('{}-Length Motif by Cluster Outputted!'.format(k))
+        return motifs_by_cluster
+        #self.motifs_generated = True
 
-    project = pd.concat([comm_auth_by_proj,pr_cr_by_proj,issues_by_proj,owner_age_by_proj,time_betw_commits_by_proj],axis=1)
-    #project = pd.concat([comm_auth_by_proj,pr_cr_by_proj,issues_by_proj],axis=1)
+    def get_multi_chain_percent(self, motifs_by_cluster, k):
+        """f """
+        multi_chain_perc = []
+        for cluster in sorted(motifs_by_cluster.keys()):
+            for motif in motifs_by_cluster[cluster]:
+                if sum([motif.out_degree(node) in [0, 1] for node in motif]) == len(motif.nodes):
+                    multi_chain_perc.append(self.num_motifs_to_sample-motifs_by_cluster[cluster][motif])
+        multi_chain_perc_series = pd.Series(multi_chain_perc)
+        multi_chain_perc_series.name = 'complexity_{}'.format(k)
+        return multi_chain_perc_series
 
-    cluster_lookup = {}
-    for cluster,value in clusters.items():
-        for proj in value:
-            cluster_lookup[proj] = cluster
+    def make_proj_stats_df(self, read_from_motif_files=False):
+        # Load Data
+        comm_auth_by_proj = pull_queries(COMM_AUTH_BY_PROJ.format(proj_ids=self.proj_ids_string)).set_index(
+            'p_id')  # pd.read_csv('data/author_commits_by_proj_100.csv').set_index('p_id')
+        pr_cr_by_proj = pull_queries(PR_CR_BY_PROJ.format(proj_ids=self.proj_ids_string)).set_index(
+            'p_id')  # pd.read_csv('data/pr_cr_by_proj_100.csv').set_index('p_id')
+        issues_by_proj = pull_queries(ISSUES_BY_PROJ.format(proj_ids=self.proj_ids_string)).set_index(
+            'p_id')  # pd.read_csv('data/issues_by_proj_100.csv').set_index('p_id')
+        owner_age_by_proj = pull_queries(OWNER_AGE_BY_PROJ.format(proj_ids=self.proj_ids_string)).set_index(
+            'p_id')  # pd.read_csv('data/owner_age_by_proj_100.csv').set_index('p_id')
+        time_betw_commits_by_proj = pull_queries(TBC_BY_PROJ.format(proj_ids=self.proj_ids_string)).set_index(
+            'p_id')  # pd.read_csv('data/time_between_commits_100.csv').set_index('p_id')[['mean_tbc']]
 
-    project['cluster'] = project.reset_index().p_id.apply(lambda x: cluster_lookup[x]).values
+        project = pd.concat([comm_auth_by_proj, pr_cr_by_proj, issues_by_proj, owner_age_by_proj, time_betw_commits_by_proj], axis=1)
 
-    # project['owner_age'] = project.owner_age/30
+        cluster_lookup = {}
+        for cluster, value in self.clusters.items():
+            for proj in value:
+                cluster_lookup[proj] = cluster
 
-#    multi_chain_perc = 100-pd.Series([79.2,71.8,91.1,60.3,83,96.6,83.6,55.4,81.5,96.6])
-#    multi_chain_perc.name='complexity'
+        project['cluster'] = project.reset_index().p_id.apply(lambda x: cluster_lookup[x]).values
 
-    # Should make a function out of this instead of doing it a bunch of times
-    commits_dl = dl.data_layer(data_path)
-    motifs_by_cluster = mf.get_motifs_by_cluster(clusters, commits_dl,k_for_motifs=5,
-                                                 output_file=None)
+        multi_chain_percents = []
+        for k in self.motif_lengths:
+            motifs_by_cluster = self.generate_motifs(k, read_from_file=read_from_motif_files)
+            multi_chain_percents.append(self.get_multi_chain_percent(motifs_by_cluster,k))
 
-    multi_chain_perc_5 = []
-    for cluster in sorted(motifs_by_cluster.keys()):
-        for motif in motifs_by_cluster[cluster]:
-            if sum([motif.out_degree(node) in [0, 1] for node in motif]) == len(motif.nodes):
-                multi_chain_perc_5.append(1000-motifs_by_cluster[cluster][motif])
-    multi_chain_perc_5 = pd.Series(multi_chain_perc_5)
-    multi_chain_perc_5.name = 'complexity_5'
+        complexity = pd.concat(multi_chain_percents, axis=1)
+        project_stats = project.join(complexity, on='cluster', how='left')
+        self.project_stats = project_stats
 
-    project = pd.merge(project,multi_chain_perc_5,left_on='cluster',right_index=True)
+    def make_heatmap(self, output_path='./results/Report_VO.png'):
+        # Normalize/Standardize
+        names = self.project_stats.drop('cluster', axis=1).columns
+        scaler = preprocessing.StandardScaler()
+        scaled_df = scaler.fit_transform(self.project_stats.drop('cluster', axis=1))
+        scaled_df = pd.DataFrame(scaled_df, columns=names, index=self.project_stats.index)
+        scaled_df = pd.merge(scaled_df, self.project_stats[['cluster']], left_index=True, right_index=True)
 
-    motifs_by_cluster = mf.get_motifs_by_cluster(clusters, commits_dl,k_for_motifs=25,
-                                                 output_file=None)
+        sns.clustermap(scaled_df.groupby('cluster').mean(), cmap='OrRd')
+        plt.savefig(output_path)
 
-    multi_chain_perc_25 = []
-    for cluster in sorted(motifs_by_cluster.keys()):
-        for motif in motifs_by_cluster[cluster]:
-            if sum([motif.out_degree(node) in [0, 1] for node in motif]) == len(motif.nodes):
-                multi_chain_perc_25.append(1000-motifs_by_cluster[cluster][motif])
-        multi_chain_perc_25 = pd.Series(multi_chain_perc_25)
-        multi_chain_perc_25.name = 'complexity_25'
-
-    project = pd.merge(project,multi_chain_perc_25,left_on='cluster',right_index=True)
-
-    motifs_by_cluster = mf.get_motifs_by_cluster(clusters, commits_dl,k_for_motifs=100,
-                                                 output_file=None)
-
-    multi_chain_perc_100 = []
-    for cluster in sorted(motifs_by_cluster.keys()):
-        for motif in motifs_by_cluster[cluster]:
-            if sum([motif.out_degree(node) in [0, 1] for node in motif]) == len(motif.nodes):
-                multi_chain_perc_100.append(1000-motifs_by_cluster[cluster][motif])
-    multi_chain_perc_100 = pd.Series(multi_chain_perc_100)
-    multi_chain_perc_100.name = 'complexity_100'
-
-    project = pd.merge(project,multi_chain_perc_100,left_on='cluster',right_index=True)
-
-
-    # proj_no_commits = project.drop('commits',axis=1)
-    # proj_no_commits['commits/10'] = project.commits/10
-
-    # Normalize/Standardize
-    # Get column names first
-    names = project.columns
-    # Create the Scaler object
-    scaler = preprocessing.StandardScaler()
-    # Fit your data on the scaler object
-    scaled_df = scaler.fit_transform(project)
-    scaled_df = pd.DataFrame(scaled_df, columns=names)
-
-    sns.clustermap(project.groupby('cluster').mean(),cmap='OrRd')
-    plt.savefig('./results/Report_VO.png')
+#
+# def main(data_path='/Users/richiezitomer/Documents/RStudio-Data-Repository/clean_data/commits.feather'):
+#     emb = pd.read_csv('results/embeddings.csv')
+#     project_ids = emb.type.values
+#     proj_ids_string = ",".join(project_ids.astype(str))
+#
+#     #Load data
+#     pickle_in = open("./results/motifs_by_cluster.pickle","rb")
+#     motifs_by_cluster = pickle.load(pickle_in)
+#
+#     pickle_in = open("./results/clusters.pickle","rb")
+#     clusters = pickle.load(pickle_in)
+#
+#     # Load Data
+#     comm_auth_by_proj = pull_queries(COMM_AUTH_BY_PROJ.format(proj_ids = proj_ids_string)).set_index('p_id') #pd.read_csv('data/author_commits_by_proj_100.csv').set_index('p_id')
+#     pr_cr_by_proj = pull_queries(PR_CR_BY_PROJ.format(proj_ids = proj_ids_string)).set_index('p_id') #pd.read_csv('data/pr_cr_by_proj_100.csv').set_index('p_id')
+#     issues_by_proj = pull_queries(ISSUES_BY_PROJ.format(proj_ids = proj_ids_string)).set_index('p_id') #pd.read_csv('data/issues_by_proj_100.csv').set_index('p_id')
+#     owner_age_by_proj = pull_queries(OWNER_AGE_BY_PROJ.format(proj_ids = proj_ids_string)).set_index('p_id') #pd.read_csv('data/owner_age_by_proj_100.csv').set_index('p_id')
+#     time_betw_commits_by_proj = pull_queries(TBC_BY_PROJ.format(proj_ids = proj_ids_string)).set_index('p_id') #pd.read_csv('data/time_between_commits_100.csv').set_index('p_id')[['mean_tbc']]
+#
+#     project = pd.concat([comm_auth_by_proj,pr_cr_by_proj,issues_by_proj,owner_age_by_proj,time_betw_commits_by_proj],axis=1)
+#     #project = pd.concat([comm_auth_by_proj,pr_cr_by_proj,issues_by_proj],axis=1)
+#
+#     cluster_lookup = {}
+#     for cluster,value in clusters.items():
+#         for proj in value:
+#             cluster_lookup[proj] = cluster
+#
+#     project['cluster'] = project.reset_index().p_id.apply(lambda x: cluster_lookup[x]).values
+#
+#     # project['owner_age'] = project.owner_age/30
+#
+# #    multi_chain_perc = 100-pd.Series([79.2,71.8,91.1,60.3,83,96.6,83.6,55.4,81.5,96.6])
+# #    multi_chain_perc.name='complexity'
+#
+#     # Should make a function out of this instead of doing it a bunch of times
+#     commits_dl = dl.data_layer(data_path)
+#
+#
+#     # I should try to see if theres a file and go from there.
+#     motifs_by_cluster = mf.get_motifs_by_cluster(clusters, commits_dl,k_for_motifs=5,
+#                                                  output_file=None)
+#
+#     multi_chain_perc_5 = []
+#     for cluster in sorted(motifs_by_cluster.keys()):
+#         for motif in motifs_by_cluster[cluster]:
+#             if sum([motif.out_degree(node) in [0, 1] for node in motif]) == len(motif.nodes):
+#                 multi_chain_perc_5.append(1000-motifs_by_cluster[cluster][motif])
+#     multi_chain_perc_5 = pd.Series(multi_chain_perc_5)
+#     multi_chain_perc_5.name = 'complexity_5'
+#
+#     project = pd.merge(project,multi_chain_perc_5,left_on='cluster',right_index=True)
+#
+#     motifs_by_cluster = mf.get_motifs_by_cluster(clusters, commits_dl,k_for_motifs=25,
+#                                                  output_file='./results/motifs_by_cluster_25.pickle')
+#
+#     multi_chain_perc_25 = []
+#     for cluster in sorted(motifs_by_cluster.keys()):
+#         for motif in motifs_by_cluster[cluster]:
+#             if sum([motif.out_degree(node) in [0, 1] for node in motif]) == len(motif.nodes):
+#                 multi_chain_perc_25.append(1000-motifs_by_cluster[cluster][motif])
+#     multi_chain_perc_25 = pd.Series(multi_chain_perc_25)
+#     multi_chain_perc_25.name = 'complexity_25'
+#
+#     project = pd.merge(project,multi_chain_perc_25,left_on='cluster',right_index=True)
+#
+#     motifs_by_cluster = mf.get_motifs_by_cluster(clusters, commits_dl,k_for_motifs=100,
+#                                                  output_file=None)
+#
+#     multi_chain_perc_100 = []
+#     for cluster in sorted(motifs_by_cluster.keys()):
+#         for motif in motifs_by_cluster[cluster]:
+#             if sum([motif.out_degree(node) in [0, 1] for node in motif]) == len(motif.nodes):
+#                 multi_chain_perc_100.append(1000-motifs_by_cluster[cluster][motif])
+#     multi_chain_perc_100 = pd.Series(multi_chain_perc_100)
+#     multi_chain_perc_100.name = 'complexity_100'
+#
+#     project = pd.merge(project,multi_chain_perc_100,left_on='cluster',right_index=True)
+#
+#
+#     # proj_no_commits = project.drop('commits',axis=1)
+#     # proj_no_commits['commits/10'] = project.commits/10
+#
+#     # Normalize/Standardize
+#     # Get column names first
+#     names = project.drop('cluster',axis=1).columns
+#     # Create the Scaler object
+#     scaler = preprocessing.StandardScaler()
+#     # Fit your data on the scaler object
+#     scaled_df = scaler.fit_transform(project.drop('cluster',axis=1))
+#     scaled_df = pd.DataFrame(scaled_df, columns=names,index=project.index)
+#     scaled_df = pd.merge(scaled_df, project[['cluster']],left_index=True,right_index=True)
+#
+#     sns.clustermap(scaled_df.groupby('cluster').mean(),cmap='OrRd')
+#     plt.savefig('./results/Report_VO.png')
 
 
 
@@ -162,4 +258,6 @@ group by project_id
 """
 
 if __name__ == '__main__':
-    main()
+    hm = Heatmapper()
+    hm.make_proj_stats_df(True)
+    hm.make_heatmap()
