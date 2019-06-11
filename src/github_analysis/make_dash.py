@@ -96,13 +96,13 @@ class Heatmapper:
 
     def make_heatmap(self, output_path='./results/Report_VO.png'):
         # Normalize/Standardize
-        names = self.project_stats.drop('cluster', axis=1).columns
-        scaler = preprocessing.StandardScaler()
-        scaled_df = scaler.fit_transform(self.project_stats.drop('cluster', axis=1))
-        scaled_df = pd.DataFrame(scaled_df, columns=names, index=self.project_stats.index)
-        scaled_df = pd.merge(scaled_df, self.project_stats[['cluster']], left_index=True, right_index=True)
+        # names = self.project_stats.drop('cluster', axis=1).columns
+        # scaler = preprocessing.StandardScaler()
+        # scaled_df = scaler.fit_transform(self.project_stats.drop('cluster', axis=1))
+        # scaled_df = pd.DataFrame(scaled_df, columns=names, index=self.project_stats.index)
+        # scaled_df = pd.merge(scaled_df, self.project_stats[['cluster']], left_index=True, right_index=True)
 
-        sns.clustermap(scaled_df.groupby('cluster').mean(), cmap='OrRd')
+        sns.clustermap(self.project_stats.groupby('cluster').mean(),z_score=1,cmap='OrRd',col_cluster=False)#, cmap='RdYlGn')
         plt.savefig(output_path)
 
 
