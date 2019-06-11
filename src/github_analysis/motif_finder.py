@@ -20,9 +20,9 @@ from random import choice
 
 import networkx as nx
 
-from github_analysis.nxutils import git_graph
+from nxutils import git_graph
 #from data_layer import getCommitsByProjectIds
-from github_analysis.cluster import get_embedding_clusters
+from cluster import get_embedding_clusters
 
 logging.basicConfig(format="%(asctime)s : %(levelname)s : %(message)s", filename="log.log", level=logging.INFO)
 

@@ -30,7 +30,7 @@ class Graph2Vec:
                         sample = 0.0001,
                         workers = self.workers,
                         epochs = self.epochs,
-                        alpha = 0.025)
+                        alpha = 0.005)
         else:
             self.model = Doc2Vec(self.extract_features(projectGraphs),
                         vector_size = self.size,
@@ -40,7 +40,7 @@ class Graph2Vec:
                         sample = 0.0001,
                         workers = self.workers,
                         epochs = self.epochs,
-                        alpha = 0.025,
+                        alpha = 0.005,
                         seed = self.seed)
 
         self.fitted = True
@@ -85,7 +85,6 @@ class Graph2Vec:
             out.append(list(self.model.docvecs["g_"+str(identifier)]))
 
         out = pd.DataFrame(out,columns = ["x_" +str(dimension) for dimension in range(self.size)])
-        #out = out.sort_values(["type"]) ASK RAYCE ABOUT THIS!
 
         return out
 
@@ -132,7 +131,6 @@ class WeisfeilerLehmanMachine:
         """
         new_features = {}
         for node in self.nodes:
-            # TODO: Change neighbours to children
             nebs = self.graph.neighbors(node)
             degs = [self.features[neb] for neb in nebs]
             features = "_".join([str(self.features[node])]+list(set(sorted([str(deg) for deg in degs]))))

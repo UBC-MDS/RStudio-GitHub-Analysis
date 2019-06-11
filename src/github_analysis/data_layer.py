@@ -11,6 +11,7 @@ class data_layer:
     def __init__(self, data_path, min_number_commits=None):
         self.data_path = data_path
         self.commits_df = pd.read_feather(data_path)
+        
         if min_number_commits is not None:
             grouped_projects = self.commits_df.groupby('project_id')
             self.commits_df = grouped_projects.filter(lambda x: x.commit_id.count() > min_number_commits)
