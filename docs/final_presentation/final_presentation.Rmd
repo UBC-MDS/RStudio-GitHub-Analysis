@@ -11,6 +11,7 @@ output:
       highlightLines: true
       countIncrementalSlides: false
 ---
+background-image: url("http://avante.biz/wp-content/uploads/2017/04/Computer-Science-Wallpapers-001.jpg")
 class: inverse, center, middle
 
 # Overview
@@ -18,8 +19,26 @@ class: inverse, center, middle
 ---
 ## Background
 
-Background about Git (short)
+.pull-left[
+Git is by far the most widely used modern version control system in the world
 
+Git has been designed with performance, security and flexibility in mind...
+]
+
+---
+## Background
+
+.pull-left[
+Git is by far the most widely used modern version control system in the world
+
+Git has been designed with performance, security and flexibility in mind...
+
+but not ease of use.
+]
+
+.pull-right[
+![xkcd-git](https://imgs.xkcd.com/comics/git.png)
+]
 ---
 ## Partner Needs
 
