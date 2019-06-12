@@ -15,6 +15,7 @@ import cluster as c
 import motif_finder as mf
 import freq_graph as fg
 import persona as p
+import motif_merge as mm
 import nxutils
 
 import pandas as pd
@@ -61,9 +62,15 @@ def main(n_projects, n_workers, data_path, results_path, min_commits, n_personas
     personaGenerationTime = time.time()
     logging.info("Personas Generated: " + str(personaGenerationTime - projectClusterTime) + " seconds")
 
-    motifs_by_cluster = mf.get_motifs_by_cluster(clusters, commits_dl, output_file=results_path + "motifs_by_cluster.pickle")
+    motif_k_list = [5,6,7,8,9,10,20,30]
+    for i in motif_k_list:
+        output_file_name = 'motifs_by_cluster_%s.pickle' %i
+        motifs_by_cluster = mf.get_motifs_by_cluster(clusters, commits_dl, k_for_motifs=i, number_of_samples=1000, output_file= results_path + output_file_name)
     motifTime = time.time()
     logging.info("Motifs Generated: " + str(motifTime - personaGenerationTime) + " seconds")
+
+    cluster_id = 0
+    clustering_of_motif = mm.motif_merging(motif_k_list, cluster_id, n_dimensions=4, epochs=3, workers=2, iter=4, input_file_path = results_path, k_for_clustering=10)
 
     fg.generate_motif_visualisations_by_cluster(input_file_motif_clusters=results_path + "motifs_by_cluster.pickle", output_file=results_path + "clustering_output.pdf")
     freqGraphTime = time.time()
