@@ -17,32 +17,32 @@ class: inverse, center, middle
 # Overview
 
 ---
-## Background
+## Background - Git
 
 .pull-left[
-Git is by far the most widely used modern version control system in the world
+The most widely used modern version control system in the world
 
-Git has been designed with performance, security and flexibility in mind...
+Designed with **performance**, **security** and **flexibility** in mind...
 ]
 
 ---
-## Background
+## Background - Git
 
 .pull-left[
-Git is by far the most widely used modern version control system in the world
+The most widely used modern version control system in the world
 
-Git has been designed with performance, security and flexibility in mind...
+Designed with **performance**, **security** and **flexibility** in mind...
 
-but not ease of use.
+but not **ease of use**.
 ]
 
 .pull-right[
 ![xkcd-git](https://imgs.xkcd.com/comics/git.png)
 ]
 ---
-## Partner Needs
+## Our Partner's Goals
 
-Talk about Greg and his requirements
+Our partner Greg Wilson 
 
 
 
