@@ -32,6 +32,7 @@ def main(n_projects, n_workers, data_path, results_path, min_commits, n_personas
 
     logging.info("Query Complete: " + str(getDataTime - startTime) + " seconds")
 
+<<<<<<< Updated upstream
     project_ids = dl.getUniqueProjectIdsFromDf(project_data)
     project_groups = commits_dl.getGroupedCommitsByProjectIds(project_ids)
 
@@ -50,6 +51,44 @@ def main(n_projects, n_workers, data_path, results_path, min_commits, n_personas
     logging.info("G2V Model Built: " + str(buildModelTime - generateGraphsTime) + " seconds")
 
     red.reduce_dim(workers=n_workers, output_path=results_path, random_state=1)
+=======
+    embeddings_path = None
+    if args.embeddings_file_path is None: # If embeddings not specified, generate the model and set the path to the output embeddings
+        project_ids = dl.getUniqueProjectIdsFromDf(project_data)
+        project_groups = commits_dl.getGroupedCommitsByProjectIds(project_ids)
+
+        project_graphs = []
+        project_ids_ordered = []
+        for name, group in project_groups:
+            project_graphs.append(nxutils.git_graph(group))
+            project_ids_ordered.append(name)
+
+        # with open("project_graphs.pkl", 'w') as f:
+        #     pickle.dump(project_graphs, f)
+        #
+        # with open("project_ids_ordered.pkl", 'w') as f:
+        #     pickle.dump(project_ids_ordered, f)
+
+        generateGraphsTime = time.time()
+        logging.info("NxGraphs Built: " + str(generateGraphsTime - getDataTime) + " seconds")
+
+        embeddings_path = args.results_path + "embeddings.csv"
+        g2vModel = g2v.Graph2Vec(workers=args.n_workers, size=args.n_neurons, seed=args.random_state)
+        g2vEmbeddings = g2vModel.fit_transform(project_graphs, project_ids_ordered, output_path=embeddings_path)
+        buildModelTime = time.time()
+        logging.info("G2V Model Built: " + str(buildModelTime - generateGraphsTime) + " seconds")
+
+        del project_graphs
+        del project_ids_ordered
+    else:
+        embeddings_path = args.embeddings_file_path
+        generateGraphsTime = time.time()
+        buildModelTime = time.time()
+
+
+
+    red.reduce_dim(workers=args.n_workers, output_path=args.results_path, input_path=embeddings_path, random_state=args.random_state)
+>>>>>>> Stashed changes
     reduceTime = time.time()
     logging.info("Dims Reduced: " + str(reduceTime - buildModelTime) + " seconds")
 
