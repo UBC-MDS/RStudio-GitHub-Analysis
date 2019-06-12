@@ -42,9 +42,19 @@ but not **ease of use**.
 ---
 ## Our Partner's Goals
 
-Our partner Greg Wilson 
+- Select a small set of common subgraphs that account for a large fraction of everyday use.
 
+--
 
+- Build a tool that provides those, and only those, to users. 
+
+--
+
+- Profit. Well, fame. OK, will you settle for having made the world a better place?
+
+.footnote[
+Source: [third-bit.com - Greg's Blog](http://third-bit.com/2017/09/30/git-graphs-and-engineering.html)
+]
 
 ---
 class: inverse, center, middle
