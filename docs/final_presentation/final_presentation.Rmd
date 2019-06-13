@@ -11,6 +11,12 @@ output:
       highlightLines: true
       countIncrementalSlides: false
 ---
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+library(xaringanthemer)
+```
+
 background-image: url("http://avante.biz/wp-content/uploads/2017/04/Computer-Science-Wallpapers-001.jpg")
 class: inverse, center, middle
 
@@ -42,6 +48,14 @@ but not **ease of use**.
 ---
 ## Our Partner's Goals
 
+- Download data from several thousand large projects on GitHub.
+
+--
+
+- Use your favorite statistical (machine learning) techniques to identify patterns in those repositories’ branch-and-merge graphs.
+
+--
+
 - Select a small set of common subgraphs that account for a large fraction of everyday use.
 
 --
@@ -50,7 +64,7 @@ but not **ease of use**.
 
 --
 
-- Profit. Well, fame. OK, will you settle for having made the world a better place?
+- **Profit.** Well, fame. OK, will you settle for having made the world a better place?
 
 .footnote[
 Source: [third-bit.com - Greg's Blog](http://third-bit.com/2017/09/30/git-graphs-and-engineering.html)
@@ -58,17 +72,28 @@ Source: [third-bit.com - Greg's Blog](http://third-bit.com/2017/09/30/git-graphs
 
 ---
 class: inverse, center, middle
+background-image: url("http://avante.biz/wp-content/uploads/2017/04/Computer-Science-Wallpapers-001.jpg")
 
 # Objectives
 
----
-
-## Questions we want to answer
-
-Introduce our scope and questions we'd like to answer
 
 ---
 class: inverse, center, middle
+
+## Question 1
+
+### Are there identifiable workflow patterns in the way people use git?
+
+---
+class: inverse, center, middle
+
+## Question 2
+
+### What are common subgraphs that account for a large fraction of everyday use?
+
+---
+class: inverse, center, middle
+background-image: url("http://avante.biz/wp-content/uploads/2017/04/Computer-Science-Wallpapers-001.jpg")
 
 # Current Work
 
@@ -100,8 +125,8 @@ NLP similarity
 - Interesting stuff we found
 
 ---
-
 class: inverse, center, middle
+background-image: url("http://avante.biz/wp-content/uploads/2017/04/Computer-Science-Wallpapers-001.jpg")
 
 # Recommendations
 
