@@ -114,6 +114,12 @@ NLP similarity
 
 - Squashing
 - Public (Only things that make it to github)
+---
+
+## Data Overview
+
+- image for Commit density plot
+- image for Author density plot
 
 ---
 
@@ -123,7 +129,11 @@ Using Graph2Vec to generate embeddings, we used T-SNE to reduce the dimensionali
 
 --
 
-Image
+Refer backwards to the data overview, some are not "interesting".
+
+--
+
+Image (cluster comparison, heatmap?)
 
 --
 
@@ -146,8 +156,8 @@ What are common subgraphs that account for a large fraction of everyday use?
 
 
 ---
-
-- Snippets from the report
+- Motif overview for all projects
+- Snippets from the report (motif freq for interesting clusters)
 - Interesting stuff we found
 
 ---
@@ -155,7 +165,31 @@ class: inverse, center, middle
 background-image: url("http://avante.biz/wp-content/uploads/2017/04/Computer-Science-Wallpapers-001.jpg")
 
 # Recommendations
+---
 
+- Work backwards from very successful and large projectst
+- Take into account time between commits
+- Label graph nodes by author within motifs
+- Exclude motifs at beginning and end of graph
+- Find repos that claim to use Gitflow and see whether or not they’re fundementally different
+
+---
+class: inverse, center, middle
+background-image: url("http://avante.biz/wp-content/uploads/2017/04/Computer-Science-Wallpapers-001.jpg")
+
+# Acknowledgments
+
+RStudio
+  - Greg Wilson
+    
+UBC-MDS Teaching Team
+  - Tiffany Timbers
+    
+---
+class: inverse, center, middle
+background-image: url("http://avante.biz/wp-content/uploads/2017/04/Computer-Science-Wallpapers-001.jpg")
+
+# Questions?
 ---
 
 # Hello World
