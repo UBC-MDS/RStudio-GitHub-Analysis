@@ -101,8 +101,7 @@ background-image: url("http://avante.biz/wp-content/uploads/2017/04/Computer-Sci
 
 ## Algorithm Overview
 
-Embeddings
-Clustering
+Nerdy stuff goes here
 
 ---
 
@@ -116,6 +115,22 @@ NLP similarity
 
 - Squashing
 - Public (Only things that make it to github)
+
+---
+
+## Findings
+
+Using Graph2Vec to generate embeddings, we were able to identify clusters at a global level.
+
+--
+
+Image
+
+--
+
+This indicates to us that there are identifiable workflow patterns in git graphs.
+
+Question 1: Yes
 
 ---
 
