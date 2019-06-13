@@ -76,7 +76,6 @@ background-image: url("http://avante.biz/wp-content/uploads/2017/04/Computer-Sci
 
 # Objectives
 
-
 ---
 class: inverse, center, middle
 
@@ -120,7 +119,7 @@ NLP similarity
 
 ## Findings
 
-Using Graph2Vec to generate embeddings, we were able to identify clusters at a global level.
+Using Graph2Vec to generate embeddings, we used T-SNE to reduce the dimensionality and look for visible clusters in our data.
 
 --
 
@@ -128,13 +127,25 @@ Image
 
 --
 
-This indicates to us that there are identifiable workflow patterns in git graphs.
+Are there identifiable workflow patterns in the way people use git?
 
-Question 1: Yes
+--
+
+Yes
+
+--
+
+Are they useful? Not really, they're mostly just git init's...
 
 ---
 
 ## Findings
+
+What are common subgraphs that account for a large fraction of everyday use?
+
+
+
+---
 
 - Snippets from the report
 - Interesting stuff we found
