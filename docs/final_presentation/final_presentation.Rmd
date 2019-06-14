@@ -45,6 +45,12 @@ but not **ease of use**.
 .pull-right[
 ![xkcd-git](https://imgs.xkcd.com/comics/git.png)
 ]
+
+---
+## Our Partner
+
+Picture of Greg and RStudio logo
+
 ---
 ## Our Partner's Idea
 
@@ -71,114 +77,59 @@ Source: [third-bit.com - Greg's Blog](http://third-bit.com/2017/09/30/git-graphs
 ]
 
 ---
+
+## Our Role
+
+---
+
+## Our Data
+
+---
+
 class: inverse, center, middle
 background-image: url("http://avante.biz/wp-content/uploads/2017/04/Computer-Science-Wallpapers-001.jpg")
 
-# Objectives
+# Questions
 
 ---
-class: inverse, center, middle
+class: inverse, center
+
+<br><br><br><br>
 
 ## Question 1
 
 ### Are there identifiable workflow patterns in the way people use git?
 
----
-class: inverse, center, middle
+--
 
 ## Question 2
 
 ### What are common subgraphs that account for a large fraction of everyday use?
 
 ---
-class: inverse, center, middle
-background-image: url("http://avante.biz/wp-content/uploads/2017/04/Computer-Science-Wallpapers-001.jpg")
+## How we'll answer question 1
 
-# Current Work
+q1 - Clustering
+
+---
+## Challenges
+
+Working with this kind of data is new and difficult
+
+We need to convert this data to a vector for q1
 
 ---
 
 ## Graph2Vec Overview
 
-- Consider Graph2Vec analogous to Doc2Vec.
+For q1
 
-Graph2vec: a neural embedding framework named to learn data-driven distributed representations of arbitrary sized graphs.
-- Sampling and relabeling all sub-graphs from the graph
-- Training the skip-gram model
-- Computing embeddings
+Collection of Text -> Doc2Vec -> Vectors
 
----
-
-## Algorithm Overview (Continued)
-
-- Motif: subgraphs within network, defined by a particular pattern of interactions between vertices.
+Collection of Graphs -> Graph2Vec -> Vectors
 
 ---
-
-## Justifications
-
-NLP similarity
-
----
-
-## Limitations
-
-- Squashing
-
-- Public (Only things that make it to github)
-
----
-
-## Findings
-
-Using Graph2Vec to generate embeddings, we used T-SNE to reduce the dimensionality and look for visible clusters in our data.
-
---
-
-Image
-
---
-
-- Finding motifs involves pick a random node, then performing a breadth-first search on the first k nodes after that.
-
---
-
-- Below is an example of a length-25 motif generated from a GitHub project.
-
-![motif_length_25](motif_example.png)
-
----
-
-## Justifications
-
-NLP similarity - Graph2vec is based on the idea of the doc2vec approach.
-
-Word2vec: uses skipgram to learn embeddings of words (as node in graph theory)
-
-Doc2vec: a forward extension to word2vec, learns embeddings of word sequences (as the sequence of node and vertices in graph theory)
-
----
-
-## Limitations
-
-- Squashing
-- Public (Only things that make it to github)
-- GHTorrent data cleanliness and availability
-
----
-
-## Data Overview
-
-- image for Commit density plot
-- image for Author density plot
-
-Of the 36.4 million projects that GitHub Torrent has information on...
-- 19.03 million projects, or 52.29%, have more than one commit.
-- 5.19 million project, or 14.27%, have more than one author contributing commits.
-
----
-
-## Findings
+## Are there identifiable workflow patterns in the way people use git?
 
 Using Graph2Vec to generate embeddings, we used T-SNE to reduce the dimensionality and look for visible clusters in our data.
 
@@ -202,6 +153,13 @@ Yes
 
 Are they useful? Not really, they're mostly just git init's...
 
+- image for Commit density plot
+- image for Author density plot
+
+Of the 36.4 million projects that GitHub Torrent has information on...
+- 19.03 million projects, or 52.29%, have more than one commit.
+- 5.19 million project, or 14.27%, have more than one author contributing commits.
+
 ---
 ## Clustered Projects with Similar Graph Types 
 
@@ -218,60 +176,75 @@ Are they useful? Not really, they're mostly just git init's...
 ![](tsne_more_than_100.png)
 
 ---
+# Blob slide (zoomed in 100+)
+
+---
 HEATMAP, etc.
 As a result, we are only looking at projects with more than 100 commits.
+
 ---
+# How we'll answer question 2
 
-## Findings
+q2 - What a motif is, how motifs help us
 
-What are common subgraphs that account for a large fraction of everyday use?
+For q2
+
+- Motif: subgraphs within network, defined by a particular pattern of interactions between vertices.
+
+--
+
+- Finding motifs involves pick a random node, then performing a breadth-first search on the first k nodes after that.
+
+--
+
+- Below is an example of a length-25 motif generated from a GitHub project.
+
+![motif_length_25](motif_example.png)
+
+---
+# Challenges
+
+The length of motifs and identifying equivalent patterns of different lengths
+
+Motif length EDA
+
+---
+# Motif Exploration
+
+---
+## What are common subgraphs that account for a large fraction of everyday use?
 
 - Motif overview for all projects
 - Snippets from the report (motif freq for interesting clusters)
 - Interesting stuff we found
-
----
-## How does graph complexity relate to usage of GitHub features like issues, pull requests, and code reviews?
 - Note: High Complexity = More Branching and Merging
 - As you can see below, GitHub projects with more complex graphs have more issues, pull requests, and code reviews than projects with simpler graphs.
 
 ![by_complexity](GH_features_by_complexity.png)
 
 ---
-Why do more complex graphs have more GitHub Features?
+## Limitations to answering both questions
 
-- Having many branches lead to more complex graphs and are likely also related to the need for more pull requests, issues, etc.
-
-- Potential confounder that causes this effect: expertise.
-    - Expert GitHub users are more likely to branch and merge, AND are more likely to make issues, pull requests, etc.
-    - Hard to directly measure expertise. Looked at project owner's age since joining GitHub, couldn't find a relationship.
-
-- Potential confounder that causes this effect: number of authors (more on next slides).
+- Squashing
+- Public (Only things that make it to github)
+- GHTorrent data cleanliness and availability
 
 ---
-## Unsuprisingly, Projects with Higher Graph Complexity Have More Authors
+## Wrap-up
 
-![author_by_complexity](GH_authors_by_complexity.png)
-
----
-# Graph Complexity by GitHub Usage, Controlling for Authors
-![](GH_features_by_complexity_by_author.png)
-
----
-## NEEDS WORK Does more complexity always equate to higher usage of GitHub features?
-
-Is there such a thing as branching too much? 
-
-![](commit_chain_by_issues.png)
-
+These were our questions
+Here's what we did
+Here are our recommendations
 
 ---
 
 class: inverse, center, middle
 background-image: url("http://avante.biz/wp-content/uploads/2017/04/Computer-Science-Wallpapers-001.jpg")
 
-# Recommendations
+# Recommendations 
 ---
+
+## Confident Recommendations
 - Study the causal relationship between GitHub feature usage and graph complexity
 - Given the relationship between complexity and GitHub feature usage, a new tool should direct users to use the documentation features such as issues and PR reviews to maintain a long term structure.
 - We can see a consistent percentage of language use in big projects between the largest 8 languages in our sample. This is indicative that a new tool should be language agnostic as users tend to follow patterns not guided by languages.
@@ -284,6 +257,15 @@ background-image: url("http://avante.biz/wp-content/uploads/2017/04/Computer-Sci
 - Find repos that claim to use Gitflow and see whether or not they’re fundementally different
 
 ---
+## Tentative Recommendations 
+
+---
+## Requires further exploration
+
+---
+## Next Steps
+
+---
 class: inverse, center, middle
 background-image: url("http://avante.biz/wp-content/uploads/2017/04/Computer-Science-Wallpapers-001.jpg")
 
@@ -293,11 +275,6 @@ RStudio - Greg Wilson
     
 UBC-MDS Teaching Team - Tiffany Timbers
 
----
-class: inverse, center, middle
-background-image: url("http://avante.biz/wp-content/uploads/2017/04/Computer-Science-Wallpapers-001.jpg")
-
-# Thank you   
 ---
 class: inverse, center, middle
 background-image: url("http://avante.biz/wp-content/uploads/2017/04/Computer-Science-Wallpapers-001.jpg")
