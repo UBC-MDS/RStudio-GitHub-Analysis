@@ -3,6 +3,7 @@
 import graph2vec as g2v
 import motif_finder as mf
 import pickle
+import operator
 n_dimensions = 128
 
 def motif_merging_per_cluster(motif_k_list, cluster_id, n_dimensions=4, epochs=3, workers=2, iter=4, input_file_path = "", k_for_clustering=10):
@@ -58,7 +59,7 @@ def motif_merging(motif_k_list, clusters, n_dimensions=4, epochs=3, workers=2, i
     for cluster in clusters:
         motif_merging_per_cluster = motif_merging_per_cluster(motif_k_list, cluster_id, n_dimensions=n_dimensions, epochs=epochs, workers=workers, iter=iter, input_file_path = input_file_path, k_for_clustering=k_for_clustering)
         motif_clustering[cluster] = motif_merging_per_cluster
-        
+
     if output_file_path is not None:
         with open(output_file_path, 'wb') as output:
             pickle.dump(motif_clustering, output)
