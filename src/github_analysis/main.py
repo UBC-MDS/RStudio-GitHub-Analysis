@@ -69,8 +69,7 @@ def main(n_projects, n_workers, data_path, results_path, min_commits, n_personas
     motifTime = time.time()
     logging.info("Motifs Generated: " + str(motifTime - personaGenerationTime) + " seconds")
 
-    cluster_id = 0
-    clustering_of_motif = mm.motif_merging(motif_k_list, cluster_id, n_dimensions=4, epochs=3, workers=2, iter=4, input_file_path = results_path, k_for_clustering=10)
+    clustering_of_motif = mm.(motif_k_list, clusters, n_dimensions=4, epochs=3, workers=2, iter=4, output_file_path = results_path + "clustering_of_motif.pickle", k_for_clustering=10)
 
     fg.generate_motif_visualisations_by_cluster(input_file_motif_clusters=results_path + "motifs_by_cluster.pickle", output_file=results_path + "clustering_output.pdf")
     freqGraphTime = time.time()
