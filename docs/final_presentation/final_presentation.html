@@ -4,7 +4,7 @@
     <title>RStudio Github Analysis</title>
     <meta charset="utf-8" />
     <meta name="author" content="Juno Chen, Ian Flores, Rayce Rossum, Richie Zitomer" />
-    <meta name="date" content="2019-06-13" />
+    <meta name="date" content="2019-06-14" />
     <link href="libs/remark-css/default.css" rel="stylesheet" />
     <link href="libs/remark-css/default-fonts.css" rel="stylesheet" />
     <script src="libs/htmlwidgets/htmlwidgets.js"></script>
@@ -24,7 +24,7 @@ class: center, middle, inverse, title-slide
 # RStudio Github Analysis
 ## What the Git is going on here?
 ### Juno Chen, Ian Flores, Rayce Rossum, Richie Zitomer
-### 2019-06-13
+### 2019-06-14
 
 ---
 
@@ -114,13 +114,24 @@ background-image: url("http://avante.biz/wp-content/uploads/2017/04/Computer-Sci
 
 ## Algorithm Overview
 
-Nerdy stuff goes here
+Graph2vec: a neural embedding framework named to learn data-driven distributed representations of arbitrary sized graphs.
+- Sampling and relabeling all sub-graphs from the graph
+- Training the skip-gram model
+- Computing embeddings
+
+Motif: subgraphs within network, defined by a particular pattern of interactions between vertices.
+- example image of motif within a network?
+- finding motifs? (randomly pick a node, then perform random walk)
 
 ---
 
 ## Justifications
 
-NLP similarity
+NLP similarity - Graph2vec is based on the idea of the doc2vec approach.
+
+Word2vec: uses skipgram to learn embeddings of words (as node in graph theory)
+
+Doc2vec: a forward extension to word2vec, learns embeddings of word sequences (as the sequence of node and vertices in graph theory)
 
 ---
 
@@ -128,6 +139,7 @@ NLP similarity
 
 - Squashing
 - Public (Only things that make it to github)
+
 ---
 
 ## Data Overview
@@ -181,8 +193,8 @@ background-image: url("http://avante.biz/wp-content/uploads/2017/04/Computer-Sci
 # Recommendations
 ---
 
-- Work backwards from very successful and large projectst
-- Take into account time between commits
+- Work backwards from very successful and large projects
+- Take into account the time between commits
 - Label graph nodes by author within motifs
 - Exclude motifs at beginning and end of graph
 - Find repos that claim to use Gitflow and see whether or not they’re fundementally different
@@ -193,12 +205,15 @@ background-image: url("http://avante.biz/wp-content/uploads/2017/04/Computer-Sci
 
 # Acknowledgments
 
-RStudio
-  - Greg Wilson
+RStudio - Greg Wilson
     
-UBC-MDS Teaching Team
-  - Tiffany Timbers
-    
+UBC-MDS Teaching Team - Tiffany Timbers
+
+---
+class: inverse, center, middle
+background-image: url("http://avante.biz/wp-content/uploads/2017/04/Computer-Science-Wallpapers-001.jpg")
+
+# Thank you   
 ---
 class: inverse, center, middle
 background-image: url("http://avante.biz/wp-content/uploads/2017/04/Computer-Science-Wallpapers-001.jpg")
@@ -493,8 +508,8 @@ DT::datatable(
 )
 ```
 
-<div id="htmlwidget-05ab6087cb2b18442ead" style="width:100%;height:auto;" class="datatables html-widget"></div>
-<script type="application/json" data-for="htmlwidget-05ab6087cb2b18442ead">{"x":{"filter":"none","fillContainer":false,"data":[["1","2","3","4","5","6","7","8","9","10"],[5.1,4.9,4.7,4.6,5,5.4,4.6,5,4.4,4.9],[3.5,3,3.2,3.1,3.6,3.9,3.4,3.4,2.9,3.1],[1.4,1.4,1.3,1.5,1.4,1.7,1.4,1.5,1.4,1.5],[0.2,0.2,0.2,0.2,0.2,0.4,0.3,0.2,0.2,0.1],["setosa","setosa","setosa","setosa","setosa","setosa","setosa","setosa","setosa","setosa"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>Sepal.Length<\/th>\n      <th>Sepal.Width<\/th>\n      <th>Petal.Length<\/th>\n      <th>Petal.Width<\/th>\n      <th>Species<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":8,"columnDefs":[{"className":"dt-right","targets":[1,2,3,4]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false,"lengthMenu":[8,10,25,50,100]}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-9c886206d857d8dfa486" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-9c886206d857d8dfa486">{"x":{"filter":"none","fillContainer":false,"data":[["1","2","3","4","5","6","7","8","9","10"],[5.1,4.9,4.7,4.6,5,5.4,4.6,5,4.4,4.9],[3.5,3,3.2,3.1,3.6,3.9,3.4,3.4,2.9,3.1],[1.4,1.4,1.3,1.5,1.4,1.7,1.4,1.5,1.4,1.5],[0.2,0.2,0.2,0.2,0.2,0.4,0.3,0.2,0.2,0.1],["setosa","setosa","setosa","setosa","setosa","setosa","setosa","setosa","setosa","setosa"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>Sepal.Length<\/th>\n      <th>Sepal.Width<\/th>\n      <th>Petal.Length<\/th>\n      <th>Petal.Width<\/th>\n      <th>Species<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":8,"columnDefs":[{"className":"dt-right","targets":[1,2,3,4]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false,"lengthMenu":[8,10,25,50,100]}},"evals":[],"jsHooks":[]}</script>
 
 ---
 

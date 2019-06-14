@@ -100,13 +100,24 @@ background-image: url("http://avante.biz/wp-content/uploads/2017/04/Computer-Sci
 
 ## Algorithm Overview
 
-Nerdy stuff goes here
+Graph2vec: a neural embedding framework named to learn data-driven distributed representations of arbitrary sized graphs.
+- Sampling and relabeling all sub-graphs from the graph
+- Training the skip-gram model
+- Computing embeddings
+
+Motif: subgraphs within network, defined by a particular pattern of interactions between vertices.
+- example image of motif within a network?
+- finding motifs? (randomly pick a node, then perform random walk)
 
 ---
 
 ## Justifications
 
-NLP similarity
+NLP similarity - Graph2vec is based on the idea of the doc2vec approach.
+
+Word2vec: uses skipgram to learn embeddings of words (as node in graph theory)
+
+Doc2vec: a forward extension to word2vec, learns embeddings of word sequences (as the sequence of node and vertices in graph theory)
 
 ---
 
@@ -114,6 +125,7 @@ NLP similarity
 
 - Squashing
 - Public (Only things that make it to github)
+
 ---
 
 ## Data Overview
@@ -167,8 +179,8 @@ background-image: url("http://avante.biz/wp-content/uploads/2017/04/Computer-Sci
 # Recommendations
 ---
 
-- Work backwards from very successful and large projectst
-- Take into account time between commits
+- Work backwards from very successful and large projects
+- Take into account the time between commits
 - Label graph nodes by author within motifs
 - Exclude motifs at beginning and end of graph
 - Find repos that claim to use Gitflow and see whether or not they’re fundementally different
@@ -179,12 +191,15 @@ background-image: url("http://avante.biz/wp-content/uploads/2017/04/Computer-Sci
 
 # Acknowledgments
 
-RStudio
-  - Greg Wilson
+RStudio - Greg Wilson
     
-UBC-MDS Teaching Team
-  - Tiffany Timbers
-    
+UBC-MDS Teaching Team - Tiffany Timbers
+
+---
+class: inverse, center, middle
+background-image: url("http://avante.biz/wp-content/uploads/2017/04/Computer-Science-Wallpapers-001.jpg")
+
+# Thank you   
 ---
 class: inverse, center, middle
 background-image: url("http://avante.biz/wp-content/uploads/2017/04/Computer-Science-Wallpapers-001.jpg")
