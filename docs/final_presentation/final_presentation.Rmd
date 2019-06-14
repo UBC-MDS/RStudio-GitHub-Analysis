@@ -46,7 +46,7 @@ but not **ease of use**.
 ![xkcd-git](https://imgs.xkcd.com/comics/git.png)
 ]
 ---
-## Our Partner's Goals
+## Our Partner's Idea
 
 - Download data from several thousand large projects on GitHub.
 
@@ -98,7 +98,9 @@ background-image: url("http://avante.biz/wp-content/uploads/2017/04/Computer-Sci
 
 ---
 
-## Algorithm Overview
+## Graph2Vec Overview
+
+- Consider Graph2Vec analogous to Doc2Vec.
 
 Graph2vec: a neural embedding framework named to learn data-driven distributed representations of arbitrary sized graphs.
 - Sampling and relabeling all sub-graphs from the graph
@@ -106,9 +108,34 @@ Graph2vec: a neural embedding framework named to learn data-driven distributed r
 - Computing embeddings
 
 ---
-## Algorithim Overview (Continued)
+
+## Algorithm Overview (Continued)
 
 - Motif: subgraphs within network, defined by a particular pattern of interactions between vertices.
+
+---
+
+## Justifications
+
+NLP similarity
+
+---
+
+## Limitations
+
+- Squashing
+
+- Public (Only things that make it to github)
+
+---
+
+## Findings
+
+Using Graph2Vec to generate embeddings, we used T-SNE to reduce the dimensionality and look for visible clusters in our data.
+
+--
+
+Image
 
 --
 

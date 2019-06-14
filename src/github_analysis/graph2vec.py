@@ -12,12 +12,13 @@ from tqdm import tqdm
 logging.basicConfig(format="%(asctime)s : %(levelname)s : %(message)s", filename="log.log", level=logging.INFO)
 
 class Graph2Vec:
-    def __init__(self, size=128, epochs=10, workers=8, iter=10, seed=None):
+    def __init__(self, size=128, epochs=10, workers=8, iter=4, min_count=5, seed=None):
         self.size = size
         self.epochs = epochs
         self.workers = workers
         self.iter = iter
         self.seed = seed
+        self.min_count = min_count
         self.fitted = False
 
     def fit(self, projectGraphs):
@@ -25,7 +26,7 @@ class Graph2Vec:
             self.model = Doc2Vec(self.extract_features(projectGraphs),
                         vector_size = self.size,
                         window = 0,
-                        min_count = 5,
+                        min_count = self.min_count,
                         dm = 0,
                         sample = 0.0001,
                         workers = self.workers,
@@ -35,7 +36,7 @@ class Graph2Vec:
             self.model = Doc2Vec(self.extract_features(projectGraphs),
                         vector_size = self.size,
                         window = 0,
-                        min_count = 5,
+                        min_count = self.min_count,
                         dm = 0,
                         sample = 0.0001,
                         workers = self.workers,

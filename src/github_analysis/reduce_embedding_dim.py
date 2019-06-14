@@ -35,11 +35,8 @@ def output_image_of_tsne(embeddings_tsne_transform, filename):
     plt.savefig(filename)
 
 
-def reduce_dim(output_path, workers=4, embeddings=None, save_to_csv=True, save_image=True, random_state=None):
-    if embeddings is None:
-        transformed_array = run_tsne(workers=workers, filename=output_path + 'embeddings.csv',random_state=random_state)
-    else:
-        transformed_array = run_tsne(workers=workers, embeddings=embeddings, random_state=random_state)
+def reduce_dim(output_path, input_path, workers=4, embeddings=None, save_to_csv=True, save_image=True, random_state=None):
+    transformed_array = run_tsne(workers=workers, filename=input_path, random_state=random_state)
 
     if save_to_csv == True:
         transformed_array.to_csv(output_path + 'embeddings_reduced_dim.csv')
