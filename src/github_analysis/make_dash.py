@@ -11,10 +11,14 @@ import github_analysis.freq_graph as fg
 from google.oauth2.service_account import Credentials
 from matplotlib.ticker import FuncFormatter
 from decimal import Decimal
+import networkx as nx
 import panel as pn
+from random import sample
 from sklearn import preprocessing
 import seaborn as sns; sns.set(color_codes=True)
 from pdf2image import convert_from_path
+from github_analysis.nxutils import git_graph
+
 
 from sklearn import preprocessing
 from matplotlib.backends.backend_pdf import PdfPages
@@ -94,6 +98,7 @@ class Dashboard:
         self.proj_ids_string = ",".join(self.project_ids.astype(str))
         self.data_path = data_path
         self.commits_dl = dl.data_layer(data_path)
+
 
         self.images_made = True
 
@@ -202,7 +207,7 @@ class Dashboard:
 
 
 class Heatmapper:
-    def __init__(self, num_motifs_to_sample=100, motif_lengths=[5,25,50,100], data_path='/Users/richiezitomer/Documents/RStudio-Data-Repository/clean_data/commits.feather',
+    def __init__(self, num_motifs_to_sample=100, motif_lengths=[4, 5,10,25,50,75,100], data_path='/Users/richiezitomer/Documents/RStudio-Data-Repository/clean_data/commits.feather',
                  embedding_path='results/embeddings.csv', cluster_path="./results/clusters.pickle"):
         self.data_path = data_path
         self.commits_dl = dl.data_layer(data_path)
@@ -211,8 +216,10 @@ class Heatmapper:
         self.motif_lengths = motif_lengths
         self.emb = pd.read_csv(embedding_path)
 
-        project_ids = self.emb.type.values
-        self.proj_ids_string = ",".join(project_ids.astype(str))
+        self.project_ids = self.emb.type.values
+        self.proj_ids_string = ",".join(self.project_ids .astype(str))
+
+        self.commits_dl.commits_df = self.commits_dl.getCommitsByProjectIds(list(self.project_ids))
 
         pickle_in = open(cluster_path, "rb")
         self.clusters = pickle.load(pickle_in)
@@ -244,12 +251,43 @@ class Heatmapper:
         for cluster in sorted(motifs_by_cluster.keys()):
             for motif in motifs_by_cluster[cluster]:
                 if sum([motif.out_degree(node) in [0, 1] for node in motif]) == len(motif.nodes):
-                    multi_chain_perc.append(self.num_motifs_to_sample-motifs_by_cluster[cluster][motif])
+                    multi_chain_perc.append(100*(self.num_motifs_to_sample-motifs_by_cluster[cluster][motif])/self.num_motifs_to_sample)
         multi_chain_perc_series = pd.Series(multi_chain_perc)
         multi_chain_perc_series.name = 'mcp_{}'.format(k)
         return multi_chain_perc_series
 
-    def make_proj_stats_df(self, read_from_motif_files=False):
+    def get_multi_chain_percent_by_proj(self, k,proj_id):
+        """f """
+        projects_cluster = self.commits_dl.getCommitsByProjectId(proj_id)
+        G = git_graph(projects_cluster)
+        roots = [n for n, d in G.in_degree() if d == 0]
+
+        mcs = 0
+        scs = 0
+        if len(roots) > 10:
+            roots = sample(roots, 10)
+        for root in roots:
+            edges = nx.bfs_edges(G,root)  # https://networkx.github.io/documentation/networkx-2.2/reference/algorithms/generated/networkx.algorithms.traversal.breadth_first_search.bfs_edges.html#networkx.algorithms.traversal.breadth_first_search.bfs_edges
+            nodes = [root] + [v for u, v in edges]
+            #    print(len(nodes))
+
+            for i in range(0, len(nodes), k):
+                current_root = nodes[i]
+                current_edges = nx.bfs_edges(G, current_root)  # https://networkx.github.io/documentation/networkx-2.2/reference/algorithms/generated/networkx.algorithms.traversal.breadth_first_search.bfs_edges.html#networkx.algorithms.traversal.breadth_first_search.bfs_edges
+                current_nodes = [current_root] + [v for u, v in current_edges]
+                if len(current_nodes) < k:
+                    continue
+                subgraph = G.subgraph(current_nodes[:k])
+                if sum([subgraph.out_degree(node) in [0, 1] for node in subgraph]) != k:
+                    mcs += 1
+                else:
+                    scs += 1
+        if scs+mcs == 0:
+            return None
+        else:
+            return mcs/(scs+mcs)
+
+    def make_proj_stats_df(self, read_from_motif_files=False,do_cluster=False):
         # Load Data
         comm_auth_by_proj = pull_queries(COMM_AUTH_BY_PROJ.format(proj_ids=self.proj_ids_string)).set_index(
             'p_id')  # pd.read_csv('data/author_commits_by_proj_100.csv').set_index('p_id')
@@ -264,21 +302,35 @@ class Heatmapper:
 
         project = pd.concat([comm_auth_by_proj, pr_cr_by_proj, issues_by_proj, owner_age_by_proj, time_betw_commits_by_proj], axis=1)
 
-        cluster_lookup = {}
-        for cluster, value in self.clusters.items():
-            for proj in value:
-                cluster_lookup[proj] = cluster
+        if do_cluster:
+            cluster_lookup = {}
+            for cluster, value in self.clusters.items():
+                for proj in value:
+                    cluster_lookup[proj] = cluster
 
-        project['cluster'] = project.reset_index().p_id.apply(lambda x: cluster_lookup[x]).values
+            project['cluster'] = project.reset_index().p_id.apply(lambda x: cluster_lookup[x]).values
 
-        multi_chain_percents = []
-        for k in self.motif_lengths:
-            motifs_by_cluster = self.generate_motifs(k, read_from_file=read_from_motif_files)
-            multi_chain_percents.append(self.get_multi_chain_percent(motifs_by_cluster,k))
+            multi_chain_percents = []
+            for k in self.motif_lengths:
+                motifs_by_cluster = self.generate_motifs(k, read_from_file=read_from_motif_files)
+                multi_chain_percents.append(self.get_multi_chain_percent(motifs_by_cluster,k))
 
-        complexity = pd.concat(multi_chain_percents, axis=1)
-        project_stats = project.join(complexity, on='cluster', how='left')
+            complexity = pd.concat(multi_chain_percents, axis=1)
+            project_stats = project.join(complexity, on='cluster', how='left')
+
+        else:
+            project['p_id'] = project.index
+            multi_chain_percents = []
+            for k in self.motif_lengths:
+                print(k)
+                multi_chain_perc_series = project.p_id.apply(lambda x: self.get_multi_chain_percent_by_proj(k,x))
+                multi_chain_perc_series.name = 'mcp_{}'.format(k)
+                multi_chain_percents.append(multi_chain_perc_series)
+            complexity = pd.concat(multi_chain_percents, axis=1)
+            project_stats = project.join(complexity, how='left')
+
         self.project_stats = project_stats
+
 
     def make_heatmap(self, palette='OrRd', palette_levels=10):#,output_path='./results/Report_gh_heatmap.png',ax=None):
         #fig = plt.figure()
@@ -391,7 +443,11 @@ OWNER_AGE_BY_PROJ = """SELECT
     FROM `ghtorrent-bq.ght.projects` p 
     left join `ghtorrent-bq.ght.users` u on (u.id = p.owner_id)
     where p.id in ({proj_ids})
-    and date_diff(DATE(p.created_at), DATE(u.created_at),DAY)>=0"""
+    and date_diff(DATE(p.created_at), DATE(u.created_at),DAY)>=0
+    and EXTRACT(YEAR FROM p.created_at)>=2011
+    and EXTRACT(YEAR FROM p.created_at)<=2016
+    and EXTRACT(YEAR FROM u.created_at)>=2011
+    and EXTRACT(YEAR FROM u.created_at)<=2016"""
 
 TBC_BY_PROJ = """select 
   project_id as p_id,
