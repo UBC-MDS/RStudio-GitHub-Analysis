@@ -1,7 +1,7 @@
 ---
 title: "RStudio Github Analysis"
 subtitle: "What the Git is going on here?"
-author: "Juno Chen, Ian Flores, Rayce Rossum, Richie Zitomer"
+author: "Juno Chen, Ian Flores, Rayce Rossum, Richie Zitomer<br><br>Dr. Tiffany Timbers"
 date: "`r Sys.Date()`"
 output:
   xaringan::moon_reader:
@@ -144,7 +144,7 @@ class: inverse, center
 ---
 ## Challenges
 
-- Working with graph data is new and difficult (the algorithm we're using was published in **late 2018**)
+- Working with graph data is a new (the algorithm we're using was published in **late 2018**)
 
 --
 
@@ -166,12 +166,12 @@ class: inverse, center
 ![](global_clustering.png)
 
 ---
-## Greather than 10 commits
+## Greater than 10 commits
 
 ![](gt_10_commits.png)
 
 ---
-## Greather than 100 commits
+## Greater than 100 commits
 
 ![](gt_100_commits.png)
 
@@ -202,21 +202,33 @@ Out of 36.4 million projects
 
 --
 
+Moving forward, we'll be looking at projects with **> 100 commits**
+
+--
+
 So why don't we only cluster on large projects?
 
 ---
 ## Clustering on 100+ commits
 
+.pull-left[
+- Due to the variability in large projects, our approach is unable to find clear clusters.
+
+- This doesn't mean we can't do anything with this result, it just requires a deeper analysis and future work.
+]
+
+.pull-right[
 ![](blob.png)
+]
 
 ---
-## How We'll Answer Question 2 - Overview
+## Approach to Identifying Common Subgraphs
 
-- Question 2: What are common subgraphs that account for a large fraction of everyday use?
+- What are common subgraphs that account for a large fraction of everyday use?
 
 --
 
-- Motif: subgraphs within a network that appear at a much higher frequency than random chance.
+- Motif: Subgraphs within a network that appear at a much higher frequency than random chance.
 
 --
 
@@ -228,7 +240,7 @@ So why don't we only cluster on large projects?
 <div style="text-align: center"><img src="motif_example.png">
 
 ---
-## How We'll Answer Question 2 - Challenges
+## Challenges
 
 - It's challenging to associate similar (but not identical) motifs together.
 

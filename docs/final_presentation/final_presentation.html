@@ -3,7 +3,7 @@
   <head>
     <title>RStudio Github Analysis</title>
     <meta charset="utf-8" />
-    <meta name="author" content="Juno Chen, Ian Flores, Rayce Rossum, Richie Zitomer" />
+    <meta name="author" content="Juno Chen, Ian Flores, Rayce Rossum, Richie Zitomer  Dr. Tiffany Timbers" />
     <meta name="date" content="2019-06-16" />
     <link href="libs/remark-css/default.css" rel="stylesheet" />
     <link href="libs/remark-css/default-fonts.css" rel="stylesheet" />
@@ -14,7 +14,7 @@ class: center, middle, inverse, title-slide
 
 # RStudio Github Analysis
 ## What the Git is going on here?
-### Juno Chen, Ian Flores, Rayce Rossum, Richie Zitomer
+### Juno Chen, Ian Flores, Rayce Rossum, Richie Zitomer<br><br>Dr. Tiffany Timbers
 ### 2019-06-16
 
 ---
@@ -149,7 +149,7 @@ class: inverse, center
 ---
 ## Challenges
 
-- Working with graph data is new and difficult (the algorithm we're using was published in 2018)
+- Working with graph data is a new (the algorithm we're using was published in **late 2018**)
 
 --
 
@@ -207,21 +207,33 @@ Out of 36.4 million projects
 
 --
 
+Moving forward, we'll be looking at projects with **&gt; 100 commits**
+
+--
+
 So why don't we only cluster on large projects?
 
 ---
 ## Clustering on 100+ commits
 
+.pull-left[
+- Due to the variability in large projects, our approach is unable to find clear clusters.
+
+- This doesn't mean we can't do anything with this result, it just requires a deeper analysis. 
+]
+
+.pull-right[
 ![](blob.png)
+]
 
 ---
-## How We'll Answer Question 2 - Overview
+## Approach to Identifying Common Subgraphs
 
-- Question 2: What are common subgraphs that account for a large fraction of everyday use?
+- What are common subgraphs that account for a large fraction of everyday use?
 
 --
 
-- Motif: subgraphs within a network that appear at a much higher frequency than random chance.
+- Motif: Subgraphs within a network that appear at a much higher frequency than random chance.
 
 --
 
@@ -233,7 +245,7 @@ So why don't we only cluster on large projects?
 &lt;div style="text-align: center"&gt;&lt;img src="motif_example.png"&gt;
 
 ---
-## How We'll Answer Question 2 - Challenges
+## Challenges
 
 - It's challenging to associate similar (but not identical) motifs together.
 
@@ -367,9 +379,9 @@ background-image: url("http://avante.biz/wp-content/uploads/2017/04/Computer-Sci
 
 # Acknowledgments
 
-* RStudio - Greg Wilson
+* RStudio - Dr. Greg Wilson
     
-* UBC-MDS Teaching Team - Tiffany Timbers
+* UBC-MDS Teaching Team - Dr. Tiffany Timbers
  
 * All the other Capstones Teams
 
