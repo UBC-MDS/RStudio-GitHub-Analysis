@@ -49,16 +49,26 @@ but not **ease of use**.
 ---
 ## Our Partner
 
-Picture of Greg and RStudio logo
+.pull-left[
+### R Studio
+![](rstudio-og.png)
+]
+
+
+.pull-right[
+### Dr. Greg Wilson
+![](gvwilson-tpl-2017-small.jpg)
+]
+
 
 ---
 ## Our Partner's Idea
 
-- Download data from several thousand large projects on GitHub.
+- Get data for a large number of projects from GitHub.
 
 --
 
-- Use your favorite statistical (machine learning) techniques to identify patterns in those repositories’ branch-and-merge graphs.
+- Identify branching and merging patterns using any statistical or machine learning approach on the commit history of the graphs
 
 --
 
@@ -66,11 +76,8 @@ Picture of Greg and RStudio logo
 
 --
 
-- Build a tool that provides those, and only those, to users. 
+- Build a tool that provides the common subgraphs that account for the most common patterns.
 
---
-
-- **Profit.** Well, fame. OK, will you settle for having made the world a better place?
 
 .footnote[
 Source: [third-bit.com - Greg's Blog](http://third-bit.com/2017/09/30/git-graphs-and-engineering.html)
@@ -80,9 +87,21 @@ Source: [third-bit.com - Greg's Blog](http://third-bit.com/2017/09/30/git-graphs
 
 ## Our Role
 
+- We want to understand how people use Git
+
+- Specifically we want to understand what are their workflows in Git
+
+- This enables us to draw up recommendations for the new tool that RStudio is interested in developing.
+
 ---
 
 ## Our Data
+
+- Git is not any type of graph, it is a Directed Acyclic Graph (DAG)
+    - Nodes/Vertices --> Commits
+    - Edges --> Connections between commits
+
+![](branch_test.png)
 
 ---
 
@@ -163,17 +182,17 @@ Of the 36.4 million projects that GitHub Torrent has information on...
 ---
 ## Clustered Projects with Similar Graph Types 
 
-![](tsne_clusters.png)
+![](global_clustering.png)
 
 ---
-## Projects with Similar Numbers of Commits are Clustered Together
+## Size is represented in the embeddings as a feature
 
-![](tsne_more_than_10.png)
+![](gt_10_commits.png)
 
 ---
-## Projects with Similar Numbers of Commits are Clustered Together
+## Size is represented in the embeddings as a feature
 
-![](tsne_more_than_100.png)
+![](gt_100_commits.png)
 
 ---
 # Blob slide (zoomed in 100+)
@@ -274,11 +293,21 @@ As a result, we are only looking at projects with more than 100 commits.
 - GHTorrent data cleanliness and availability
 
 ---
-## Wrap-up
+## Summary
 
-These were our questions
-Here's what we did
-Here are our recommendations
+
+- Our questions were aimed to understand:
+  - Identifiable workflow patterns in the way people use git
+  - Common subgraphs that account for a large fraction of everyday use
+  
+- To do this we:
+  - Performed clustering using Graph2Vec and K Means
+  - Extracted motifs from the different projects
+
+- Based on the insights extracted from the data we then divided our recommendations in three categories:
+  - Confident
+  - Tentative
+  - Requires further exploration
 
 ---
 
@@ -289,25 +318,35 @@ background-image: url("http://avante.biz/wp-content/uploads/2017/04/Computer-Sci
 ---
 
 ## Confident Recommendations
-- Study the causal relationship between GitHub feature usage and graph complexity
-- Given the relationship between complexity and GitHub feature usage, a new tool should direct users to use the documentation features such as issues and PR reviews to maintain a long term structure.
-- We can see a consistent percentage of language use in big projects between the largest 8 languages in our sample. This is indicative that a new tool should be language agnostic as users tend to follow patterns not guided by languages.
-- We couldn’t find evidence of the use of Git Flow or other types of pre-established workflows. This doesn’t mean the patterns don’t exist, but they might not be as prevalent as thought before. A new tool should either give the option to users to strictly be forced to follow one of these pre-established workflows, or don’t consider them altogether.
-- Most repositories have less than 50 authors, thus indicating that a new tool should maximize for the effectiviness of collaboration in small and medium projects and not for big projects.This is because tools like Git were created to optimize collaboration for projects  like the Linux Kernel, but the vast majority of projects are way smaller than the Kernel.
-- Work backwards from very successful and large projects
-- Take into account the time between commits
-- Label graph nodes by author within motifs
-- Exclude motifs at beginning and end of graph
-- Find repos that claim to use Gitflow and see whether or not they’re fundementally different
+- We can see a consistent percentage of language use in big projects between the largest 8 languages in our sample.
+  - A new tool should be language agnostic as users tend to follow patterns not guided by languages.
 
 ---
 ## Tentative Recommendations 
 
+- There is a positive correlation between complexity and GitHub feature usage
+  - A new tool should direct users to use the documentation features such as issues and PR reviews to maintain a long term structure.
+
+- Branching is 1.41x more prevalent than merging
+  - A new tool should consider a mechanism to force users to keep up to date within a certain number of commits.
+  
 ---
 ## Requires further exploration
 
+- Couldn’t find evidence of the use of Git Flow or other types of pre-established workflows. 
+  - An approach looking specifically for this patterns needs to be considered in order to determine if they are prevalent or not.
+
+- Look at the relationship between the number of people contributing to a repository and the complexity that the project takes in the long run.
+
 ---
 ## Next Steps
+
+- Study the causal relationship between GitHub feature usage and graph complexity
+- Trace successful and large projects in the embeddings space
+- Weight graphs with the time between commits
+- Add graph node attributes such as authors within motifs
+- Exclude motifs at beginning and end of graph
+- Find repos that claim to use pre-established workflows
 
 ---
 class: inverse, center, middle
@@ -315,9 +354,11 @@ background-image: url("http://avante.biz/wp-content/uploads/2017/04/Computer-Sci
 
 # Acknowledgments
 
-RStudio - Greg Wilson
+* RStudio - Greg Wilson
     
-UBC-MDS Teaching Team - Tiffany Timbers
+* UBC-MDS Teaching Team - Tiffany Timbers
+ 
+* All the other Capstones Teams
 
 ---
 class: inverse, center, middle
