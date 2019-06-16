@@ -183,44 +183,88 @@ HEATMAP, etc.
 As a result, we are only looking at projects with more than 100 commits.
 
 ---
-# How we'll answer question 2
+## How We'll Answer Question 2 - Overview
 
-q2 - What a motif is, how motifs help us
-
-For q2
-
-- Motif: subgraphs within network, defined by a particular pattern of interactions between vertices.
+- Question 2: What are common subgraphs that account for a large fraction of everyday use?
 
 --
 
-- Finding motifs involves pick a random node, then performing a breadth-first search on the first k nodes after that.
+- Motif: subgraphs within a network that appear at a much higher frequency than random chance.
 
 --
 
-- Below is an example of a length-25 motif generated from a GitHub project.
+<div style="text-align: left">
+- Our procedure for finding motif involves sampling a random node in the graph, then performing a breadth-first search on the first k nodes after that and repeating many times to build up a dataset.
 
-![motif_length_25](motif_example.png)
+--
 
----
-# Challenges
-
-The length of motifs and identifying equivalent patterns of different lengths
-
-Motif length EDA
+<div style="text-align: center"><img src="motif_example.png">
 
 ---
-# Motif Exploration
+## How We'll Answer Question 2 - Challenges
+
+- It's challenging to associate similar (but not identical) motifs together.
+
+<div style="text-align: center"><img src="similar_motifs.png">
+
+--
+
+<div style="text-align: left">
+- Shorter motifs generated from Git graphs are mostly single chains; longer motifs are hard to interpret.
 
 ---
-## What are common subgraphs that account for a large fraction of everyday use?
+## Choosing Motif Length to Analyze
 
-- Motif overview for all projects
-- Snippets from the report (motif freq for interesting clusters)
-- Interesting stuff we found
-- Note: High Complexity = More Branching and Merging
-- As you can see below, GitHub projects with more complex graphs have more issues, pull requests, and code reviews than projects with simpler graphs.
+- Given these challenges, what motif length should we study?
 
-![by_complexity](GH_features_by_complexity.png)
+<div style="text-align: center"><img src="mcp_histograms.png">
+
+--
+
+<div style="text-align: left">
+- Answer: Study motif lengths 5 and 25.
+ - Motif length 5 are useful for seeing the smaller patterns visually.
+ - Motifs length 25 are the shortest chain length that aren't overwhelmed by single chains.
+ 
+---
+## Most Common Git Motifs
+
+<div style="text-align: center"><img src="motif_5_visual.png">
+
+---
+## Most Common Git Motifs
+
+<div style="text-align: center"><img src="motif_25_visual.png">
+
+---
+
+## Key Findings:
+
+- As you can see, many branches that are created aren't merged back in within the next 5 or 25 commits.
+
+ - 42% of motifs length 5 that start with a branch don't contain a single merge. 13% of motifs length 25 that start with a branch don't contain a single merge.
+
+ - There is 1.41x more branches than merges in the dataset overall.
+
+
+--
+
+<br />  
+
+- 84.3% of motifs length 5 and 56.1% of motifs length 25 are a single chain (no branching and merging). 
+
+ - Based on this data, many large projects consist of mostly single chains. 
+
+ - Are these projects fundementally different than projects with branching and merging?
+
+---
+
+## How a Project's Graph Complexity is Related to it's Usage of GitHub Features
+
+<div style="text-align: center"><img src="GH_features_by_complexity.png">
+
+<div style="text-align: left">
+- GitHub projects with more complex graphs have more issues, pull requests, and code reviews than projects with simpler graphs.
 
 ---
 ## Limitations to answering both questions
