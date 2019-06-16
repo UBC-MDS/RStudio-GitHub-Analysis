@@ -17,6 +17,22 @@ options(htmltools.dir.version = FALSE)
 library(xaringanthemer)
 ```
 
+class: inverse, center, middle
+
+## Our Partner
+
+.pull-left[
+### R Studio
+![](rstudio-og.png)
+]
+
+
+.pull-right[
+### Dr. Greg Wilson
+![](gvwilson-tpl-2017-small.jpg)
+]
+
+---
 background-image: url("http://avante.biz/wp-content/uploads/2017/04/Computer-Science-Wallpapers-001.jpg")
 class: inverse, center, middle
 
@@ -45,21 +61,6 @@ but not **ease of use**.
 .pull-right[
 ![xkcd-git](https://imgs.xkcd.com/comics/git.png)
 ]
-
----
-## Our Partner
-
-.pull-left[
-### R Studio
-![](rstudio-og.png)
-]
-
-
-.pull-right[
-### Dr. Greg Wilson
-![](gvwilson-tpl-2017-small.jpg)
-]
-
 
 ---
 ## Our Partner's Idea
@@ -128,7 +129,7 @@ class: inverse, center
 ### What are common subgraphs that account for a large fraction of everyday use?
 
 ---
-## Identifying Workflow Patterns
+## Approach to Identifying Workflow Patterns
 
 - Unsupervised Learning
 
@@ -137,15 +138,13 @@ class: inverse, center
 - Natural Language Processing
 
 --
-<center>
 
 ![](https://i.kym-cdn.com/photos/images/original/001/260/099/be0.png)
 
-</center>
 ---
 ## Challenges
 
-- Working with Graph data is new and difficult
+- Working with graph data is new and difficult (the algorithm we're using was published in **late 2018**)
 
 --
 
@@ -153,7 +152,7 @@ class: inverse, center
 
 --
 
-- NLP also has this problem
+- Natural Language Processing also has this problem
 
 ---
 
@@ -175,11 +174,6 @@ class: inverse, center
 ## Greather than 100 commits
 
 ![](gt_100_commits.png)
-
----
-## Clustering on 100+ commits
-
-![](blob.png)
 
 ---
 
@@ -205,6 +199,15 @@ Out of 36.4 million projects
 |------------|---------------|--------------|
 | # Projects | 19.03 million | 5.19 million |
 | % Total    | 52.29%        | 14.27%       |
+
+--
+
+So why don't we only cluster on large projects?
+
+---
+## Clustering on 100+ commits
+
+![](blob.png)
 
 ---
 ## How We'll Answer Question 2 - Overview
@@ -359,9 +362,9 @@ background-image: url("http://avante.biz/wp-content/uploads/2017/04/Computer-Sci
 
 # Acknowledgments
 
-* RStudio - Greg Wilson
+* RStudio - Dr. Greg Wilson
     
-* UBC-MDS Teaching Team - Tiffany Timbers
+* UBC-MDS Teaching Team - Dr. Tiffany Timbers
  
 * All the other Capstones Teams
 
