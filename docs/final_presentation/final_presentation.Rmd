@@ -87,21 +87,20 @@ Source: [third-bit.com - Greg's Blog](http://third-bit.com/2017/09/30/git-graphs
 
 ## Our Role
 
-- We want to understand how people use Git
-
-- Specifically we want to understand what are their workflows in Git
-
-- This enables us to draw up recommendations for the new tool that RStudio is interested in developing.
+To build the tool, we need to understand how people use Git
+- What works for workflows
+- What is hindering workflows
+- **What are those workflows?**
+    
+We only have **data** to answer one of these questions
+- Access to commit history
+- This enables us to draw up recommendations for the new tool that RStudio is interested in developing.  
 
 ---
 
 ## Our Data
 
-- Git is not any type of graph, it is a Directed Acyclic Graph (DAG)
-    - Nodes/Vertices --> Commits
-    - Edges --> Connections between commits
-
-![](branch_test.png)
+![](workflow.png)
 
 ---
 
