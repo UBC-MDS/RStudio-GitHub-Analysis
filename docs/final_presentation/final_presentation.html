@@ -83,6 +83,9 @@ but not **ease of use**.
 
 - Build a tool that provides the common subgraphs that account for the most common patterns.
 
+--
+
+- **Profit.** Well, fame. OK, will you settle for having made the world a better place?
 
 .footnote[
 Source: [third-bit.com - Greg's Blog](http://third-bit.com/2017/09/30/git-graphs-and-engineering.html)
@@ -130,80 +133,83 @@ class: inverse, center
 ### What are common subgraphs that account for a large fraction of everyday use?
 
 ---
-## How we'll answer question 1
+## Identifying Workflow Patterns
 
-q1 - Clustering
+- Unsupervised Learning
 
+--
+
+- Natural Language Processing
+
+--
+&lt;center&gt;
+
+![](https://i.kym-cdn.com/photos/images/original/001/260/099/be0.png)
+
+&lt;/center&gt;
 ---
 ## Challenges
 
-Working with this kind of data is new and difficult
+- Working with Graph data is new and difficult
 
-We need to convert this data to a vector for q1
+--
+
+- We need to convert this data to something we can work with and cluster
+
+--
+
+- NLP also has this problem
 
 ---
 
 ## Graph2Vec Overview
 
-For q1
-
-Collection of Text -&gt; Doc2Vec -&gt; Vectors
-
-Collection of Graphs -&gt; Graph2Vec -&gt; Vectors
+![](d2v-g2v.png)
 
 ---
-## Are there identifiable workflow patterns in the way people use git?
-
-Using Graph2Vec to generate embeddings, we used T-SNE to reduce the dimensionality and look for visible clusters in our data.
-
---
-
-Refer backwards to the data overview, some are not "interesting".
-
---
-
-Image (cluster comparison, heatmap?)
-
---
-
-Are there identifiable workflow patterns in the way people use git?
-
---
-
-Yes
-
---
-
-Are they useful? Not really, they're mostly just git init's...
-
-- image for Commit density plot
-- image for Author density plot
-
-Of the 36.4 million projects that GitHub Torrent has information on...
-- 19.03 million projects, or 52.29%, have more than one commit.
-- 5.19 million project, or 14.27%, have more than one author contributing commits.
-
----
-## Clustered Projects with Similar Graph Types 
+## Are there identifiable workflow patterns?
 
 ![](global_clustering.png)
 
 ---
-## Size is represented in the embeddings as a feature
+## Greather than 10 commits
 
 ![](gt_10_commits.png)
 
 ---
-## Size is represented in the embeddings as a feature
+## Greather than 100 commits
 
 ![](gt_100_commits.png)
 
 ---
-# Blob slide (zoomed in 100+)
+## Clustering on 100+ commits
+
+![](blob.png)
 
 ---
-HEATMAP, etc.
-As a result, we are only looking at projects with more than 100 commits.
+
+## Are there identifiable workflow patterns?
+
+--
+
+**Yes**
+
+--
+
+Are they useful?
+
+--
+
+**Not really**, they're mostly just git init's...
+
+--
+
+Out of 36.4 million projects
+
+|            | &gt; 1 Commit    | &gt; 1 Author   |
+|------------|---------------|--------------|
+| # Projects | 19.03 million | 5.19 million |
+| % Total    | 52.29%        | 14.27%       |
 
 ---
 ## How We'll Answer Question 2 - Overview
