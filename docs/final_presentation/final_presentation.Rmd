@@ -374,11 +374,11 @@ background-image: url("http://avante.biz/wp-content/uploads/2017/04/Computer-Sci
 
 # Acknowledgments
 
-* RStudio - Dr. Greg Wilson
+RStudio - Dr. Greg Wilson
     
-* UBC-MDS Teaching Team - Dr. Tiffany Timbers
+UBC-MDS Teaching Team - Dr. Tiffany Timbers
  
-* All the other Capstones Teams
+All the other Capstones Teams
 
 ---
 class: inverse, center, middle
