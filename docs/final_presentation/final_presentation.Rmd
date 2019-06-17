@@ -394,5 +394,11 @@ All the Capstone Teams
 class: inverse, center, middle
 background-image: url("http://avante.biz/wp-content/uploads/2017/04/Computer-Science-Wallpapers-001.jpg")
 
+.pull-left[
+<br><br><br><br><br><br>
 # Questions?
----
+]
+
+.pull-right[
+![](we_promise_we_like_eachother.jpg)
+]
