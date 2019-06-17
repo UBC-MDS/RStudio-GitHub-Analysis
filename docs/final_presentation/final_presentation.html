@@ -171,12 +171,12 @@ class: inverse, center
 ![](global_clustering.png)
 
 ---
-## Greather than 10 commits
+## Greater than 10 commits
 
 ![](gt_10_commits.png)
 
 ---
-## Greather than 100 commits
+## Greater than 100 commits
 
 ![](gt_100_commits.png)
 
@@ -219,7 +219,7 @@ So why don't we only cluster on large projects?
 .pull-left[
 - Due to the variability in large projects, our approach is unable to find clear clusters.
 
-- This doesn't mean we can't do anything with this result, it just requires a deeper analysis. 
+- This doesn't mean we can't do anything with this result, it just requires a deeper analysis and future work.
 ]
 
 .pull-right[
@@ -229,16 +229,13 @@ So why don't we only cluster on large projects?
 ---
 ## Approach to Identifying Common Subgraphs
 
-- What are common subgraphs that account for a large fraction of everyday use?
-
---
-
-- Motif: Subgraphs within a network that appear at a much higher frequency than random chance.
+- Question 2: What are common subgraphs that account for a large fraction of everyday Git use?
 
 --
 
 &lt;div style="text-align: left"&gt;
-- Our procedure for finding motif involves sampling a random node in the graph, then performing a breadth-first search on the first k nodes after that and repeating many times to build up a dataset.
+- Looked the most common motifs in Git projects with 100+ commits.
+ - Motifs: Subgraphs that appear in a network at a much higher frequency than random chance.
 
 --
 
@@ -247,28 +244,33 @@ So why don't we only cluster on large projects?
 ---
 ## Challenges
 
+&lt;div style="text-align: left"&gt;
 - It's challenging to associate similar (but not identical) motifs together.
-
+    - Leads to a lot of noise in the data.
+- For example, you can see that the motifs below are all similar to one another.
+ - No easy way to associate them algorthmically.
+ - Challenging to do visually for longer motifs. 
+ 
 &lt;div style="text-align: center"&gt;&lt;img src="similar_motifs.png"&gt;
 
 --
-
 &lt;div style="text-align: left"&gt;
-- Shorter motifs generated from Git graphs are mostly single chains; longer motifs are hard to interpret.
+- Shorter motifs generated from Git graphs consists of mostly single chains (no branching or merging)
 
 ---
 ## Choosing Motif Length to Analyze
 
 - Given these challenges, what motif length should we study?
-
+ - Looked at what percentage of projects in our dataset had motifs with at least one branch or merge for different motif lengths.
+ 
 &lt;div style="text-align: center"&gt;&lt;img src="mcp_histograms.png"&gt;
 
 --
 
 &lt;div style="text-align: left"&gt;
-- Answer: Study motif lengths 5 and 25.
- - Motif length 5 are useful for seeing the smaller patterns visually.
+- Answer: Study motif lengths 25 and 5.
  - Motifs length 25 are the shortest chain length that aren't overwhelmed by single chains.
+ - Motif length 5, despite consisting of mostly single chains, are useful for seeing small patterns visually.
  
 ---
 ## Most Common Git Motifs
@@ -282,7 +284,7 @@ So why don't we only cluster on large projects?
 
 ---
 
-## Key Findings:
+## Key Findings
 
 - As you can see, many branches that are created aren't merged back in within the next 5 or 25 commits.
 
@@ -303,7 +305,7 @@ So why don't we only cluster on large projects?
 
 ---
 
-## How a Project's Graph Complexity is Related to it's Usage of GitHub Features
+## Secondary Finding: A Project's Graph Complexity is Related to it's Usage of GitHub Features
 
 &lt;div style="text-align: center"&gt;&lt;img src="GH_features_by_complexity.png"&gt;
 
@@ -379,11 +381,11 @@ background-image: url("http://avante.biz/wp-content/uploads/2017/04/Computer-Sci
 
 # Acknowledgments
 
-* RStudio - Dr. Greg Wilson
+RStudio - Dr. Greg Wilson
     
-* UBC-MDS Teaching Team - Dr. Tiffany Timbers
+UBC-MDS Teaching Team - Dr. Tiffany Timbers
  
-* All the other Capstones Teams
+All the other Capstones Teams
 
 ---
 class: inverse, center, middle
