@@ -3,7 +3,7 @@
   <head>
     <title>RStudio Github Analysis</title>
     <meta charset="utf-8" />
-    <meta name="author" content="Juno Chen, Ian Flores, Rayce Rossum, Richie Zitomer" />
+    <meta name="author" content="Juno Chen, Ian Flores, Rayce Rossum, Richie Zitomer  Dr. Tiffany Timbers" />
     <meta name="date" content="2019-06-16" />
     <link href="libs/remark-css/default.css" rel="stylesheet" />
     <link href="libs/remark-css/default-fonts.css" rel="stylesheet" />
@@ -14,7 +14,7 @@ class: center, middle, inverse, title-slide
 
 # RStudio Github Analysis
 ## What the Git is going on here?
-### Juno Chen, Ian Flores, Rayce Rossum, Richie Zitomer
+### Juno Chen, Ian Flores, Rayce Rossum, Richie Zitomer<br><br>Dr. Tiffany Timbers
 ### 2019-06-16
 
 ---
@@ -22,6 +22,22 @@ class: center, middle, inverse, title-slide
 
 
 
+class: inverse, center, middle
+
+## Our Partner
+
+.pull-left[
+### R Studio
+![](rstudio-og.png)
+]
+
+
+.pull-right[
+### Dr. Greg Wilson
+![](gvwilson-tpl-2017-small.jpg)
+]
+
+---
 background-image: url("http://avante.biz/wp-content/uploads/2017/04/Computer-Science-Wallpapers-001.jpg")
 class: inverse, center, middle
 
@@ -52,21 +68,6 @@ but not **ease of use**.
 ]
 
 ---
-## Our Partner
-
-.pull-left[
-### R Studio
-![](rstudio-og.png)
-]
-
-
-.pull-right[
-### Dr. Greg Wilson
-![](gvwilson-tpl-2017-small.jpg)
-]
-
-
----
 ## Our Partner's Idea
 
 - Get data for a large number of projects from GitHub.
@@ -83,6 +84,9 @@ but not **ease of use**.
 
 - Build a tool that provides the common subgraphs that account for the most common patterns.
 
+--
+
+- **Profit.** Well, fame. OK, will you settle for having made the world a better place?
 
 .footnote[
 Source: [third-bit.com - Greg's Blog](http://third-bit.com/2017/09/30/git-graphs-and-engineering.html)
@@ -130,63 +134,42 @@ class: inverse, center
 ### What are common subgraphs that account for a large fraction of everyday use?
 
 ---
-## How we'll answer question 1
+## Approach to Identifying Workflow Patterns
 
-q1 - Clustering
+- Unsupervised Learning
+
+--
+
+- Natural Language Processing
+
+--
+
+![](https://i.kym-cdn.com/photos/images/original/001/260/099/be0.png)
 
 ---
 ## Challenges
 
-Working with this kind of data is new and difficult
+- Working with graph data is a new (the algorithm we're using was published in **late 2018**)
 
-We need to convert this data to a vector for q1
+--
+
+- We need to convert this data to something we can work with and cluster
+
+--
+
+- Natural Language Processing also has this problem
 
 ---
 
 ## Graph2Vec Overview
 
-For q1
-
-Collection of Text -&gt; Doc2Vec -&gt; Vectors
-
-Collection of Graphs -&gt; Graph2Vec -&gt; Vectors
+![](d2v-g2v.png)
 
 ---
-## Are there identifiable workflow patterns in the way people use git?
-
-Using Graph2Vec to generate embeddings, we used T-SNE to reduce the dimensionality and look for visible clusters in our data.
-
---
-
-Refer backwards to the data overview, some are not "interesting".
-
---
-
-Image (cluster comparison, heatmap?)
-
---
-
-Are there identifiable workflow patterns in the way people use git?
-
---
-
-Yes
-
---
-
-Are they useful? Not really, they're mostly just git init's...
-
-- image for Commit density plot
-- image for Author density plot
-
-Of the 36.4 million projects that GitHub Torrent has information on...
-- 19.03 million projects, or 52.29%, have more than one commit.
-- 5.19 million project, or 14.27%, have more than one author contributing commits.
-
----
-## Clustered Projects with Similar Graph Types 
+## Are there identifiable workflow patterns?
 
 ![](global_clustering.png)
+
 
 ---
 ## Language Distributions by Clusters
@@ -194,60 +177,104 @@ Of the 36.4 million projects that GitHub Torrent has information on...
 ![](language_radial.png)
 
 ---
-## Size is represented in the embeddings as a feature
+## Greater than 10 commits
 
 ![](gt_10_commits.png)
 
 ---
-## Size is represented in the embeddings as a feature
+## Greater than 100 commits
 
 ![](gt_100_commits.png)
 
-
-
 ---
-## How We'll Answer Question 2 - Overview
 
-- Question 2: What are common subgraphs that account for a large fraction of everyday use?
+## Are there identifiable workflow patterns?
 
 --
 
-- Motif: subgraphs within a network that appear at a much higher frequency than random chance.
+**Yes**
+
+--
+
+Are they useful?
+
+--
+
+**Not really**, they're mostly just git init's...
+
+--
+
+Out of 36.4 million projects
+
+|            | &gt; 1 Commit    | &gt; 1 Author   |
+|------------|---------------|--------------|
+| # Projects | 19.03 million | 5.19 million |
+| % Total    | 52.29%        | 14.27%       |
+
+--
+
+Moving forward, we'll be looking at projects with **&gt; 100 commits**
+
+So why don't we only cluster on large projects?
+
+---
+## Clustering on 100+ commits
+
+.pull-left[
+- Due to the variability in large projects, our approach is unable to find clear clusters.
+
+- This doesn't mean we can't do anything with this result, it just requires a deeper analysis and future work.
+]
+
+.pull-right[
+![](blob.png)
+]
+
+---
+## Approach to Identifying Common Subgraphs
+
+- Question 2: What are common subgraphs that account for a large fraction of everyday Git use?
 
 --
 
 &lt;div style="text-align: left"&gt;
-- Our procedure for finding motif involves sampling a random node in the graph, then performing a breadth-first search on the first k nodes after that and repeating many times to build up a dataset.
+- Looked the most common motifs in Git projects with 100+ commits.
+ - Motifs: Subgraphs that appear in a network at a much higher frequency than random chance.
 
 --
 
 &lt;div style="text-align: center"&gt;&lt;img src="motif_example.png"&gt;
 
 ---
-## How We'll Answer Question 2 - Challenges
+## Challenges
 
+&lt;div style="text-align: left"&gt;
 - It's challenging to associate similar (but not identical) motifs together.
-
+    - Leads to a lot of noise in the data.
+- For example, you can see that the motifs below are all similar to one another.
+ - No easy way to associate them algorthmically.
+ - Challenging to do visually for longer motifs. 
+ 
 &lt;div style="text-align: center"&gt;&lt;img src="similar_motifs.png"&gt;
 
 --
-
 &lt;div style="text-align: left"&gt;
-- Shorter motifs generated from Git graphs are mostly single chains; longer motifs are hard to interpret.
+- Shorter motifs generated from Git graphs consists of mostly single chains (no branching or merging)
 
 ---
 ## Choosing Motif Length to Analyze
 
 - Given these challenges, what motif length should we study?
-
+ - Looked at what percentage of projects in our dataset had motifs with at least one branch or merge for different motif lengths.
+ 
 &lt;div style="text-align: center"&gt;&lt;img src="mcp_histograms.png"&gt;
 
 --
 
 &lt;div style="text-align: left"&gt;
-- Answer: Study motif lengths 5 and 25.
- - Motif length 5 are useful for seeing the smaller patterns visually.
+- Answer: Study motif lengths 25 and 5.
  - Motifs length 25 are the shortest chain length that aren't overwhelmed by single chains.
+ - Motif length 5, despite consisting of mostly single chains, are useful for seeing small patterns visually.
  
 ---
 ## Most Common Git Motifs
@@ -261,7 +288,7 @@ Of the 36.4 million projects that GitHub Torrent has information on...
 
 ---
 
-## Key Findings:
+## Key Findings
 
 - As you can see, many branches that are created aren't merged back in within the next 5 or 25 commits.
 
@@ -282,7 +309,7 @@ Of the 36.4 million projects that GitHub Torrent has information on...
 
 ---
 
-## How a Project's Graph Complexity is Related to it's Usage of GitHub Features
+## Secondary Finding: A Project's Graph Complexity is Related to it's Usage of GitHub Features
 
 &lt;div style="text-align: center"&gt;&lt;img src="GH_features_by_complexity.png"&gt;
 
@@ -292,8 +319,8 @@ Of the 36.4 million projects that GitHub Torrent has information on...
 ---
 ## Limitations to answering both questions
 
-- Squashing
-- Public (Only things that make it to github)
+- Squashing and Rebasing
+- Public activity only
 - GHTorrent data cleanliness and availability
 
 ---
@@ -324,6 +351,7 @@ background-image: url("http://avante.biz/wp-content/uploads/2017/04/Computer-Sci
 ## Confident Recommendations
 - We can see a consistent percentage of language use in big projects between the largest 8 languages in our sample.
   - A new tool should be language agnostic as users tend to follow patterns not guided by languages.
+
 
 ---
 ## Tentative Recommendations 
@@ -358,11 +386,11 @@ background-image: url("http://avante.biz/wp-content/uploads/2017/04/Computer-Sci
 
 # Acknowledgments
 
-* RStudio - Greg Wilson
+RStudio - Dr. Greg Wilson
     
-* UBC-MDS Teaching Team - Tiffany Timbers
+UBC-MDS Teaching Team - Dr. Tiffany Timbers
  
-* All the other Capstones Teams
+All the other Capstones Teams
 
 ---
 class: inverse, center, middle
