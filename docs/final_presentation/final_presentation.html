@@ -78,11 +78,11 @@ but not **ease of use**.
 
 --
 
-- Select a small set of common subgraphs that account for a large fraction of everyday use.
+- Select a small set of common subgraphs that account for a large fraction of everyday use
 
 --
 
-- Build a tool that provides the common subgraphs that account for the most common patterns.
+- Build a tool to support those most common subgraphs
 
 --
 
@@ -273,7 +273,7 @@ So why don't we only cluster on large projects?
 
 &lt;div style="text-align: left"&gt;
 - Answer: Study motif lengths 25 and 5.
- - Motifs length 25 are the shortest chain length that aren't overwhelmed by single chains.
+ - Motifs length 25 are the shortest chain lengths that aren't overwhelmed by single chains.
  - Motif length 5, despite consisting of mostly single chains, are useful for seeing small patterns visually.
  
 ---
@@ -290,9 +290,9 @@ So why don't we only cluster on large projects?
 
 ## Key Findings
 
-- As you can see, many branches that are created aren't merged back in within the next 5 or 25 commits.
+- Many branches that are created aren't merged back in within the next 5 or 25 commits.
 
- - 42% of motifs length 5 that start with a branch don't contain a single merge. 13% of motifs length 25 that start with a branch don't contain a single merge.
+ - 42% of motifs length 5 and 13% of motifs length 25 that start with a branch don't contain a single merge.
 
  - There is 1.41x more branches than merges in the dataset overall.
 
@@ -301,11 +301,9 @@ So why don't we only cluster on large projects?
 
 &lt;br /&gt;  
 
-- 84.3% of motifs length 5 and 56.1% of motifs length 25 are a single chain (no branching and merging). 
+- 84.3% of motifs length 5 and 56.1% of motifs length 25 are a single chain (no branching or merging). 
 
- - Based on this data, many large projects consist of mostly single chains. 
-
- - Are these projects fundementally different than projects with branching and merging?
+ - Many large projects consist of mostly single chains. Are these projects fundamentally different than projects with branching and merging?
 
 ---
 
