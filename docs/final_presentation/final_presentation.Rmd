@@ -224,16 +224,13 @@ So why don't we only cluster on large projects?
 ---
 ## Approach to Identifying Common Subgraphs
 
-- What are common subgraphs that account for a large fraction of everyday use?
-
---
-
-- Motif: Subgraphs within a network that appear at a much higher frequency than random chance.
+- Question 2: What are common subgraphs that account for a large fraction of everyday Git use?
 
 --
 
 <div style="text-align: left">
-- Our procedure for finding motif involves sampling a random node in the graph, then performing a breadth-first search on the first k nodes after that and repeating many times to build up a dataset.
+- Looked the most common motifs in Git projects with 100+ commits.
+ - Motifs: Subgraphs that appear in a network at a much higher frequency than random chance.
 
 --
 
@@ -242,28 +239,33 @@ So why don't we only cluster on large projects?
 ---
 ## Challenges
 
+<div style="text-align: left">
 - It's challenging to associate similar (but not identical) motifs together.
-
+    - Leads to a lot of noise in the data.
+- For example, you can see that the motifs below are all similar to one another.
+ - No easy way to associate them algorthmically.
+ - Challenging to do visually for longer motifs. 
+ 
 <div style="text-align: center"><img src="similar_motifs.png">
 
 --
-
 <div style="text-align: left">
-- Shorter motifs generated from Git graphs are mostly single chains; longer motifs are hard to interpret.
+- Shorter motifs generated from Git graphs consists of mostly single chains (no branching or merging)
 
 ---
 ## Choosing Motif Length to Analyze
 
 - Given these challenges, what motif length should we study?
-
+ - Looked at what percentage of projects in our dataset had motifs with at least one branch or merge for different motif lengths.
+ 
 <div style="text-align: center"><img src="mcp_histograms.png">
 
 --
 
 <div style="text-align: left">
-- Answer: Study motif lengths 5 and 25.
- - Motif length 5 are useful for seeing the smaller patterns visually.
+- Answer: Study motif lengths 25 and 5.
  - Motifs length 25 are the shortest chain length that aren't overwhelmed by single chains.
+ - Motif length 5, despite consisting of mostly single chains, are useful for seeing small patterns visually.
  
 ---
 ## Most Common Git Motifs
@@ -277,7 +279,7 @@ So why don't we only cluster on large projects?
 
 ---
 
-## Key Findings:
+## Key Findings
 
 - As you can see, many branches that are created aren't merged back in within the next 5 or 25 commits.
 
@@ -298,7 +300,7 @@ So why don't we only cluster on large projects?
 
 ---
 
-## How a Project's Graph Complexity is Related to it's Usage of GitHub Features
+## Secondary Finding: A Project's Graph Complexity is Related to it's Usage of GitHub Features
 
 <div style="text-align: center"><img src="GH_features_by_complexity.png">
 
