@@ -165,6 +165,12 @@ class: inverse, center
 
 ![](global_clustering.png)
 
+
+---
+## Language Distributions by Clusters
+
+![](language_radial.png)
+
 ---
 ## Greater than 10 commits
 
@@ -203,8 +209,6 @@ Out of 36.4 million projects
 --
 
 Moving forward, we'll be looking at projects with **> 100 commits**
-
---
 
 So why don't we only cluster on large projects?
 
@@ -310,8 +314,8 @@ So why don't we only cluster on large projects?
 ---
 ## Limitations to answering both questions
 
-- Squashing
-- Public (Only things that make it to github)
+- Squashing and Rebasing
+- Public activity only
 - GHTorrent data cleanliness and availability
 
 ---
@@ -342,6 +346,7 @@ background-image: url("http://avante.biz/wp-content/uploads/2017/04/Computer-Sci
 ## Confident Recommendations
 - We can see a consistent percentage of language use in big projects between the largest 8 languages in our sample.
   - A new tool should be language agnostic as users tend to follow patterns not guided by languages.
+
 
 ---
 ## Tentative Recommendations 
