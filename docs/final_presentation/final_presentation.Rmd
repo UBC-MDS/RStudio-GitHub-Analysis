@@ -73,11 +73,11 @@ but not **ease of use**.
 
 --
 
-- Select a small set of common subgraphs that account for a large fraction of everyday use.
+- Select a small set of common subgraphs that account for a large fraction of everyday use
 
 --
 
-- Build a tool that provides the common subgraphs that account for the most common patterns.
+- Build a tool to support those most common subgraphs
 
 --
 
