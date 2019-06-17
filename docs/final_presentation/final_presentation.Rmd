@@ -169,7 +169,7 @@ class: inverse, center
 ---
 ## Language Distributions by Clusters
 
-![](language_radial.png)
+<img src='language_radial.png' height=600 width=750>
 
 ---
 ## Greater than 10 commits
@@ -342,10 +342,13 @@ background-image: url("http://avante.biz/wp-content/uploads/2017/04/Computer-Sci
 ---
 
 ## Confident Recommendations
-- We can see a consistent percentage of language use in big projects between the largest 8 languages in our sample.
+
+- We see consistent language use in big projects between the largest 8 languages in our sample.
   - A new tool should be language agnostic as users tend to follow patterns not guided by languages.
 
-
+- Many large projects are mainly single chains
+  - A new tool should incorporate a centralized workflow with a branch from which the other branches derivate. (master branch)
+  
 ---
 ## Tentative Recommendations 
 
