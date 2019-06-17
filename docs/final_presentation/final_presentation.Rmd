@@ -146,7 +146,7 @@ class: inverse, center
 ---
 ## Challenges
 
-- Working with graph data is a new (the algorithm we're using was published in **late 2018**)
+- Working with graph data is new (the algorithm we're using was published in **late 2018**)
 
 --
 
