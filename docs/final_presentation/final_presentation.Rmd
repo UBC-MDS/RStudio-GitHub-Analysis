@@ -386,7 +386,7 @@ RStudio - Dr. Greg Wilson & Dr. Reid Holmes
     
 UBC-MDS Teaching Team - Dr. Tiffany Timbers
  
-All the other Capstone Teams
+All the Capstone Teams
 
 ---
 class: inverse, center, middle
