@@ -4,7 +4,7 @@
     <title>RStudio Github Analysis</title>
     <meta charset="utf-8" />
     <meta name="author" content="Juno Chen, Ian Flores, Rayce Rossum, Richie Zitomer  Dr. Tiffany Timbers" />
-    <meta name="date" content="2019-06-17" />
+    <meta name="date" content="2019-06-21" />
     <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
   </head>
   <body>
@@ -14,7 +14,7 @@ class: center, middle, inverse, title-slide
 # RStudio Github Analysis
 ## What the Git is going on here?
 ### Juno Chen, Ian Flores, Rayce Rossum, Richie Zitomer<br><br>Dr. Tiffany Timbers
-### 2019-06-17
+### 2019-06-21
 
 ---
 
@@ -27,13 +27,13 @@ class: inverse, center, middle
 
 .pull-left[
 ### R Studio
-![](rstudio-og.png)
+![](imgs/rstudio-og.png)
 ]
 
 
 .pull-right[
 ### Dr. Greg Wilson
-![](gvwilson-tpl-2017-small.jpg)
+![](imgs/gvwilson-tpl-2017-small.jpg)
 ]
 
 ---
@@ -108,7 +108,7 @@ We only have **data** to answer one of these questions
 
 ## Our Data
 
-![](workflow.png)
+![](imgs/workflow.png)
 
 ---
 
@@ -162,28 +162,28 @@ class: inverse, center
 
 ## Graph2Vec Overview
 
-![](d2v-g2v.png)
+![](imgs/d2v-g2v.png)
 
 ---
 ## Are there identifiable workflow patterns?
 
-![](global_clustering.png)
+![](imgs/global_clustering.png)
 
 
 ---
 ## Language Distributions by Clusters
 
-&lt;img src='language_radial.png' height=600 width=750&gt;
+&lt;img src='imgs/language_radial.png' height=600 width=750&gt;
 
 ---
 ## Greater than 10 commits
 
-![](gt_10_commits.png)
+![](imgs/gt_10_commits.png)
 
 ---
 ## Greater than 100 commits
 
-![](gt_100_commits.png)
+![](imgs/gt_100_commits.png)
 
 ---
 
@@ -226,7 +226,7 @@ So why don't we only cluster on large projects?
 ]
 
 .pull-right[
-![](blob.png)
+![](imgs/blob.png)
 ]
 
 ---
@@ -242,7 +242,7 @@ So why don't we only cluster on large projects?
 
 --
 
-&lt;div style="text-align: center"&gt;&lt;img src="motif_example.png"&gt;
+&lt;div style="text-align: center"&gt;&lt;img src="imgs/motif_example.png"&gt;
 
 ---
 ## Challenges
@@ -254,7 +254,7 @@ So why don't we only cluster on large projects?
  - No easy way to associate them algorthmically.
  - Challenging to do visually for longer motifs. 
  
-&lt;div style="text-align: center"&gt;&lt;img src="similar_motifs.png"&gt;
+&lt;div style="text-align: center"&gt;&lt;img src="imgs/similar_motifs.png"&gt;
 
 --
 &lt;div style="text-align: left"&gt;
@@ -266,7 +266,7 @@ So why don't we only cluster on large projects?
 - Given these challenges, what motif length should we study?
  - Looked at what percentage of projects in our dataset had motifs with at least one branch or merge for different motif lengths.
  
-&lt;div style="text-align: center"&gt;&lt;img src="mcp_histograms.png"&gt;
+&lt;div style="text-align: center"&gt;&lt;img src="imgs/mcp_histograms.png"&gt;
 
 --
 
@@ -278,12 +278,12 @@ So why don't we only cluster on large projects?
 ---
 ## Most Common Git Motifs
 
-&lt;div style="text-align: center"&gt;&lt;img src="motif_5_visual.png"&gt;
+&lt;div style="text-align: center"&gt;&lt;img src="imgs/motif_5_visual.png"&gt;
 
 ---
 ## Most Common Git Motifs
 
-&lt;div style="text-align: center"&gt;&lt;img src="motif_25_visual.png"&gt;
+&lt;div style="text-align: center"&gt;&lt;img src="imgs/motif_25_visual.png"&gt;
 
 ---
 
@@ -308,7 +308,7 @@ So why don't we only cluster on large projects?
 
 ## Secondary Finding: A Project's Graph Complexity is Related to it's Usage of GitHub Features
 
-&lt;div style="text-align: center"&gt;&lt;img src="GH_features_by_complexity.png"&gt;
+&lt;div style="text-align: center"&gt;&lt;img src="imgs/GH_features_by_complexity.png"&gt;
 
 &lt;div style="text-align: left"&gt;
 - GitHub projects with more complex graphs have more issues, pull requests, and code reviews than projects with simpler graphs.
@@ -402,7 +402,7 @@ background-image: url("http://avante.biz/wp-content/uploads/2017/04/Computer-Sci
 ]
 
 .pull-right[
-![](we_promise_we_like_eachother.jpg)
+![](imgs/we_promise_we_like_eachother.jpg)
 ]
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>

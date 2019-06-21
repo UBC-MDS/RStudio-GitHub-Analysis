@@ -25,13 +25,13 @@ class: inverse, center, middle
 
 .pull-left[
 ### R Studio
-![](rstudio-og.png)
+![](imgs/rstudio-og.png)
 ]
 
 
 .pull-right[
 ### Dr. Greg Wilson
-![](gvwilson-tpl-2017-small.jpg)
+![](imgs/gvwilson-tpl-2017-small.jpg)
 ]
 
 ---
@@ -106,7 +106,7 @@ We only have **data** to answer one of these questions
 
 ## Our Data
 
-![](workflow.png)
+![](imgs/workflow.png)
 
 ---
 
@@ -160,28 +160,28 @@ class: inverse, center
 
 ## Graph2Vec Overview
 
-![](d2v-g2v.png)
+![](imgs/d2v-g2v.png)
 
 ---
 ## Are there identifiable workflow patterns?
 
-![](global_clustering.png)
+![](imgs/global_clustering.png)
 
 
 ---
 ## Language Distributions by Clusters
 
-<img src='language_radial.png' height=600 width=750>
+<img src='imgs/language_radial.png' height=600 width=750>
 
 ---
 ## Greater than 10 commits
 
-![](gt_10_commits.png)
+![](imgs/gt_10_commits.png)
 
 ---
 ## Greater than 100 commits
 
-![](gt_100_commits.png)
+![](imgs/gt_100_commits.png)
 
 ---
 
@@ -224,7 +224,7 @@ So why don't we only cluster on large projects?
 ]
 
 .pull-right[
-![](blob.png)
+![](imgs/blob.png)
 ]
 
 ---
@@ -240,7 +240,7 @@ So why don't we only cluster on large projects?
 
 --
 
-<div style="text-align: center"><img src="motif_example.png">
+<div style="text-align: center"><img src="imgs/motif_example.png">
 
 ---
 ## Challenges
@@ -252,7 +252,7 @@ So why don't we only cluster on large projects?
  - No easy way to associate them algorthmically.
  - Challenging to do visually for longer motifs. 
  
-<div style="text-align: center"><img src="similar_motifs.png">
+<div style="text-align: center"><img src="imgs/similar_motifs.png">
 
 --
 <div style="text-align: left">
@@ -264,7 +264,7 @@ So why don't we only cluster on large projects?
 - Given these challenges, what motif length should we study?
  - Looked at what percentage of projects in our dataset had motifs with at least one branch or merge for different motif lengths.
  
-<div style="text-align: center"><img src="mcp_histograms.png">
+<div style="text-align: center"><img src="imgs/mcp_histograms.png">
 
 --
 
@@ -276,12 +276,12 @@ So why don't we only cluster on large projects?
 ---
 ## Most Common Git Motifs
 
-<div style="text-align: center"><img src="motif_5_visual.png">
+<div style="text-align: center"><img src="imgs/motif_5_visual.png">
 
 ---
 ## Most Common Git Motifs
 
-<div style="text-align: center"><img src="motif_25_visual.png">
+<div style="text-align: center"><img src="imgs/motif_25_visual.png">
 
 ---
 
@@ -306,7 +306,7 @@ So why don't we only cluster on large projects?
 
 ## Secondary Finding: A Project's Graph Complexity is Related to it's Usage of GitHub Features
 
-<div style="text-align: center"><img src="GH_features_by_complexity.png">
+<div style="text-align: center"><img src="imgs/GH_features_by_complexity.png">
 
 <div style="text-align: left">
 - GitHub projects with more complex graphs have more issues, pull requests, and code reviews than projects with simpler graphs.
@@ -400,5 +400,5 @@ background-image: url("http://avante.biz/wp-content/uploads/2017/04/Computer-Sci
 ]
 
 .pull-right[
-![](we_promise_we_like_eachother.jpg)
+![](imgs/we_promise_we_like_eachother.jpg)
 ]
