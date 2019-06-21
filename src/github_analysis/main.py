@@ -21,64 +21,79 @@ import pandas as pd
 
 logging.basicConfig(format="%(asctime)s : %(levelname)s : %(message)s", filename="log.log", level=logging.INFO)
 
-def main(n_projects, n_workers, data_path, results_path, min_commits, n_personas):
+def main(args):
     logging.info("===START===")
     startTime = time.time()
 
-    commits_dl = dl.data_layer(data_path,min_number_commits=min_commits)
+    commits_dl = dl.data_layer(args.data_path, min_number_commits=args.min_commits)
 
-    project_data = commits_dl.getRandomProjects(n_projects, 1)
+    project_data = commits_dl.getRandomProjects(args.n_projects, 1)
     getDataTime = time.time()
 
     logging.info("Query Complete: " + str(getDataTime - startTime) + " seconds")
 
-    project_ids = dl.getUniqueProjectIdsFromDf(project_data)
-    project_groups = commits_dl.getGroupedCommitsByProjectIds(project_ids)
 
-    project_graphs = []
-    project_ids_ordered = []
-    for name, group in project_groups:
-        project_graphs.append(nxutils.git_graph(group))
-        project_ids_ordered.append(name)
+    for iter in [2, 3, 4, 5, 6, 7, 8, 9, 10]:
+        embeddings_path = None
+        if args.embeddings_file_path is None: # If embeddings not specified, generate the model and set the path to the output embeddings
+            project_ids = dl.getUniqueProjectIdsFromDf(project_data)
+            project_groups = commits_dl.getGroupedCommitsByProjectIds(project_ids)
 
-    generateGraphsTime = time.time()
-    logging.info("NxGraphs Built: " + str(generateGraphsTime - getDataTime) + " seconds")
+            project_graphs = []
+            project_ids_ordered = []
+            for name, group in project_groups:
+                project_graphs.append(nxutils.git_graph(group))
+                project_ids_ordered.append(name)
 
-    g2vModel = g2v.Graph2Vec(workers=n_workers, seed=1)
-    g2vEmbeddings = g2vModel.fit_transform(project_graphs, project_ids_ordered, output_path=results_path + "embeddings.csv")
-    buildModelTime = time.time()
-    logging.info("G2V Model Built: " + str(buildModelTime - generateGraphsTime) + " seconds")
+            # with open("project_graphs.pkl", 'w') as f:
+            #     pickle.dump(project_graphs, f)
+            #
+            # with open("project_ids_ordered.pkl", 'w') as f:
+            #     pickle.dump(project_ids_ordered, f)
 
-    red.reduce_dim(workers=n_workers, output_path=results_path, random_state=1)
-    reduceTime = time.time()
-    logging.info("Dims Reduced: " + str(reduceTime - buildModelTime) + " seconds")
+            generateGraphsTime = time.time()
+            logging.info("NxGraphs Built: " + str(generateGraphsTime - getDataTime) + " seconds")
 
-    clusters = c.get_embedding_clusters(embedding_input_file=results_path + "embeddings.csv", output_file=results_path + "clusters.pickle", random_state=1)
+            embeddings_path = args.results_path + "embeddings.csv"
+            g2vModel = g2v.Graph2Vec(workers=args.n_workers, size=args.n_neurons, min_count=args.min_count, iter=iter, seed=args.random_state)
+            g2vEmbeddings = g2vModel.fit_transform(project_graphs, project_ids_ordered, output_path=embeddings_path)
+            buildModelTime = time.time()
+            logging.info("G2V Model Built: " + str(buildModelTime - generateGraphsTime) + " seconds")
+        else:
+            embeddings_path = args.embeddings_file_path
+            generateGraphsTime = time.time()
+            buildModelTime = time.time()
+
+        red.reduce_dim(workers=args.n_workers, output_path=args.results_path + str(iter) + "/", input_path=embeddings_path, random_state=args.random_state)
+        reduceTime = time.time()
+        logging.info("Dims Reduced: " + str(reduceTime - buildModelTime) + " seconds")
+
+    clusters = c.get_embedding_clusters(embedding_input_file=embeddings_path, output_file=args.results_path + "clusters.pickle", random_state=args.random_state)
     projectClusterTime = time.time()
     logging.info("Projects Clustered: " + str(projectClusterTime - reduceTime) + " seconds")
 
-    cluster_personas = p.Personas(clusters, commits_dl, n_personas, 1, output_path=results_path + "cluster_personas.csv")
+    cluster_personas = p.Personas(clusters, commits_dl, args.n_personas, 1, output_path=args.results_path + "cluster_personas.csv")
     personaGenerationTime = time.time()
     logging.info("Personas Generated: " + str(personaGenerationTime - projectClusterTime) + " seconds")
 
-    motifs_by_cluster = mf.get_motifs_by_cluster(clusters, commits_dl, output_file=results_path + "motifs_by_cluster.pickle")
+    motifs_by_cluster = mf.get_motifs_by_cluster(clusters, commits_dl, output_file=args.results_path + "motifs_by_cluster.pickle")
     motifTime = time.time()
     logging.info("Motifs Generated: " + str(motifTime - personaGenerationTime) + " seconds")
 
-    fg.generate_motif_visualisations_by_cluster(input_file_motif_clusters=results_path + "motifs_by_cluster.pickle", output_file=results_path + "clustering_output.pdf")
+    fg.generate_motif_visualisations_by_cluster(input_file_motif_clusters=args.results_path + "motifs_by_cluster.pickle", output_file=args.results_path + "clustering_output.pdf")
     freqGraphTime = time.time()
     logging.info("Frequency Graphs Built: " + str(freqGraphTime- motifTime) + " seconds")
 
     print()
-    print("Query Time:\t\t" +           str(getDataTime - startTime) +              "\tseconds")
-    print("NxGraphs Time:\t\t" +        str(generateGraphsTime - getDataTime) +     "\tseconds")
-    print("Model Build Time:\t" +       str(buildModelTime - generateGraphsTime) +  "\tseconds")
-    print("Dim Reduce Time:\t" +        str(reduceTime - buildModelTime) +          "\tseconds")
-    print("Project Cluster Time:\t" +   str(projectClusterTime - reduceTime) +      "\tseconds")
-    print("Personas Generated:\t" +      str(personaGenerationTime - projectClusterTime) + " seconds")
-    print("Motif Generation Time:\t" +  str(motifTime - personaGenerationTime) +    "\tseconds")
-    print("Frequency Graph Time:\t" +   str(freqGraphTime - motifTime) +            "\tseconds")
-    print("Total Time:\t\t" +           str(freqGraphTime - startTime) +            "\tseconds")
+    print("Query Time:\t\t" +           str(getDataTime - startTime) +                      "\tseconds")
+    print("NxGraphs Time:\t\t" +        str(generateGraphsTime - getDataTime) +             "\tseconds")
+    print("Model Build Time:\t" +       str(buildModelTime - generateGraphsTime) +          "\tseconds")
+    print("Dim Reduce Time:\t" +        str(reduceTime - buildModelTime) +                  "\tseconds")
+    print("Project Cluster Time:\t" +   str(projectClusterTime - reduceTime) +              "\tseconds")
+    print("Personas Generated:\t" +     str(personaGenerationTime - projectClusterTime) +   "\tseconds")
+    print("Motif Generation Time:\t" +  str(motifTime - personaGenerationTime) +            "\tseconds")
+    print("Frequency Graph Time:\t" +   str(freqGraphTime - motifTime) +                    "\tseconds")
+    print("Total Time:\t\t" +           str(freqGraphTime - startTime) +                    "\tseconds")
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -86,14 +101,19 @@ if __name__ == '__main__':
     parser.add_argument("-nw", "--n_workers", help="The number of workers to use when running the analysis.", default=8, type=int)
     parser.add_argument("-dp", "--data_path", help="The path to the commits.feather file. e.g. /home/user/RStudio-Data-Repository/clean_data/commits.feather", default="./results/")
     parser.add_argument("-np", "--n_projects", help="The number of projects to sample from the dataset.", default=1000, type=int)
-    parser.add_argument("-mc", "--min_commits", help="The minimum number of commits  for a project to be included in the sample.", default=None, type=int)
+    parser.add_argument("-mc", "--min_commits", help="The minimum number of commits for a project to be included in the sample.", default=None, type=int)
+    parser.add_argument("-mcount", "--min_count", help="The min_count parameter for the graph2vec model.", default=5, type=int)
     parser.add_argument("-nps", "--n_personas", help="The number of personas to extract from each cluster.", default=5, type=int)
+    parser.add_argument("-nn", "--n_neurons", help="The number of neurons to use for Graph2Vec (project level)", default=128, type=int)
+    parser.add_argument("-emb", "--embeddings_file_path", help="The file to read the embeddings from. Supplying this parameter skips training of the model.", default=None)
+    parser.add_argument("-rs", "--random_state", help="The random state to initalize all random states.", default=1, type=int)
+
     args = parser.parse_args()
 
     if not os.path.exists(args.results_path):
         os.mkdir(args.results_path)
 
-    main(n_projects=args.n_projects, n_workers=args.n_workers, data_path=args.data_path, results_path=args.results_path, min_commits=args.min_commits, n_personas=args.n_personas)
+    main(args)
 
     # plt.clf()
     # for graph in range(len(projectGraphs)):
