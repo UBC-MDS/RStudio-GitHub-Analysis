@@ -112,9 +112,9 @@ As you can see from the graph above, motifs length twenty-five are the smallest 
 
 One clear advantage to using motifs to summarize common subgraphs is that it allows us to view the data in a digestible and interpretable way. While approaches to understand graph structures that rely on neural networks (such as Graph2Vec) are incredibly useful for understanding latent features that the human eye might not pick up, the results from these models are not as easily interpretable as motifs. 
 
-One limitation to this approach is there is no simple way to get overall summary statistics for a project or group of projects based on just these motifs. Instead, we have a collection of motifs which are useful for inspecting visually and answering specific questions but not for getting a high-level numerical summary of the data. Also, a limitation in the data that affects the motifs is that we have no way to associate commits on the same branches with one other. If we did have this data, we’d be able to color motifs by branch and get a more sophisticated view of the structure. 
+One limitation to this approach is there is no simple way to get overall numerical summary statistics for a project or group of projects based on just these motifs. Also, a limitation in the data that affects the motifs is that we have no way to associate commits on the same branches with one other. If we did have this data, we’d be able to color motifs by branch and get a more sophisticated view of the structure. 
 
-Below are the most common motifs, length five and twenty-five.
+Below are the most common motifs, length 5 and 25.
 
 
 ![](imgs/motif_5_visual.png)
