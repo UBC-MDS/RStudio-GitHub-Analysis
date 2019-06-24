@@ -57,12 +57,17 @@ class Graph2Vec:
         return document_collections
 
     def feature_extractor(self, graph, rounds, name):
-        """
-        Function to extract WL features from a graph.
-        :param graph: The nx graph.
-        :param rounds: Number of WL iterations.
-        :param name: ProjectId to output
-        :return doc: Document collection object.
+        """ Function to extract WL features from a graph.
+
+            Parameters
+            ----------
+            graph: The nx graph.
+            rounds: Number of WL iterations.
+            name: ProjectId to output
+
+            Return
+            ----------
+            doc: Document collection object.
         """
         features = nx.degree(graph)
         features = {int(k):v for k,v, in features}
@@ -73,9 +78,11 @@ class Graph2Vec:
         return doc
 
     def get_embeddings(self, n_graphs):
-        """
-        Function to get embeddings from the model.
-        :param n_graphs: The number of graphs used to train the model.
+        """ Function to get embeddings from the model.
+
+            Parameters
+            ----------
+            n_graphs: The number of graphs used to train the model.
         """
         if not self.fitted:
             print("Model has not been fit, run Graph2Vec.fit() before getting embeddings")
@@ -91,11 +98,13 @@ class Graph2Vec:
         return out
 
     def save_embeddings(self, n_graphs, output_path='./results/embeddings.csv', projectGraphsIndex=None):
-        """
-        Function to save the embedding.
-        :param output_path: Path to the embedding csv.
-        :param n_graphs: The number of graphs used to train the model.
-        :param dimensions: The embedding dimension parameter.
+        """ Function to save the embedding.
+
+            Parameters
+            ----------
+            output_path: Path to the embedding csv.
+            n_graphs: The number of graphs used to train the model.
+            dimensions: The embedding dimension parameter.
         """
         if not self.fitted:
             print("Model has not been fit, run Graph2Vec.fit() before saving embeddings")
@@ -113,11 +122,13 @@ class WeisfeilerLehmanMachine:
     Weisfeiler Lehman feature extractor class.
     """
     def __init__(self, graph, features, iterations):
-        """
-        Initialization method which executes feature extraction.
-        :param graph: The Nx graph object.
-        :param features: Feature hash table.
-        :param iterations: Number of WL iterations.
+        """ Initialization method which executes feature extraction.
+
+            Parameters
+            ----------
+            graph: The Nx graph object.
+            features: Feature hash table.
+            iterations: Number of WL iterations.
         """
         self.iterations = iterations
         self.graph = graph
@@ -127,9 +138,11 @@ class WeisfeilerLehmanMachine:
         self.do_recursions()
 
     def do_a_recursion(self):
-        """
-        The method does a single WL recursion.
-        :return new_features: The hash table with extracted WL features.
+        """ The method does a single WL recursion.
+
+            Returns
+            -------
+            new_features: The hash table with extracted WL features.
         """
         new_features = {}
         for node in self.nodes:
@@ -144,8 +157,8 @@ class WeisfeilerLehmanMachine:
         return new_features
 
     def do_recursions(self):
-        """
-        The method does a series of WL recursions.
+        """ The method does a series of WL recursions.
+
         """
         for iteration in range(self.iterations):
             self.features = self.do_a_recursion()

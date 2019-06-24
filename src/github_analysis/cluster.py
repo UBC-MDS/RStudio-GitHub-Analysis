@@ -7,14 +7,18 @@ logging.basicConfig(format="%(asctime)s : %(levelname)s : %(message)s", filename
 
 def get_embedding_clusters(embedding_input_file='./results/embeddings.csv', k_for_clustering=10, random_state=None,
                            output_file='./results/clusters.pickle'):
-    """
-    Given a file with embeddings (or other features) cluster similar rows together using kmeans.
+    """ Given a file with embeddings (or other features) cluster similar rows together using kmeans.
+    
+        Parameters
+        ----------
+        embedding_input_file: file where every row is a project and every col a feature.
+        k_for_clustering: how many groups to cluster into.
+        random_state: random state for clustering algo.
+        output_file: string with the filename to output the results to as a pickle. If this param is set to None no file will be outputted.
 
-    :param embedding_input_file: file where every row is a project and every col a feature
-    :param k_for_clustering: how many groups to cluster
-    :param random_state: random state for clustering algo
-    :param output_file: string with the filename to output the results to as a pickle. If this param is set to None no file will be outputted.
-    :return: a dictionary where the keys are the cluster labels and the values are lists of GitHub projectIds that fall in that cluster.
+        Returns
+        -------
+        a dictionary where the keys are the cluster labels and the values are lists of GitHub projectIds that fall in that cluster.
     """
     embeddings = pd.read_csv(embedding_input_file, index_col=0)
 
