@@ -1,4 +1,4 @@
-\from os import remove
+from os import remove
 import pickle
 import glob
 

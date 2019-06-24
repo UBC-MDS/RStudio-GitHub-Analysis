@@ -1,4 +1,4 @@
-\"""
+"""
 Sample usage (from project root dir): python src/github_analysis/motif_finder.py 0
 
 Functions for implementing the following algo, suggested by Trevor Campbell:

@@ -49,7 +49,7 @@ def main(args):
     buildModelTime = time.time()
     logging.info("G2V Model Built: " + str(buildModelTime - generateGraphsTime) + " seconds")
 
-    red.reduce_dim(workers=args.n_workers, output_path=args.results_path + str(iter) + "/", input_path=embeddings_path, random_state=args.random_state)
+    red.reduce_dim(workers=args.n_workers, output_path=args.results_path, input_path=embeddings_path, random_state=args.random_state)
     reduceTime = time.time()
     logging.info("Dims Reduced: " + str(reduceTime - buildModelTime) + " seconds")
 
