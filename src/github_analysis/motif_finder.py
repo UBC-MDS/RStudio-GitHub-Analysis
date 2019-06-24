@@ -5,11 +5,10 @@ Functions for implementing the following algo, suggested by Trevor Campbell:
 To identify the K-node motifs in a graph, you could always use NetworkX and do something simple like:
 
 Iterate:
-
-sample a random node
-pick a neighbor, add to the motif
-keep adding neighbors of the motif until you reach K nodes
-(if you want to keep track of frequencies:) compare to previously found motifs; increment the counter of this one by 1
+    sample a random node
+    pick a neighbor, add to the motif
+    keep adding neighbors of the motif until you reach K nodes
+    (if you want to keep track of frequencies:) compare to previously found motifs; increment the counter of this one by 1
 """
 import sys
 import random
@@ -28,36 +27,47 @@ logging.basicConfig(format="%(asctime)s : %(levelname)s : %(message)s", filename
 
 
 def main(random_state=None):
-    """Function that runs the cluster and gets the motif of each cluster."""
+    """ Function that runs the cluster and gets the motif of each cluster.
+    """
     clusters = get_embedding_clusters(random_state=random_state)
     get_motifs_by_cluster(clusters, data_layer)
 
 
 class MotifFinder:
     def __init__(self, G):
-        """
-        Object for dealing with motifs within networkx graphs.
+        """ Object for dealing with motifs within networkx graphs.
 
-        :param G: the nx graph to get motifs from.
+            Parameters
+            ----------
+            G: the nx graph to get motifs from.
         """
         self.G = G
         self.node_list = list(G.nodes)
 
     def sample_initial_node(self):  # TODO: let users pick a random state
-        """
-        Given a graph, randomly sample one of its nodes.
+        """ Given a graph, randomly sample one of its nodes.
 
-        :param G: the nx graph to sample from.
-        :return randomly-sampled nx node.
+            Parameters
+            ----------
+            G: the nx graph to sample from.
+
+            Return
+            ----------
+            randomly-sampled nx node.
         """
         return choice(self.node_list)
 
     def get_random_child(self, node):
-        """
-        Given a graph and a node in that graph, get a random child from that node. NOT CURRENTLY USED FOR ANYTHING!
-        :param G: the nx graph to search within.
-        :param node: the nx node to start at.
-        :return: the nx node child that was sampled, or None if input node has no children.
+        """ Given a graph and a node in that graph, get a random child from that node. NOT CURRENTLY USED FOR ANYTHING!
+
+            Parameters
+            ----------
+            G: the nx graph to search within.
+            node: the nx node to start at.
+
+            Return
+            ----------
+            The nx node child that was sampled, or None if input node has no children.
         """
         children = []
         for child, _ in self.G.adj[node].items():
@@ -68,14 +78,18 @@ class MotifFinder:
             return random.sample(children, 1)[0]
 
     def get_sample_motif(self, k, recursion_limit=5000):
-        """
-        Given a graph, get a random motif (subgraph) of length k. Note: will start at a random nodein the graph, but will
-        only return motifs that have at least k children.
+        """ Given a graph, get a random motif (subgraph) of length k. Note: will start at a random nodein the graph, but will
+            only return motifs that have at least k children.
 
-        :param k: the desired length of the sampled motif.
-        :param recursion_limit: how many times to recurse (in this case, to keep sampling). NB: This sets recursion at
-        the sys level, and the function is using recursion in kinda a weird way, not sure how cool this is.
-        :return: a motif (nx subgraph) of length k.
+            Parameters
+            ----------
+            k: the desired length of the sampled motif.
+            recursion_limit: how many times to recurse (in this case, to keep sampling). NB: This sets recursion at
+                             the sys level, and the function is using recursion in kinda a weird way, not sure how cool this is.
+
+            Return
+            ----------
+            A motif (nx subgraph) of length k.
         """
         sys.setrecursionlimit(recursion_limit)
         root = self.sample_initial_node()
@@ -87,14 +101,19 @@ class MotifFinder:
             return self.get_sample_motif(k)
 
     def get_motif_samples(self, k, num_samples):
-        """
-        Given a graph, get n random motifs (subgraphs) of length k and associate identical motifs together. #TODO: seperate into two functions?
-        Note: will start at a random node in the graph, but will only return motifs that have at least k children.
+        """ Given a graph, get n random motifs (subgraphs) of length k and associate identical motifs together.
+            #TODO: seperate into two functions?
+            Note: will start at a random node in the graph, but will only return motifs that have at least k children.
 
-        :param k: the desired length of the sampled motif.
-        :param num_samples: how many motifs to sample from the graph.
-        :return: a dictionary where the keys are motifs (nx subgraph) of length k and the values are how many times similar
-        (isomorphic) motifs occur in the graph.
+            Parameters
+            ----------
+            k: the desired length of the sampled motif.
+            num_samples: how many motifs to sample from the graph.
+
+            Return
+            ----------
+            A dictionary where the keys are motifs (nx subgraph) of length k and the values are how many times
+            similar(isomorphic) motifs occur in the graph.
         """
         graphs = []
         for i in range(num_samples):
@@ -117,7 +136,8 @@ class MotifFinder:
 
 
 def get_motifs(github_project_ids, k_for_motifs, number_of_samples, data_layer):
-    """Given a list of github prof"""
+    """ Given a list of github prof
+    """
     # Get graph for this cluster TODO: update to pull from pickle of project graphs
     projects_cluster = data_layer.getCommitsByProjectIds(github_project_ids)
     G = git_graph(projects_cluster)
@@ -137,15 +157,19 @@ def get_motifs(github_project_ids, k_for_motifs, number_of_samples, data_layer):
 
 
 def get_motifs_by_cluster(clusters, data_layer, k_for_motifs=5, number_of_samples=1000, output_file='./results/motifs_by_cluster.pickle'):
-    """
-    A way to take in a group of GitHub project clusters and output their most common motifs. For each cluster, get most common subgraphs
+    """ A way to take in a group of GitHub project clusters and output their most common motifs. For each cluster, get most common subgraphs
 
-    :param clusters: a dictionary where the keys are the cluster labels and the values are lists of GitHub
-                    projectIds that fall in that cluster. Note that ids need to be in the graph. EVENTUALLY GOING TO HOOK TO PROJECT GRAPH
-    :param k_for_motifs: the desired length of the sampled motifs.
-    :param number_of_samples: how many motifs to sample from the graph.
-    :param output_file: string with the filename to output the results to as a pickle. If this param is set to None, no file will be outputted.
-    :return: None.
+        Parameters
+        ----------
+        clusters: a dictionary where the keys are the cluster labels and the values are lists of GitHub
+                        projectIds that fall in that cluster. Note that ids need to be in the graph. EVENTUALLY GOING TO HOOK TO PROJECT GRAPH
+        k_for_motifs: the desired length of the sampled motifs.
+        number_of_samples: how many motifs to sample from the graph.
+        output_file: string with the filename to output the results to as a pickle. If this param is set to None, no file will be outputted.
+
+        Return
+        ----------
+        None.
     """
     motifs_by_clusters = {}
     for cluster in clusters:
