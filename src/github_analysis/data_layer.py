@@ -8,6 +8,9 @@ def getUniqueProjectNamesFromDf(df):
     return df.project_name.unique()
 
 class data_layer:
+    """ Read the feather file of commit history data, and group commits per project ID.
+        It provides the option for filtering the projects with a minimum number of commits.
+    """
     def __init__(self, data_path, min_number_commits=None):
         self.data_path = data_path
         self.commits_df = pd.read_feather(data_path)

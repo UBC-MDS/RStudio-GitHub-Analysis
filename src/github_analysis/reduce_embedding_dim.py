@@ -12,8 +12,18 @@ import pandas as pd
 from MulticoreTSNE import MulticoreTSNE as TSNE
 
 def run_tsne(workers=4, embeddings=None, filename=None, random_state=None):
-    """filename: path to embeddings where first row is the name of the graphs.
-    Returns a DataFrame identical to the original but in 2 dimensions."""
+    """ Fit 2-D T-SNE model on input embeddings.
+
+        Parameters
+        ----------
+        embedding: embeddings to run T-SNE on.
+        filename: path to embeddings where first row is the name of the graphs.
+        random_state: can be specified to allow reproduciblity.
+
+        Returns
+        -------
+        A DataFrame identical to the original but in 2 dimensions.
+    """
     if embeddings is None and filename is not None:
         embeddings = pd.read_csv(filename, index_col=0)
 
@@ -25,9 +35,16 @@ def run_tsne(workers=4, embeddings=None, filename=None, random_state=None):
     return df
 
 def output_image_of_tsne(embeddings_tsne_transform, filename):
-    """
-    embeddings_tsne_transform: the t-SNE-transformed embedding with 2 columns.
-    filename: filepath to output image to.
+    """ Output the T-SNE embeddings into a scatterplot.
+
+        Parameters
+        ----------
+        embeddings_tsne_transform: the t-SNE-transformed embedding with 2 columns.
+        filename: filepath to output image to.
+
+        Returns
+        -------
+        An image of 2-D T-SNE.
     """
     fig, ax = plt.subplots()
     ax.scatter(embeddings_tsne_transform.x, embeddings_tsne_transform.y)
