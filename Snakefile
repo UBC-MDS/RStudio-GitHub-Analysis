@@ -1,8 +1,8 @@
 rule run_analysis:
     input:
-        data_path = "/home/user/RStudio-Data-Repository/clean_data/commits_by_org.feather"
+        data_path = "/Users/richiezitomer/Documents/RStudio-Data-Repository/clean_data/commits.feather"
     output:
-        results_path = directory("results")
+        results_path = directory("results/")
     params:
         python_hash_seed = 0,
         n_workers = 8,
