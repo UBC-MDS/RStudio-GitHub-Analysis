@@ -1,4 +1,4 @@
-"""
+\"""
 Sample usage (from project root dir): python src/github_analysis/motif_finder.py 0
 
 Functions for implementing the following algo, suggested by Trevor Campbell:
@@ -92,7 +92,10 @@ class MotifFinder:
             A motif (nx subgraph) of length k.
         """
         sys.setrecursionlimit(recursion_limit)
-        root = self.sample_initial_node()
+        try:
+            root = self.sample_initial_node()
+        except IndexError:
+            return nx.DiGraph()
         edges = nx.bfs_edges(self.G, root) # https://networkx.github.io/documentation/networkx-2.2/reference/algorithms/generated/networkx.algorithms.traversal.breadth_first_search.bfs_edges.html#networkx.algorithms.traversal.breadth_first_search.bfs_edges
         nodes = [root] + [v for u, v in edges]
         if len(nodes) >= k:

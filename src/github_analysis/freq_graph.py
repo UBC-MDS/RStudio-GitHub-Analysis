@@ -1,4 +1,4 @@
-from os import remove
+\from os import remove
 import pickle
 import glob
 
@@ -51,10 +51,11 @@ def visualize_motif_samples_bar_graph(motifs, plot_title='Motif Frequency in Dat
         A bar chart figure of the most common motifs and how often they occurred.
     """
     motifs_sorted = sorted(motifs.items(), key=lambda kv: kv[1], reverse=True)
-
+    single_chain_occurences = 0
     # output files with individual motif images to be used in bar graph
     occurrences = []
     for n, motif in enumerate(motifs_sorted):
+
         # print(motif[1])
         # nx.draw_spectral(motif[0], node_size=500, arrowsize=40, width=6)
         # plt.show()

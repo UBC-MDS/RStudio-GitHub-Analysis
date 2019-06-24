@@ -26,6 +26,8 @@ The first approach we found was Node2Vec, which is an algorithmic framework for 
 
 Another approach is to frame this problem as finding common motifs in a network. In network science, motifs are subgraphs which occur in a network at a much higher frequency than random chance[5]. We plan to identify motifs ourselves either manually (by associating common Git patterns with their motif) or algorithmically (by sampling subgraphs) and then counting their occurences in the network of Git commits.
 
+- asfd
+- fsdfgwr
 
 ## What are common workflow patterns across Git repositories?
 For analyzing and comparing features at a project level, we propose Graph2Vec[6]: A neural embedding framework to learn data-driven distributed representations of arbitrary sized graphs. We propose Graph2Vec over other subgraph analysis algorithms (Node2Vec[3] and Sub2Vec[4]) due to their lack of ability to model global structure similarities, instead focusing on local similarities within confined neighbourhoods. Using Graph2Vec, we can learn the differences within Git projects in an unsupervised manner and use the generated embeddings to cluster similar graphs together with widely-used clustering algorithms. 
