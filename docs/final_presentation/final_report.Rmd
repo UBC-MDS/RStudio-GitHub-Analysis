@@ -45,12 +45,15 @@ Answering these questions has provided some insights that may inform the develop
 
 ### Unsupervised Learning
 
-Unsupervised learning is a realm of data science methods used to find previously unknown patterns in a data set without explicit labels. By learning features from the data, these types of algorithms allows us to group similar data points together based on similarity. Unsupervised learning requires a set of numeric values, therefore we must first convert our graph data into a more appropriate format. In the same way documents are built up of sentences and words, graphs are made up of subgraphs and nodes. Knowing this, we took inspiration from Natural Language Processing’s (NLP) concept of word embeddings. After some research, we settled on a Doc2Vec based algorithm called Graph2Vec^[4]^. In the same way that Doc2Vec can take a collection of documents and generate a vector of word embeddings, Graph2Vec can take a collection of graphs and generate a vector of graph embeddings. The generation of this embeddings means that we transform our graphs into a more contextual representation of their structure.
+Unsupervised learning is a realm of data science methods used to find previously unknown patterns in a data set without explicit labels. By learning features from the data, these types of algorithms allows us to group similar data points together based on similarity. GIVE SIMPLE EXAMPLE HERE OF AN APPLICATION TO YOUR DATA (E.G., GROUPING SIMILAR GIT COMMIT GRAPHS TOGETHER).
+
+
+The most common and widely used unsupervised learning methods require a matrix of numeric values, therefore we must first convert our graph data into a more appropriate format. In the same way documents are built up of sentences and words, graphs are made up of subgraphs and nodes. Knowing this, we took inspiration from Natural Language Processing’s (NLP) concept of word embeddings. After some research, we settled on a Doc2Vec based algorithm called Graph2Vec^[4]^. In the same way that Doc2Vec can take a collection of documents and generate a vector of word embeddings, Graph2Vec can take a collection of graphs and generate a vector of graph embeddings. The generation of this embeddings means that we transform our graphs into a matrix of numeric values - a more useful format for the unsupervised learning methods we intended to use.
 
 
 ### Cluster Analysis
 
-After generating embeddings for each graph in our sample, we used K-Means Clustering and various metrics such as the AIC, BIC and gap statistic to choose an optimal number of clusters. We ultimately settled on 19. The results of this clustering is shown below in a dimensionality reduced T-SNE plot. 
+Kmeans clustering is an unsupervised learning method that works by... (explain in simple terms and justify your choice of it). After generating embeddings for each graph in our sample, we used K-Means Clustering and various metrics such as the AIC, BIC and gap statistic to choose an optimal number of clusters (Supplemental Table 1). We ultimately settled on 19. The results of this clustering is shown below in a dimensionality reduced T-SNE plot. 
 
 ![](imgs/global_clustering.png)
 
@@ -62,7 +65,7 @@ The above shows very clear clusters indicating that there are clear groups and d
 
 *Fig 3: Radial Language Plots of Global Clusters*
 
-We hypothesized that different types of git users such as Software Developers and Data Scientists would have fundamentally different usage patterns. Although the homogenous view of the languages above disproves that theory.  At this point we took a step back and examined the number of commits within our sampled projects. 
+We hypothesized that different types of git users such as Software Developers and Data Scientists would have fundamentally different usage patterns. However, the fairly homogenous spread of programming languages across the clusters indicates that this not the case. At this point we took a step back and examined the number of commits within our sampled projects. 
 
 ![](imgs/gt_10_commits.png)
 ![](imgs/gt_100_commits.png)
