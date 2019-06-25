@@ -19,7 +19,7 @@ Git is a version control system used to record how files change over time^[1]^. 
 
 RStudio is interested in developing a new tool for Git users that improves and consolidates common Git workflows. Our partner, Dr. Greg Wilson from RStudio, suggested that to understand what should be included in the alternative tool, data analysis should be performed first on what is currently being done by Git users. This is where our project comes in.
 
-Our data was sourced from GitHub Torrent, which mines the GitHub API to track all public GitHub repositories and makes it available as a database. From this database we created a data set of where the observational unit was a GitHub repository. To do this we retrieved the commit history for XXX GitHub repositories and for each repository we used the Python NetworkX^[2]^ package to transform the data into a Directed Acyclic Graph (DAG), where:
+Our data was sourced from GitHub Torrent, which mines the GitHub API to track all public GitHub repositories and makes it available as a database. From this database we created a data set of where the observational unit was a GitHub repository. To do this we retrieved the commit history for 10,000 GitHub repositories and for each repository we used the Python NetworkX^[2]^ package to transform the data into a Directed Acyclic Graph (DAG), where:
 
 - Each graph represents one repository;
 - Each node in the graph is one commit;
