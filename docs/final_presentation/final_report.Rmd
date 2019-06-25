@@ -11,7 +11,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Executive Summary
 
-For this study we had the hypothesis that there were common Git workflows that account for a large fraction of everyday use. Our project aims to identify these workflows, with the end goal of using our understanding of these workflows to provide recommendations for features that should or should not be included in an easy-to-use Git alternative.
+Our project aims to identify common Git workflows, with the end goal of using our understanding of these workflows to provide recommendations for features that should or should not be included in an easy-to-use Git alternative. For this study we had the hypothesis that there were common Git workflows that account for a large fraction of everyday use. 
 
 # Introduction
 
@@ -19,25 +19,25 @@ Git is a version control system used to record how files change over time^[1]^. 
 
 RStudio is interested in developing a new tool for Git users that improves and consolidates common Git workflows. Our partner, Dr. Greg Wilson from RStudio, suggested that to understand what should be included in the alternative tool, data analysis should be performed first on what is currently being done by Git users. This is where our project comes in.
 
-We get our data from GitHub Torrent, which mines the GitHub API to track all public GitHub repositories and makes it available as a database. To build the data structure of repositories, we get the commit history and use a Python package called NetworkX^[2]^ to transform the data into a Directed Acyclic Graph (DAG), where:
+Our data was sourced from GitHub Torrent, which mines the GitHub API to track all public GitHub repositories and makes it available as a database. From this database we created a data set of where the observational unit was a GitHub repository. To do this we retrieved the commit history for XXX GitHub repositories and for each repository we used the Python NetworkX^[2]^ package to transform the data into a Directed Acyclic Graph (DAG), where:
 
 - Each graph represents one repository;
 - Each node in the graph is one commit;
 - Each directed edge in the graph is connection from one commit to the other (chronological order).
 
-We also query other data tables from GitHub Torrent for important features such as authors, programming language, code reviews, etc., to support deeper analysis.
+We also queried other data tables from GitHub Torrent for important features such as authors, programming language, code reviews, et cetera, to support deeper analysis.
 
 ![](imgs/workflow.png)
 
 *Fig 1: Data Transformation*	
 
-With this project, we aim to answer two fundamental questions that can enable the development of the new tool. By studying the Git repositories as graphs, along with the  features for each repository, we try to identify common patterns in the graphs for specific user groups.
+With this project, we aim to answer two fundamental questions that can enable the development of the new tool:
 
-- The first question we aim to answer is **"Are there identifiable workflow patterns in the way people use Git?"**. This question will enable us to understand how different workflows are used in different contexts. To answer this question, we identify the patterns by analyzing the complete graphs of each repo.
-- The second question we aim to answer is **"What are common subgraphs that account for a large fraction of everyday use?"**. With this question we want to see if we can confirm that users follow workflows such as the Gitflow or if they follow other common workflows that are more intuitive for them. We extract subgraphs of certain lengths to find out if there are certain sub-patterns appear to be common among users.
+1. The first question we aimed to answer was **"are there identifiable workflow patterns in the way people use Git?"**. We anticipated that answering this question would enable us to understand how different workflows are used in different contexts. To answer this question, we worked to identify distinct subgroups within our sample of GitHub repositories when considering the complete graphs of each repository.
 
-By answering these questions we will gain insights that will enable the development of a new tool that improves and consolidates workflows for users of Version Control Systems.
+2. The second question we aimed to answer was **"what are common subgraphs that account for a large fraction of everyday use?"**. With this question we wanted to see if we could confirm the hypotheses that distinct subgroups of users follow workflows such as the Gitflow or if they follow other common workflows that are more intuitive for them. To answer this question, we extract subgraphs of defined lengths and studied whether certain sub-patterns appear to be distinct and common among users.
 
+Answering these questions has provided some insights that may inform the development of a new tool that improves and consolidates workflows for users of Version Control Systems, as well as led us to specific recommendations on which additional studies should be done to better understand how people use Git.
 
 # Data Science Methods
 
