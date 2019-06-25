@@ -57,7 +57,7 @@ def main(args):
     projectClusterTime = time.time()
     logging.info("Projects Clustered: " + str(projectClusterTime - reduceTime) + " seconds")
 
-    # cluster_personas = p.Personas(clusters, commits_dl, args.n_personas, 1, output_path=args.results_path + "cluster_personas.csv")
+    cluster_personas = p.Personas(clusters, commits_dl, args.n_personas, 1, output_path=args.results_path + "cluster_personas.csv")
     personaGenerationTime = time.time()
     logging.info("Personas Generated: " + str(personaGenerationTime - projectClusterTime) + " seconds")
 
