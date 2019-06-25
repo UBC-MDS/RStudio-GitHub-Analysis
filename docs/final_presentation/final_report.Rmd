@@ -72,19 +72,17 @@ We hypothesized that different types of git users such as Software Developers an
 
 *Fig 4: Number of Commits of Global Clusters*
 
-Looking at the above figure, we can see that only a very small portion of projects reach a significant number of commits. We also notice that large projects tend to fall within the top right corner of the T-SNE embedding space. 
+Looking at the above figure, we can see that only a very small portion of projects have > 100 commits. We also notice that large projects tend to fall within the top right corner of the T-SNE embedding space. WHAT DOES THAT MEAN? EXPLAIN HERE. ALSO, ARE THEY ALL IN ONE CLUSTER (AS DEFINED BY KMEANS) OR ACROSS A FEW (AND IF SO, WHICH FEW)? 
 
 ### Clustering of > 100 commits
 
-Using the insights from our analysis that the majority of projects had less than 100 commits, we decided to focus our efforts on larger projects. Clustering again on projects with more than 100 commits results in the following clustering process represented in the T-SNE plot  below.
+Using the insights from our analysis that the majority of projects had less than 100 commits, we decided to focus our efforts on larger projects. WHY? JUSTIFY (I.E. MORE COMMITS LIKELY MEANS MORE INTERESTING? REAL PROJECT?). Clustering again on projects with more than 100 commits results in the following clustering process represented in the T-SNE plot  below.
 
 ![](imgs/blob.png)
 
 *Fig 5: Clustering of Projects > 100 Commits*
 
-The above plot does not show clear cluster boundaries in projects with greater than 100 commits. This is indicative of high variability in the workflows of large projects. A possible interpretation of this result is that every workflow is represented and that there are no identifiable workflows in large projects using our current method. This leads us to conclude in this question that there are identifiable workflow patterns although they are not that useful. At the global level we can see that the majority of projects fall into short, single chain projects. This tells us that the main workflow on Github is to just commit to master and work alone. This is backed up by the fact that out of 36.4 million projects, 48% have only a single commit, and 85% have only a single author. 
-
-For the rest of our analysis, we just looked at projects with >100 commits.
+The above plot does not show clear cluster boundaries in projects with greater than 100 commits. This is indicative of an absence of distinct subgroups of ~~high variability~~ workflows within large projects. COMMENT ON WHETHER THIS IS DUE TO ONE LARGE SPREADOUT CLUSTER OR ONE TIGHT NARROW CLUSTER (*Total within sum of square and between sum of squares should answer this*).  A possible interpretation of this result is that every workflow is represented (and represented with roughly equal frequency) and that there are no identifiable distinct sub-types of workflows in large projects that could be indentified using our current method. This leads us to conclude in this question that there are identifiable workflow patterns although they are not that useful (NOT USEFUL FOR WHAT?). At the global level we can see that the majority of projects fall into short, single chain projects (WHERE IS THE DATA DEMONSTRATING THESE ARE SINGLE CHAINS?). This tells us that the main workflow on Github is to just commit to master and work alone. This is backed up by the fact that out of 36.4 million projects we sampled, 48% have only a single commit, and 85% have only a single author. For the rest of our analysis, we just looked at projects with >100 commits and considered them one homogenous group.
 
 ## What are common subgraphs that account for a large fraction of everyday use?
 
