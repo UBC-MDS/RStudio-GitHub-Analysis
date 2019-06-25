@@ -81,10 +81,10 @@ def main(args):
     print("Total Time:\t\t" +           str(freqGraphTime - startTime) +                    "\tseconds")
 
 
-def none_or_str(value):
+def none_or_int(value):
     if value == 'None':
         return None
-    return value
+    return int(value)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -92,7 +92,7 @@ if __name__ == '__main__':
     parser.add_argument("-nw",      "--n_workers",      help="The number of workers to use when running the analysis.", default=8, type=int)
     parser.add_argument("-dp",      "--data_path",      help="The path to the commits.feather file. e.g. /home/user/RStudio-Data-Repository/clean_data/commits_by_org.feather", default="/home/user/RStudio-Data-Repository/clean_data/commits_by_org.feather")
     parser.add_argument("-np",      "--n_projects",     help="The number of projects to sample from the dataset.", default=1000, type=int)
-    parser.add_argument("-mc",      "--min_commits",    help="The minimum number of commits for a project to be included in the sample.", default=None, type=none_or_str)
+    parser.add_argument("-mc",      "--min_commits",    help="The minimum number of commits for a project to be included in the sample.", default=None, type=none_or_int)
     parser.add_argument("-mcount",  "--min_count",      help="The min_count parameter for the graph2vec model.", default=5, type=int)
     parser.add_argument("-nps",     "--n_personas",     help="The number of personas to extract from each cluster.", default=5, type=int)
     parser.add_argument("-nn",      "--n_neurons",      help="The number of neurons to use for Graph2Vec (project level)", default=128, type=int)
