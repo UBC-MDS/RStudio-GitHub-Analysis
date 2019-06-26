@@ -132,6 +132,7 @@ Below are the most common motifs of length 5 and 25.
 One thing that stood out in our analysis was that there were 1.41 times as many commits that had at least one branch coming from them as had at least one merge coming to them. We also observed that many branches that are created are not merged back within the next five or even twenty-five commits. While we cannot directly calculate what percent of branches go five or twenty-five commits without a merge because of the limitations in the data, we can get a rough idea of this percentage by looking at only the motifs that start with a branch and seeing what percentage of those do not contain a single merge. These results are summarized below.
 
 *Table 1: Frequency of Motifs that Start with a Branch and Don’t End in a Merge*
+
 | Motif Length| Percentage of Motifs Which Start with a Branch The Do Not Contain a Merge| 
 |------------|---------------|
 | Length 5 | 42% | 
