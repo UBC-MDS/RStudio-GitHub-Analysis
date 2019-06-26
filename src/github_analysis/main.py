@@ -9,7 +9,7 @@ import numpy.distutils.system_info as sysinfo
 import collections
 
 import graph2vec as g2v
-import reduce_embedding_dim as red
+import dim_reduce as dr
 import data_layer as dl
 import cluster as c
 import motif_finder as mf
@@ -27,37 +27,65 @@ def main(args):
 
     commits_dl = dl.data_layer(args.data_path, min_number_commits=args.min_commits)
 
-    project_data = commits_dl.getRandomProjects(args.n_projects, args.random_state)
+    project_data = commits_dl.getRandomProjects(args.n_projects, 1)
     getDataTime = time.time()
+
     logging.info("Query Complete: " + str(getDataTime - startTime) + " seconds")
 
-    project_ids = dl.getUniqueProjectIdsFromDf(project_data)
-    project_groups = commits_dl.getGroupedCommitsByProjectIds(project_ids)
+    for iter in [2, 3, 4, 5, 6, 7, 8, 9, 10]:
+        embeddings_path = None
+        if args.embeddings_file_path is None: # If embeddings not specified, generate the model and set the path to the output embeddings
+            project_ids = dl.getUniqueProjectIdsFromDf(project_data)
+            project_groups = commits_dl.getGroupedCommitsByProjectIds(project_ids)
 
-    project_graphs = []
-    project_ids_ordered = []
-    for name, group in project_groups:
-        project_graphs.append(nxutils.git_graph(group))
-        project_ids_ordered.append(name)
+            project_graphs = []
+            project_ids_ordered = []
+            for name, group in project_groups:
+                project_graphs.append(nxutils.git_graph(group))
+                project_ids_ordered.append(name)
 
-    generateGraphsTime = time.time()
-    logging.info("NxGraphs Built: " + str(generateGraphsTime - getDataTime) + " seconds")
+            # with open("project_graphs.pkl", 'w') as f:
+            #     pickle.dump(project_graphs, f)
+            #
+            # with open("project_ids_ordered.pkl", 'w') as f:
+            #     pickle.dump(project_ids_ordered, f)
 
-    embeddings_path = args.results_path + "embeddings.csv"
-    g2vModel = g2v.Graph2Vec(workers=args.n_workers, size=args.n_neurons, min_count=args.min_count, iter=args.n_iter, seed=args.random_state)
-    g2vEmbeddings = g2vModel.fit_transform(project_graphs, project_ids_ordered, output_path=embeddings_path)
-    buildModelTime = time.time()
-    logging.info("G2V Model Built: " + str(buildModelTime - generateGraphsTime) + " seconds")
+            generateGraphsTime = time.time()
+            logging.info("NxGraphs Built: " + str(generateGraphsTime - getDataTime) + " seconds")
 
-    red.reduce_dim(workers=args.n_workers, output_path=args.results_path, input_path=embeddings_path, random_state=args.random_state)
-    reduceTime = time.time()
-    logging.info("Dims Reduced: " + str(reduceTime - buildModelTime) + " seconds")
+            embeddings_path = args.results_path + "embeddings.csv"
+            g2vModel = g2v.Graph2Vec(workers=args.n_workers, size=args.n_neurons, min_count=args.min_count, iter=iter, seed=args.random_state)
+            g2vEmbeddings = g2vModel.fit_transform(project_graphs, project_ids_ordered, output_path=embeddings_path)
+            buildModelTime = time.time()
+            logging.info("G2V Model Built: " + str(buildModelTime - generateGraphsTime) + " seconds")
+        else:
+            embeddings_path = args.embeddings_file_path
+            generateGraphsTime = time.time()
+            buildModelTime = time.time()
 
-    clusters = c.get_embedding_clusters(embedding_input_file=embeddings_path, output_file=args.results_path + "clusters.pickle", random_state=args.random_state)
+        red.reduce_dim(workers=args.n_workers, output_path=args.results_path + str(iter) + "/", input_path=embeddings_path, random_state=args.random_state)
+        reduceTime = time.time()
+        logging.info("Dims Reduced: " + str(reduceTime - buildModelTime) + " seconds")
+
+        reducers = dr.ReduceDim(n_dimensions = 2)
+        reducers.open_embeddings(embeddings_path)
+        reducers.set_algorithm('t_sne', random_state = args.random_state, n_jobs = args.n_workers)
+        reducers.fit_transform()
+        reducers.plot_tsne(f'{args.results_path}{iter}/embeddings_tsne')
+        reducers.save_reduced_data(f'{args.results_path}{iter}/embeddings_reduced_dim.csv')
+        reduceTime = time.time()
+        logging.info("Dims Reduced: " + str(reduceTime - buildModelTime) + " seconds")
+
+    clusters = c.Cluster()
+    clusters.open_embeddings(embeddings_path)
+    clusters.set_algorithm('k_means', n_clusters = 19, random_state = args.random_state)
+    clusters.fit_algorithm()
+    clusters.save_file(f'{args.results_path}clusters.pickle')
+
     projectClusterTime = time.time()
     logging.info("Projects Clustered: " + str(projectClusterTime - reduceTime) + " seconds")
 
-    # cluster_personas = p.Personas(clusters, commits_dl, args.n_personas, 1, output_path=args.results_path + "cluster_personas.csv")
+    cluster_personas = p.Personas(clusters, commits_dl, args.n_personas, 1, output_path=args.results_path + "cluster_personas.csv")
     personaGenerationTime = time.time()
     logging.info("Personas Generated: " + str(personaGenerationTime - projectClusterTime) + " seconds")
 
@@ -80,24 +108,18 @@ def main(args):
     print("Frequency Graph Time:\t" +   str(freqGraphTime - motifTime) +                    "\tseconds")
     print("Total Time:\t\t" +           str(freqGraphTime - startTime) +                    "\tseconds")
 
-
-def none_or_int(value):
-    if value == 'None':
-        return None
-    return int(value)
-
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument("-rp",      "--results_path",   help="The folder to output results of the analysis. e.g. embeddings and plots", default="./results/")
-    parser.add_argument("-nw",      "--n_workers",      help="The number of workers to use when running the analysis.", default=8, type=int)
-    parser.add_argument("-dp",      "--data_path",      help="The path to the commits.feather file. e.g. /home/user/RStudio-Data-Repository/clean_data/commits_by_org.feather", default="/home/user/RStudio-Data-Repository/clean_data/commits_by_org.feather")
-    parser.add_argument("-np",      "--n_projects",     help="The number of projects to sample from the dataset.", default=1000, type=int)
-    parser.add_argument("-mc",      "--min_commits",    help="The minimum number of commits for a project to be included in the sample.", default=None, type=none_or_int)
-    parser.add_argument("-mcount",  "--min_count",      help="The min_count parameter for the graph2vec model.", default=5, type=int)
-    parser.add_argument("-nps",     "--n_personas",     help="The number of personas to extract from each cluster.", default=5, type=int)
-    parser.add_argument("-nn",      "--n_neurons",      help="The number of neurons to use for Graph2Vec (project level)", default=128, type=int)
-    parser.add_argument("-ni",      "--n_iter",         help="The number of iteration to use to run the WeisfeilerLehmanMachine", default=10, type=int)
-    parser.add_argument("-rs",      "--random_state",   help="The random state to initalize all random states.", default=1, type=int)
+    parser.add_argument("-rp", "--results_path", help="The folder to output results of the analysis. e.g. embeddings and plots", default="./results/")
+    parser.add_argument("-nw", "--n_workers", help="The number of workers to use when running the analysis.", default=8, type=int)
+    parser.add_argument("-dp", "--data_path", help="The path to the commits.feather file. e.g. /home/user/RStudio-Data-Repository/clean_data/commits.feather", default="./results/")
+    parser.add_argument("-np", "--n_projects", help="The number of projects to sample from the dataset.", default=1000, type=int)
+    parser.add_argument("-mc", "--min_commits", help="The minimum number of commits for a project to be included in the sample.", default=None, type=int)
+    parser.add_argument("-mcount", "--min_count", help="The min_count parameter for the graph2vec model.", default=5, type=int)
+    parser.add_argument("-nps", "--n_personas", help="The number of personas to extract from each cluster.", default=5, type=int)
+    parser.add_argument("-nn", "--n_neurons", help="The number of neurons to use for Graph2Vec (project level)", default=128, type=int)
+    parser.add_argument("-emb", "--embeddings_file_path", help="The file to read the embeddings from. Supplying this parameter skips training of the model.", default=None)
+    parser.add_argument("-rs", "--random_state", help="The random state to initalize all random states.", default=1, type=int)
 
     args = parser.parse_args()
 
