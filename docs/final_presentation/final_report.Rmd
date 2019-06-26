@@ -11,7 +11,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Executive Summary
 
-Our project aims to identify common Git workflows, with the end goal of using our understanding of these workflows to provide recommendations for features that should or should not be included in an easy-to-use Git alternative. For this study we had the hypothesis that there are common Git workflows that account for a large fraction of everyday use. To test this hypothesis, we used an Unsupervised Learning technique inspired by Natural Language Processing. The analysis results proved the existence of common patterns in Git workflows.
+Our project aims to identify common Git workflows, with the end goal of using our understanding of these workflows to provide recommendations for features that should or should not be included in an easy-to-use Git alternative. For this study we had the hypothesis that there are common Git workflows that account for a large fraction of everyday use. To test this hypothesis, we use an Unsupervised Learning technique inspired by Natural Language Processing and Motif analysis. The analysis results proved the existence of common patterns in Git workflows.
 
 # Introduction
 
