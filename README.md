@@ -32,4 +32,7 @@ python src/big_cloud_scratch.py
 ```
 
 ## Installation instructions
-PLACEHOLDER
+To get credentials file for GitHub Torrent Google Cloud (necessary for re-running the pipeline to generate images):
+
+- Follow the instructions here to create and download a credentials file: https://developers.google.com/adwords/api/docs/guides/authentication#generate_oauth2_credentials
+- Change the name of the file to `credentials_file.json` and put it in the root directory of the project (a sample file with the same name is included as a reference).
