@@ -31,8 +31,12 @@ From the root directory, run:
 python src/python src/github_analysis/main.py -dp "/home/rayce/Assignments/Capstone/RStudio-Data-Repository/clean_data/commits_by_org.feather".py
 ```
 
-## Installation Instructions
-PLACEHOLDER
+## Installation instructions
+To get credentials file for GitHub Torrent Google Cloud (necessary for re-running the pipeline to generate images):
+
+- Follow the instructions here to create and download a credentials file: https://developers.google.com/adwords/api/docs/guides/authentication#generate_oauth2_credentials
+- Change the name of the file to `credentials_file.json` and put it in the root directory of the project (a sample file with the same name is included as a reference).
+
 
 ## Data Repository
 [RStudio-Data-Repository](https://github.com/UBC-MDS/RStudio-Data-Repository)
