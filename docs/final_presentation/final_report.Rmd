@@ -163,6 +163,10 @@ One limitation of our results is survivor bias of the commit history available a
 
 The project had the objective of understanding if there were identifiable workflow patterns in the way people use Git and what subpatterns account for everyday use to be able to draw recommendations in an easy-to-use alternative to Git. Making use of the graph structure of our data we applied the Graph2Vec algorithm to learn the local and global structure of each project to represent them as vectors. We then applied the K Means algorithm to identify clusters between the projects. We observed that large projects tend to fall in the same clusters so we decided to study the subgraphs of this projects only. One of the main findings of the project is that the pattern that accounts for the most subgraphs is a linear - no branching or merging - commit history. This sort of insights enabled us to draw recommendations both for a new tool and for future studies.
 
+# Github Repository
+
+Please refer to our [Github repository](https://github.com/UBC-MDS/RStudio-GitHub-Analysis) for this project on more details in coding and reproducible analysis.
+
 # References
 
 [1] Git: https://medium.com/girl-writes-code/git-is-a-directed-acyclic-graph-and-what-the-heck-does-that-mean-b6c8dec65059
