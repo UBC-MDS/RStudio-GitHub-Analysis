@@ -1,0 +1,9 @@
+{"python_hash_seed": 0,
+"n_workers": 1,
+"n_projects": 1000,
+"min_commits": "None",
+"min_count": 5,
+"n_personas": 5,
+"n_neurons": 128,
+"n_iter": 10,
+"random_state": 1}

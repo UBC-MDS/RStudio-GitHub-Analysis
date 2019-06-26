@@ -1,18 +1,20 @@
+configfile: "config.json"
+
 rule run_analysis:
     input:
-        data_path = "/Users/richiezitomer/Documents/RStudio-Data-Repository/clean_data/commits.feather"
+        data_path = "/Users/richiezitomer/Documents/RStudio-Data-Repository/clean_data/commits_by_org.feather"
     output:
         results_path = directory("results/")
     params:
-        python_hash_seed = 0,
-        n_workers = 1,
-        n_projects = 1000,
-        min_commits = None,
-        min_count = 5,
-        n_personas = 5,
-        n_neurons = 128,
-        n_iter = 10,
-        random_state = 1
+        python_hash_seed = config["python_hash_seed"],
+        n_workers = config["n_workers"],
+        n_projects = config["n_projects"],
+        min_commits = config["min_commits"],
+        min_count = config["min_count"],
+        n_personas = config["n_personas"],
+        n_neurons = config["n_neurons"],
+        n_iter = config["n_iter"],
+        random_state = config["random_state"]
     shell:
         "PYTHONHASHSEED={params.python_hash_seed} python src/github_analysis/main.py -dp {input.data_path} -rp {output.results_path} -nw {params.n_workers} -np {params.n_projects} -mc {params.min_commits} -mcount {params.min_count} -nps {params.n_personas} -nn {params.n_neurons} -ni {params.n_iter} -rs {params.random_state}"
 
