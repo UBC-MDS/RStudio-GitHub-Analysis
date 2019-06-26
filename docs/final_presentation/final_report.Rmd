@@ -11,7 +11,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Executive Summary
 
-Our project aims to identify common Git workflows, with the end goal of using our understanding of these workflows to provide recommendations for features that should or should not be included in an easy-to-use Git alternative. For this study we had the hypothesis that there are common Git workflows that account for a large fraction of everyday use. To test this hypothesis, we use an Unsupervised Learning technique inspired by Natural Language Processing. 
+Our project aims to identify common Git workflows, with the end goal of using our understanding of these workflows to provide recommendations for features that should or should not be included in an easy-to-use Git alternative. For this study we had the hypothesis that there are common Git workflows that account for a large fraction of everyday use. To test this hypothesis, we used an Unsupervised Learning technique inspired by Natural Language Processing. The analysis results proved the existence of common patterns in Git workflows.
 
 # Introduction
 
@@ -25,7 +25,7 @@ Our data was sourced from GitHub Torrent, which mines the GitHub API to track al
 - Each node in the graph is one commit;
 - Each directed edge in the graph is connection from one commit to the other (chronological order).
 
-We also queried other data tables from GitHub Torrent for important features such as authors, programming language, code reviews, et cetera, to support deeper analysis.
+We also queried other data tables from GitHub Torrent for important features such as authors, programming language, code reviews, et cetera, to support exploratory data analysis.
 
 ![](imgs/workflow.png)
 
