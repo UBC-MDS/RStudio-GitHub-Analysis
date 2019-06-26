@@ -6,9 +6,9 @@ import numpy as np
 import seaborn as sns
 import os
 import pandas_gbq
-import github_analysis.data_layer as dl
-import github_analysis.motif_finder as mf
-import github_analysis.freq_graph as fg
+import data_layer as dl
+import motif_finder as mf
+import freq_graph as fg
 from google.oauth2.service_account import Credentials
 from matplotlib.ticker import FuncFormatter
 from decimal import Decimal
@@ -19,7 +19,7 @@ from sklearn import preprocessing
 import seaborn as sns; sns.set(color_codes=True)
 from pdf2image import convert_from_path
 import joypy
-from github_analysis.nxutils import git_graph
+from nxutils import git_graph
 import scipy.stats as st
 
 from sklearn import preprocessing
