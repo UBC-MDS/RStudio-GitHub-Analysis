@@ -56,13 +56,11 @@ The most common and widely used unsupervised learning methods require a matrix o
 
 After generating embeddings for each commit graph in our sample, we used K-Means clustering which is an Unsupervised Learning method that works by repeatedly calculating the average distance of all points in a cluster, choosing that point as the center of the cluster and then recalculating the clusters.
 
-We used the gap statistic to choose an optimal number of clusters (Supplemental Table 1). Ultimately settling on 19. The results of this clustering is shown below in a dimensionality reduced T-SNE plot. 
-
 ![](imgs/global_clustering.png)
 
 *Fig 2: T-SNE of Global Clusters*	
 
-The above shows very clear clusters indicating that there are clear groups and differences between the structure of different graphs. In order to identify what makes our clusters different, we needed to do some exploration. Firstly, we plotted the predominant languages for each cluster.
+The above shows very clear clusters indicating that there are distinct subgroups and differences in the structure of different projects. In order to identify what makes our clusters different, we did some exploration. Firstly, we plotted the predominant languages for each cluster.
 
 ![](imgs/language_radial.png)
 
@@ -182,7 +180,3 @@ Please refer to our [Github repository](https://github.com/UBC-MDS/RStudio-GitHu
 
 [6] This methodology was proposed by Professor Trevor Campbell https://github.com/UBC-MDS/RStudio-GitHub-Analysis/issues/3#issuecomment-486446099
 
-# Appendix
-| k | Gap Statistic |
-|---|---------------|
-|||
