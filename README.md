@@ -68,6 +68,7 @@ First, to get credentials file neccessary for pulling the GitHub Torrent from Go
 - Change the name of the file to `credentials_file.json` and put it in the root directory of the project (a sample file with the name `credentials_file_EXAMPLE.json` is included as a reference).
 
 
-## Data Repository
+## Data Repositories
 [RStudio-Data-Repository](https://github.com/UBC-MDS/RStudio-Data-Repository)
+
 [Figshare Upload](https://figshare.com/articles/GHTorrent_Project_Commits_Dataset/8321285)
