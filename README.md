@@ -37,7 +37,22 @@ For example, if you wanted to run the analysis with 5 workers instead of the def
 ```{bash}
 snakemake run_analysis --config n_workers=5
 ```
- 
+
+## Config Parameters
+
+|Short Name|Long Name|Description|Default|Type|
+|-|-|-|-|-|
+| -rp     | --results_path   | The folder to output results of the analysis. e.g. embeddings and plots| ./results/|String|
+| -nw     | --n_workers      | The number of workers to use when running the analysis.| 8| int|
+| -dp     | --data_path      | The path to the commits.feather file. e.g. /home/user/RStudio-Data-Repository/clean_data/commits_by_org.feather| /home/user/RStudio-Data-Repository/clean_data/commits_by_org.feather|String|
+| -np     | --n_projects     | The number of projects to sample from the dataset.| 1000| int|
+| -mc     | --min_commits    | The minimum number of commits for a project to be included in the sample.| None | none_or_int|
+| -mcount | --min_count      | The min_count parameter for the graph2vec model.| 5| int|
+| -nps    | --n_personas     | The number of personas to extract from each cluster.| 5| int|
+| -nn     | --n_neurons      | The number of neurons to use for Graph2Vec (project level)| 128| int|
+| -ni     | --n_iter         | The number of iteration to use to run the WeisfeilerLehmanMachine| 10| int|
+| -rs     | --random_state   | The random state to initalize all random states.| 1| int|
+
 
 ### Example
 From the root directory, run: 
@@ -55,3 +70,4 @@ First, to get credentials file neccessary for pulling the GitHub Torrent from Go
 
 ## Data Repository
 [RStudio-Data-Repository](https://github.com/UBC-MDS/RStudio-Data-Repository)
+[Figshare Upload](https://figshare.com/articles/GHTorrent_Project_Commits_Dataset/8321285)
