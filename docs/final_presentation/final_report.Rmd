@@ -11,7 +11,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Executive Summary
 
-Our project aims to identify common Git workflows, with the end goal of using our understanding of these workflows to provide recommendations for features that should or should not be included in an easy-to-use Git alternative. For this study we had the hypothesis that there were common Git workflows that account for a large fraction of everyday use. 
+Our project aims to identify common Git workflows, with the end goal of using our understanding of these workflows to provide recommendations for features that should or should not be included in an easy-to-use Git alternative. For this study we had the hypothesis that there are common Git workflows that account for a large fraction of everyday use. To test this hypothesis, we use an Unsupervised Learning technique inspired by Natural Language Processing. 
 
 # Introduction
 
@@ -45,7 +45,7 @@ Answering these questions has provided some insights that may inform the develop
 
 ### Unsupervised Learning
 
-Unsupervised learning is a realm of data science methods used to find previously unknown patterns in a data set without explicit labels. By learning features from the data, these types of algorithms allows us to group similar data points together based on similarity. GIVE SIMPLE EXAMPLE HERE OF AN APPLICATION TO YOUR DATA (E.G., GROUPING SIMILAR GIT COMMIT GRAPHS TOGETHER).
+Unsupervised learning is a realm of data science methods used to find previously unknown patterns in a data set without explicit labels. By learning features from the data, these types of algorithms allows us to group similar data points together based on similarity. By grouping similar git commit graph's together, we hope to identify common workflow patterns.
 
 
 The most common and widely used unsupervised learning methods require a matrix of numeric values, therefore we must first convert our graph data into a more appropriate format. In the same way documents are built up of sentences and words, graphs are made up of subgraphs and nodes. Knowing this, we took inspiration from Natural Language Processing’s (NLP) concept of word embeddings. After some research, we settled on a Doc2Vec based algorithm called Graph2Vec^[4]^. In the same way that Doc2Vec can take a collection of documents and generate a vector of word embeddings, Graph2Vec can take a collection of graphs and generate a vector of graph embeddings. The generation of this embeddings means that we transform our graphs into a matrix of numeric values - a more useful format for the unsupervised learning methods we intended to use.
@@ -53,7 +53,9 @@ The most common and widely used unsupervised learning methods require a matrix o
 
 ### Cluster Analysis
 
-Kmeans clustering is an unsupervised learning method that works by... (explain in simple terms and justify your choice of it). After generating embeddings for each graph in our sample, we used K-Means Clustering and various metrics such as the AIC, BIC and gap statistic to choose an optimal number of clusters (Supplemental Table 1). We ultimately settled on 19. The results of this clustering is shown below in a dimensionality reduced T-SNE plot. 
+After generating embeddings for each commit graph in our sample, we used K-Means clustering which is an Unsupervised Learning method that works by repeatedly calculating the average distance of all points in a cluster, choosing that point as the center of the cluster and then recalculating the clusters.
+
+We used the gap statistic to choose an optimal number of clusters (Supplemental Table 1). We ultimately settled on 19. The results of this clustering is shown below in a dimensionality reduced T-SNE plot. 
 
 ![](imgs/global_clustering.png)
 
@@ -76,7 +78,7 @@ Looking at the above figure, we can see that only a very small portion of projec
 
 ### Clustering of > 100 commits
 
-Using the insights from our analysis that the majority of projects had less than 100 commits, we decided to focus our efforts on larger projects. WHY? JUSTIFY (I.E. MORE COMMITS LIKELY MEANS MORE INTERESTING? REAL PROJECT?). Clustering again on projects with more than 100 commits results in the following clustering process represented in the T-SNE plot  below.
+Using the insights from our analysis that the majority of projects had less than 100 commits, we decided to focus our efforts on larger projects. We chose to do this based on the assumption that larger projects will better define Clustering again on projects with more than 100 commits results in the following clustering process represented in the T-SNE plot  below.
 
 ![](imgs/blob.png)
 
