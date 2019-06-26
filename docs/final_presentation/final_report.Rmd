@@ -3,6 +3,7 @@ title: "RStudio Github Workflow Analysis"
 subtitle: "Final Report"
 author: "Juno Chen, Ian Flores, Rayce Rossum, Richie Zitomer"
 output: pdf_document
+urlcolor: blue
 ---
 
 ```{r setup, include=FALSE}
