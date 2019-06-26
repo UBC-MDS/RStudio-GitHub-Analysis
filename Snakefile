@@ -1,8 +1,15 @@
 configfile: "config.json"
 
+rule get_ght_data:
+    params:
+        download_url = config["data_download_url"]
+    output:
+        output_file = "data/commits_by_org.feather"
+    shell: "python src/github_analysis/make_report.py -du {params.download_url} -of {output.output_file}"
+
 rule run_analysis:
     input:
-        data_path = "/Users/richiezitomer/Documents/RStudio-Data-Repository/clean_data/commits_by_org.feather"
+        data_path = "data/commits_by_org.feather"
     output:
         results_path = directory("results/")
     params:
@@ -20,12 +27,7 @@ rule run_analysis:
 
 rule generate_images:
     input:
-        data_path="/Users/richiezitomer/Documents/RStudio-Data-Repository/clean_data/commits_by_org.feather",
+        data_path="data/commits_by_org.feather",
         embedding_path="results/embeddings.csv"
     shell:
         "python src/github_analysis/make_report.py -dp {input.data_path} -ep {input.embedding_path}"
-
-
-# Commented out because repo is currently over bandwidth: https://help.github.com/en/articles/about-storage-and-bandwidth-usage
-#rule clone_data_repo:
-#    shell: "git clone https://github.com/UBC-MDS/RStudio-Data-Repository.git"
