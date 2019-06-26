@@ -56,7 +56,7 @@ The most common and widely used unsupervised learning methods require a matrix o
 
 After generating embeddings for each commit graph in our sample, we used K-Means clustering which is an Unsupervised Learning method that works by repeatedly calculating the average distance of all points in a cluster, choosing that point as the center of the cluster and then recalculating the clusters.
 
-We used the gap statistic to choose an optimal number of clusters (Supplemental Table 1). We ultimately settled on 19. The results of this clustering is shown below in a dimensionality reduced T-SNE plot. 
+We used the gap statistic to choose an optimal number of clusters (Supplemental Table 1). Ultimately settling on 19. The results of this clustering is shown below in a dimensionality reduced T-SNE plot. 
 
 ![](imgs/global_clustering.png)
 
@@ -75,18 +75,17 @@ We hypothesized that different types of git users such as Software Developers an
 
 *Fig 4: Number of Commits of Global Clusters*
 
-Looking at the above figure, we can see that only a very small portion of projects have > 100 commits. We also notice that large projects tend to fall within the top right corner of the T-SNE embedding space. WHAT DOES THAT MEAN? EXPLAIN HERE. ALSO, ARE THEY ALL IN ONE CLUSTER (AS DEFINED BY KMEANS) OR ACROSS A FEW (AND IF SO, WHICH FEW)? 
+Looking at the above figure, we can see that only a very small portion of projects have greater than 100 commits. We also notice that large projects tend to fall within the top right corner of the T-SNE embedding space implying that there is a fundamental difference in the structure of larger projects. These large projects are spread across a few different clusters, although there are two few points for a clear conclusion to be made as to whether or not they should belong to the same cluster.
 
-### Clustering of > 100 commits
+### Clustering of projects with greater than  100 commits
 
-Using the insights from our analysis that the majority of projects had less than 100 commits, we decided to focus our efforts on larger projects. We chose to do this based on the assumption that larger projects will better define Clustering again on projects with more than 100 commits results in the following clustering process represented in the T-SNE plot  below.
+Using the insights from our analysis that the majority of projects had less than 100 commits, and that large projects are fundamentally different, we decided to focus our efforts on larger projects. Clustering again on projects with more than 100 commits results in the following clustering process represented in the T-SNE plot below.
 
 ![](imgs/blob.png)
 
 *Fig 5: Clustering of Projects > 100 Commits*
 
-The above plot does not show clear cluster boundaries in projects with greater than 100 commits. This is indicative of an absence of distinct subgroups of ~~high variability~~ workflows within large projects. COMMENT ON WHETHER THIS IS DUE TO ONE LARGE SPREADOUT CLUSTER OR ONE TIGHT NARROW CLUSTER (*Total within sum of square and between sum of squares should answer this*).  A possible interpretation of this result is that every workflow is represented (and represented with roughly equal frequency) and that there are no identifiable distinct sub-types of workflows in large projects that could be indentified using our current method. This leads us to conclude in this question that there are identifiable workflow patterns although they are not that useful (NOT USEFUL FOR WHAT?). At the global level we can see that the majority of projects fall into short, single chain projects (WHERE IS THE DATA DEMONSTRATING THESE ARE SINGLE CHAINS?). This tells us that the main workflow on Github is to just commit to master and work alone. This is backed up by the fact that out of 36.4 million projects we sampled, 48% have only a single commit, and 85% have only a single author. For the rest of our analysis, we just looked at projects with >100 commits and considered them one homogenous group.
-
+The above plot does not show clear cluster boundaries in projects with greater than 100 commits. In fact, we have one large cluster. This is indicative of an absence of distinct subgroups of workflows within large projects.   A possible interpretation of this result is that every workflow is represented (and represented with roughly equal frequency) and that there are no identifiable distinct sub-types of workflows in large projects that could be identified using our current method. This leads us to conclude that there are identifiable workflow patterns across the GitHub platform. At the global level we can see that the majority of projects are small and further motif analysis indicates that the majority of projects consist of single chains. This tells us that the main workflow on Github is to just commit to master and work alone. This is backed up by the data that out of 36.4 million projects we sampled, 48% have only a single commit, and 85% have only a single author. For the rest of our analysis, we solely looked at projects with greater than 100 commits and considered them one homogenous group.
 ## What are common subgraphs that account for a large fraction of everyday use?
 
 We leveraged the concept of motifs from network theory in order to surface the most common subgraphs that account for a large fraction of everyday Git use. Motifs are subgraphs that appear in a network at a much higher frequency than random chance^[5]^. We found the most frequent motifs and their relative occurrences using the method described below.
@@ -182,3 +181,8 @@ Please refer to our [Github repository](https://github.com/UBC-MDS/RStudio-GitHu
 [5] Motifs: https://link.springer.com/chapter/10.1007/978-3-319-16112-9_2
 
 [6] This methodology was proposed by Professor Trevor Campbell https://github.com/UBC-MDS/RStudio-GitHub-Analysis/issues/3#issuecomment-486446099
+
+# Appendix
+| k | Gap Statistic |
+|---|---------------|
+|||
