@@ -102,7 +102,7 @@ def calc_conf(a):
 
 class Report:
     def __init__(self, data_path='/Users/richiezitomer/Documents/RStudio-Data-Repository/clean_data/commits_by_org.feather',
-                 embedding_path='results/embeddings.csv', num_motifs_to_sample=1000, motif_lengths=[5,10,25,50,100]):
+                 embedding_path='results/embeddings.csv', num_motifs_to_sample=100, motif_lengths=[5,10,25,50,100]):
         self.emb = pd.read_csv(embedding_path)
         self.project_ids = self.emb.type.values
         self.proj_ids_string = ",".join(self.project_ids.astype(str))
@@ -154,7 +154,7 @@ class Report:
             nodes = [root] + [v for u, v in edges]
             #    print(len(nodes))
 
-            for i in range(0, len(nodes), k):
+            for i in range(0, min(len(nodes),200), k):
                 current_root = nodes[i]
                 current_edges = nx.bfs_edges(G, current_root)  # https://networkx.github.io/documentation/networkx-2.2/reference/algorithms/generated/networkx.algorithms.traversal.breadth_first_search.bfs_edges.html#networkx.algorithms.traversal.breadth_first_search.bfs_edges
                 current_nodes = [current_root] + [v for u, v in current_edges]
