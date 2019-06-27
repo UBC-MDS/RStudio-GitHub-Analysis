@@ -53,7 +53,7 @@ snakemake run_analysis --config n_workers=5
 |-|-|-|-|-|
 | -rp     | --results_path   | The folder to output results of the analysis. e.g. embeddings and plots| ./results/|String|
 | -nw     | --n_workers      | The number of workers to use when running the analysis.| 1| int|
-| -dp     | --data_path      | The path to the commits.feather file. e.g. /home/user/RStudio-Data-Repository/clean_data/commits_by_org.feather| /home/user/RStudio-Data-Repository/clean_data/commits_by_org.feather|String|
+| -dp     | --data_path      | The path to the commits.feather file. e.g. /home/user/RStudio-Data-Repository/clean_data/commits_by_org.feather| ./data/commits_by_org.feather |String|
 | -np     | --n_projects     | The number of projects to sample from the dataset.| 1000| int|
 | -mc     | --min_commits    | The minimum number of commits for a project to be included in the sample.| None | none_or_int|
 | -mcount | --min_count      | The min_count parameter for the graph2vec model.| 5| int|
