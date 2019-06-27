@@ -21,6 +21,12 @@ Motivation behind this project: http://third-bit.com/2017/09/30/git-graphs-and-e
 
 - [Blog](https://ubc-mds.github.io/RStudio-GitHub-Analysis/)
 
+## Installation instructions
+First, to get credentials file neccessary for pulling the GitHub Torrent from Google Cloud (necessary for re-generating images for our analysis):
+
+- Follow the instructions under 'Set up a service account' to create and download a credentials file: https://cloud.google.com/video-intelligence/docs/common/auth
+- Change the name of the file to `credentials_file.json` and put it in the root directory of the project (a sample file with the name `credentials_file_EXAMPLE.json` is included as a reference).
+
 ## Usage
 Run the following commands to reproduce this analysis:
 ```{bash}
@@ -43,7 +49,7 @@ snakemake run_analysis --config n_workers=5
 |Short Name|Long Name|Description|Default|Type|
 |-|-|-|-|-|
 | -rp     | --results_path   | The folder to output results of the analysis. e.g. embeddings and plots| ./results/|String|
-| -nw     | --n_workers      | The number of workers to use when running the analysis.| 8| int|
+| -nw     | --n_workers      | The number of workers to use when running the analysis.| 1| int|
 | -dp     | --data_path      | The path to the commits.feather file. e.g. /home/user/RStudio-Data-Repository/clean_data/commits_by_org.feather| /home/user/RStudio-Data-Repository/clean_data/commits_by_org.feather|String|
 | -np     | --n_projects     | The number of projects to sample from the dataset.| 1000| int|
 | -mc     | --min_commits    | The minimum number of commits for a project to be included in the sample.| None | none_or_int|
@@ -53,19 +59,6 @@ snakemake run_analysis --config n_workers=5
 | -ni     | --n_iter         | The number of iteration to use to run the WeisfeilerLehmanMachine| 10| int|
 | -rs     | --random_state   | The random state to initalize all random states.| 1| int|
 
-
-### Example
-From the root directory, run: 
-
-```{bash}
-python src/python src/github_analysis/main.py -dp "/home/rayce/Assignments/Capstone/RStudio-Data-Repository/clean_data/commits_by_org.feather".py
-```
-
-## Installation instructions
-First, to get credentials file neccessary for pulling the GitHub Torrent from Google Cloud (necessary for re-generating images for our analysis):
-
-- Follow the instructions under 'Set up a service account' to create and download a credentials file: https://cloud.google.com/video-intelligence/docs/common/auth
-- Change the name of the file to `credentials_file.json` and put it in the root directory of the project (a sample file with the name `credentials_file_EXAMPLE.json` is included as a reference).
 
 
 ## Data Repositories
