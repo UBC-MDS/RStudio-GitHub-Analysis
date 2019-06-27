@@ -83,6 +83,7 @@ Once inside the container you run:
 
 2) `snakemake get_ght_data`
 3) `snakemake run_analysis`
+4) `snakemake generate_images`
 
 ## Software and Dependencies
 
