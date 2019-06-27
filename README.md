@@ -7,6 +7,7 @@ Project Mentor: Dr. Tiffany Timbers
 Project Partner: Dr. Greg Wilson
 
 ## Overview
+
 This project aims to understand how people are currently using GitHub, with the eventual goal of building an easy-to-use alternative to Git.
 
 This project includes the ability to cluster similar GitHub projects and pick out their most commonly-occuring subgraphs.
@@ -22,12 +23,14 @@ Motivation behind this project: http://third-bit.com/2017/09/30/git-graphs-and-e
 - [Blog](https://ubc-mds.github.io/RStudio-GitHub-Analysis/)
 
 ## Installation instructions
+
 First, to get credentials file neccessary for pulling the GitHub Torrent from Google Cloud (necessary for re-generating images for our analysis):
 
 - Follow the instructions under 'Set up a service account' to create and download a credentials file: https://cloud.google.com/video-intelligence/docs/common/auth
 - Change the name of the file to `credentials_file.json` and put it in the root directory of the project (a sample file with the name `credentials_file_EXAMPLE.json` is included as a reference).
 
 ## Usage
+
 Run the following commands to reproduce this analysis:
 ```{bash}
 snakemake get_ght_data # Downloads GH Torrent data from figshare. Be aware that the file is quite large, and downloading can take 1-2 hours.
@@ -65,3 +68,30 @@ snakemake run_analysis --config n_workers=5
 [RStudio-Data-Repository](https://github.com/UBC-MDS/RStudio-Data-Repository)
 
 [Figshare Upload](https://figshare.com/articles/GHTorrent_Project_Commits_Dataset/8321285)
+
+## Docker
+
+To run Docker you have to run:
+
+1) `docker build --tag rstudio:1.0.0 .`
+
+2) `docker run -it -v $(pwd):/rstudio_analysis rstudio:1.0.0 /bin/bash`
+
+Once inside the container you run:
+
+1) `cd rstudio_analysis`
+
+2) `snakemake get_ght_data`
+3) `snakemake run_analysis`
+
+## Software and Dependencies
+
+- MulticoreTSNE==0.1
+- pandas-gbq==0.10.0
+- panel==0.6.0
+- networkx==2.3
+- joblib==0.12.3
+- gensim==3.7.1
+- tqdm==4.26.0
+- pyviz-comms==0.7.2
+- snakemake=5.5.2
