@@ -101,8 +101,9 @@ def calc_conf(a):
     return interval[1]-interval[0]
 
 class Report:
+    """Class to generate images used in report and presentation."""
     def __init__(self, data_path='/Users/richiezitomer/Documents/RStudio-Data-Repository/clean_data/commits_by_org.feather',
-                 embedding_path='results/embeddings.csv', num_motifs_to_sample=100, motif_lengths=[5,10,25,50,100]):
+                 embedding_path='results/embeddings.csv', num_motifs_to_sample=1000, motif_lengths=[5,10,25,50,100]):
         self.emb = pd.read_csv(embedding_path)
         self.project_ids = self.emb.type.values
         self.proj_ids_string = ",".join(self.project_ids.astype(str))
@@ -113,7 +114,8 @@ class Report:
 
         self.project_stats_created = False
 
-    def make_proj_stats_df(self, read_from_motif_files=False,do_cluster=False):
+    def make_proj_stats_df(self):
+        """Method to make dataframe with stats by project."""
         # Load Data
         comm_auth_by_proj = pull_queries(COMM_AUTH_BY_PROJ.format(proj_ids=self.proj_ids_string)).set_index(
             'p_id')  # pd.read_csv('data/author_commits_by_proj_100.csv').set_index('p_id')
@@ -140,7 +142,7 @@ class Report:
         self.project_stats_created = True
 
     def get_multi_chain_percent_by_proj(self, k,proj_id):
-        """f """
+        """Method that gets multi-chain percentage of each project."""
         projects_cluster = self.commits_dl.getCommitsByProjectId(proj_id)
         G = git_graph(projects_cluster)
         roots = [n for n, d in G.in_degree() if d == 0]
@@ -190,30 +192,41 @@ class Report:
     #     fig.savefig(output_path)
 
     def get_most_common_motifs(self, motif_length=5):
+        """Method that gets 8 or 9 most common motifs for a given project or group of projects."""
         motifs = mf.get_motifs(self.project_ids, motif_length, self.num_motifs_to_sample, self.commits_dl)
 
-        fig, axs = plt.subplots(3, 3)
+        if motif_length == 5:
+            fig, axs = plt.subplots(3, 3)
+        else:
+            fig, axs = plt.subplots(4, 2)
+
         fig.set_size_inches(18.5, 10.5)
         for n, key in enumerate(sorted(motifs, key=motifs.get, reverse=True)):
-            if n >= 9:
-                break
             if motif_length == 5:
+                if n >= 9:
+                    break
                 nx.draw_kamada_kawai(key, node_size=300, width=1.5, arrowsize=50, ax=axs.flatten()[n])
-                axs.flatten()[n].set_title('{}. Motif Frequency: {}%'.format(str(n + 1), str(motifs[key] / 10)),
-                                           fontsize=15)
+                axs.flatten()[n].set_title(
+                    '{}. {}% (n={})'.format(str(n + 1), str(round(100*(motifs[key] / self.num_motifs_to_sample))), str(motifs[key])),
+                    fontsize=20)
             else:
+                if n >= 8:
+                    break
                 if n == 0:
                     nx.draw_kamada_kawai(key, node_size=100, width=1, ax=axs.flatten()[n])
+                    axs.flatten()[n].set_title('{}. {}% (n={})'.format(str(n + 1), str(round(100 * (motifs[key] / self.num_motifs_to_sample))),
+                                            str(motifs[key])),fontsize = 20)
                 else:
                     nx.draw_spring(key, node_size=100, width=.8, arrowsize=20, ax=axs.flatten()[n])
-                axs.flatten()[n].set_title('{}. Motif Frequency: {}%'.format(str(n + 1), str(motifs[key] / 10)),
-                                           fontsize=15)
+                    axs.flatten()[n].set_title('{}. {}% (n={})'.format(str(n + 1), str(round(100 * (motifs[key] / self.num_motifs_to_sample))),
+                                            str(motifs[key])),fontsize = 20)
 
-        fig.suptitle('Most Common Motifs Length {}'.format(motif_length), fontsize=25)
+        fig.suptitle('Most Common Motifs Length {} Occurrence Rate and Count'.format(motif_length), fontsize=25)
         fig.savefig('results/motif_{}_visual.png'.format(motif_length))
         return fig
 
     def get_motif_example(self, motif_length=25):
+        """Method that gets an example motif of motif_length."""
         motifs = mf.get_motifs(self.project_ids, motif_length, self.num_motifs_to_sample, self.commits_dl)
         second_most_common_motif = sorted(motifs, key=motifs.get, reverse=True)[1]
 
@@ -225,6 +238,7 @@ class Report:
         return fig
 
     def get_mcp_hist(self):
+        """Method that makes a histogram of different motif lengths by project."""
         if not self.project_stats_created:
             self.make_proj_stats_df()
         df = self.project_stats[['mcp_5', 'mcp_10', 'mcp_25', 'mcp_50', 'mcp_100']]
@@ -238,6 +252,7 @@ class Report:
         return fig
 
     def get_gh_feature_comparison(self):
+        """Method that gets relative GH features of high- and low-complexity projects."""
         if not self.project_stats_created:
             self.make_proj_stats_df()
         self.project_stats['complexity'] = self.project_stats.mcp_25.apply(complexity_tag)
