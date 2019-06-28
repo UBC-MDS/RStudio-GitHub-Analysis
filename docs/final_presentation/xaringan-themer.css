@@ -30,10 +30,11 @@ h1, h2, h3 {
   font-family: 'Yanone Kaffeesatz';
   font-weight: normal;
   color: #75aadb;
+  line-height: 1em;
 }
 .remark-slide-content {
   background-color: #FFFFFF;
-  font-size: 20px;
+  font-size: 18px;
   
   
   
@@ -46,7 +47,7 @@ h1, h2, h3 {
     font-size: 45px;
 }
 .remark-slide-content h3 {
-    font-size: 35px;
+    font-size: 33px;
 }
 .remark-code, .remark-inline-code {
   font-family: 'Source Code Pro', 'Lucida Console', Monaco, monospace;
