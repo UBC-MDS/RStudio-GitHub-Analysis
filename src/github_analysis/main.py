@@ -9,7 +9,7 @@ import numpy.distutils.system_info as sysinfo
 import collections
 
 import graph2vec as g2v
-import reduce_embedding_dim as red
+import dim_reduce as dr
 import data_layer as dl
 import cluster as c
 import motif_finder as mf
@@ -31,29 +31,52 @@ def main(args):
     getDataTime = time.time()
     logging.info("Query Complete: " + str(getDataTime - startTime) + " seconds")
 
-    project_ids = dl.getUniqueProjectIdsFromDf(project_data)
-    project_groups = commits_dl.getGroupedCommitsByProjectIds(project_ids)
+    for iter in [2, 3, 4, 5, 6, 7, 8, 9, 10]:
+        embeddings_path = None
+        if args.embeddings_file_path is None: # If embeddings not specified, generate the model and set the path to the output embeddings
+            project_ids = dl.getUniqueProjectIdsFromDf(project_data)
+            project_groups = commits_dl.getGroupedCommitsByProjectIds(project_ids)
 
-    project_graphs = []
-    project_ids_ordered = []
-    for name, group in project_groups:
-        project_graphs.append(nxutils.git_graph(group))
-        project_ids_ordered.append(name)
+            project_graphs = []
+            project_ids_ordered = []
+            for name, group in project_groups:
+                project_graphs.append(nxutils.git_graph(group))
+                project_ids_ordered.append(name)
 
-    generateGraphsTime = time.time()
-    logging.info("NxGraphs Built: " + str(generateGraphsTime - getDataTime) + " seconds")
+            # with open("project_graphs.pkl", 'w') as f:
+            #     pickle.dump(project_graphs, f)
+            #
+            # with open("project_ids_ordered.pkl", 'w') as f:
+            #     pickle.dump(project_ids_ordered, f)
 
-    embeddings_path = args.results_path + "embeddings.csv"
-    g2vModel = g2v.Graph2Vec(workers=args.n_workers, size=args.n_neurons, min_count=args.min_count, iter=args.n_iter, seed=args.random_state)
-    g2vEmbeddings = g2vModel.fit_transform(project_graphs, project_ids_ordered, output_path=embeddings_path)
-    buildModelTime = time.time()
-    logging.info("G2V Model Built: " + str(buildModelTime - generateGraphsTime) + " seconds")
+            generateGraphsTime = time.time()
+            logging.info("NxGraphs Built: " + str(generateGraphsTime - getDataTime) + " seconds")
 
-    red.reduce_dim(workers=args.n_workers, output_path=args.results_path, input_path=embeddings_path, random_state=args.random_state)
-    reduceTime = time.time()
-    logging.info("Dims Reduced: " + str(reduceTime - buildModelTime) + " seconds")
+            embeddings_path = args.results_path + "embeddings.csv"
+            g2vModel = g2v.Graph2Vec(workers=args.n_workers, size=args.n_neurons, min_count=args.min_count, iter=iter, seed=args.random_state)
+            g2vEmbeddings = g2vModel.fit_transform(project_graphs, project_ids_ordered, output_path=embeddings_path)
+            buildModelTime = time.time()
+            logging.info("G2V Model Built: " + str(buildModelTime - generateGraphsTime) + " seconds")
+        else:
+            embeddings_path = args.embeddings_file_path
+            generateGraphsTime = time.time()
+            buildModelTime = time.time()
+            
+        reducers = dr.ReduceDim(n_dimensions = 2)
+        reducers.open_embeddings(embeddings_path)
+        reducers.set_algorithm('t_sne', random_state = args.random_state, n_jobs = args.n_workers)
+        reducers.fit_transform()
+        reducers.plot_tsne(f'{args.results_path}{iter}/embeddings_tsne')
+        reducers.save_reduced_data(f'{args.results_path}{iter}/embeddings_reduced_dim.csv')
+        reduceTime = time.time()
+        logging.info("Dims Reduced: " + str(reduceTime - buildModelTime) + " seconds")
 
-    clusters = c.get_embedding_clusters(embedding_input_file=embeddings_path, output_file=args.results_path + "clusters.pickle", random_state=args.random_state)
+    clusters = c.Cluster()
+    clusters.open_embeddings(embeddings_path)
+    clusters.set_algorithm('k_means', n_clusters = 19, random_state = args.random_state)
+    clusters.fit_algorithm()
+    clusters.save_file(f'{args.results_path}clusters.pickle')
+
     projectClusterTime = time.time()
     logging.info("Projects Clustered: " + str(projectClusterTime - reduceTime) + " seconds")
 
